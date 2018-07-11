@@ -12,7 +12,7 @@ param (
 val fastqc = "quay.io/biocontainers/fastqc:0.11.7--4"
 
 func FastQC(reads file) =
-    // Use kmer-hashing image which has latest khmer to avoid bug with basenames in reflow
+	// fastqc uses the name of the input file to name the output
     exec(image := fastqc, mem := 4*GiB, cpu := 8) (outdir dir) {"
     	mv {{reads}} {{id}}.fastq.gz
         /usr/local/bin/fastqc -o {{outdir}} --threads 8 --format fastq {{id}}.fastq.gz
@@ -24,20 +24,11 @@ func FastQC(reads file) =
 // view the documentation for this module, run "reflow doc
 // $/dirs".
 val dirs = make("$/dirs")
-val files = make("$/files")
-val path = make("$/path")
 
+// Cast the reads input into a file
+val reads_file = file(reads)
 
-// Instantiate Go system module "strings"
-val strings = make("$/strings")
-
-// Split each read string by the pipe "|" to get individual s3 paths
-val reads_split = strings.Split(reads, "|")
-
-// Create a file for each element in the `read1s`, `read2s` string array
-// Now `r1`, `r1` are arrays of files
-val reads_files = [file(read) | read <- reads_split]
-
-val outdir = FastQC(reads_files)
+// Run FastQC
+val outdir = FastQC(reads_file)
 
 val Main = dirs.Copy(outdir, output)
