@@ -1,0 +1,41 @@
+param (
+    // S3 path to a single fastq file
+    reads string
+
+    // Full s3 file location to put the FastQC report
+    output string
+
+    // name of the sample
+    id string
+)
+
+// K-mer analysis toolkit (KAT)
+// https://github.com/TGAC/KAT
+val kat = "quay.io/biocontainers/kat:2.4.0--py36h355e19c_3"
+
+func KatHist(fastq file) =
+    // Use kmer-hashing image which has latest khmer to avoid bug with basenames in reflow
+    exec(image := kat, cpu := 8, mem := 64*GiB) (outdir dir) {"
+        cd {{outdir}}
+        mv {{fastq}} {{id}}.fastq.gz
+        kat hist --threads 8 {{id}}.fastq.gz
+        pwd
+        ls -lha
+"}
+
+
+// Instantiate the system modules "dirs" (system modules begin
+// with $), assigning its instance to the "dirs" identifier. To
+// view the documentation for this module, run "reflow doc
+// $/dirs".
+val dirs = make("$/dirs")
+val files = make("$/files")
+
+
+// Cast the reads input into a file
+val reads_file = file(reads)
+
+val outdir = KatHist(reads_file)
+val (report, _) = dirs.Pick(outdir, "kat.hist*")
+
+val Main = files.Copy(report, output)
