@@ -1,6 +1,5 @@
 param (
-    // S3 path to read1 of the fastq/fasta file. If multiple files, 
-    // can be pipe-separated e.g. sample1_01.fastq.gz|sample1_02.fastq.gz
+    // S3 path to a single fastq.gz file
     reads string
 
     // Full s3 path location to put the FastQC reports
@@ -12,10 +11,11 @@ param (
 
 val fastqc = "quay.io/biocontainers/fastqc:0.11.7--4"
 
-func FastQC(reads [file]) =
+func FastQC(reads file) =
     // Use kmer-hashing image which has latest khmer to avoid bug with basenames in reflow
     exec(image := fastqc, mem := 4*GiB, cpu := 8) (outdir dir) {"
-        zcat {{reads}} | /usr/local/bin/fastqc -o {{outdir}} --threads 8 --format fastq stdin
+    	mv {{reads}} {{id}}.fastq.gz
+        /usr/local/bin/fastqc -o {{outdir}} --threads 8 --format fastq {{id}}.fastq.gz
 "}
 
 
@@ -40,21 +40,4 @@ val reads_files = [file(read) | read <- reads_split]
 
 val outdir = FastQC(reads_files)
 
-// Two files are output: stdin_fastqc.html and stdin_fastq.zip
-val (html, _) = dirs.Pick(outdir, "*html")
-
-// "zip" is a keyword in Reflow so say "zipfile" instead
-val (zipfile, _) = dirs.Pick(outdir, "*zip")
-
-outputs := ["html": html, "zip": zipfile]
-
-func Copy(extension string, item file){
-	suffix := "_fastqc." + extension
-	basename := strings.Join(id, suffix)
-	s3_output := path.Join(output, basename)
-	files.Copy(item, s3_output)
-}
-
-val Main = {
-	[Copy(extension, item) | extension, item <- outputs]
-}
+val Main = dirs.Copy(outdir, output)
