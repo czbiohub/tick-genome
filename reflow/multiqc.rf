@@ -23,5 +23,4 @@ data := dir(input)
 
 val report = MultiQC(data)
 
-@requires(disk := 1000*GiB)
 val Main = dirs.Copy(report, output)
