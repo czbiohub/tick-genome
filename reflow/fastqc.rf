@@ -18,42 +18,11 @@ func FastQC(reads [file]) =
 "}
 
 
-// Instantiate the system modules "dirs" (system modules begin
-// with $), assigning its instance to the "dirs" identifier. To
-// view the documentation for this module, run "reflow doc
-// $/dirs".
-val dirs = make("$/dirs")
-val files = make("$/files")
-val path = make("$/path")
+val utils = make("./utils.rf")
 
-
-// Instantiate Go system module "strings"
-val strings = make("$/strings")
-
-// Split each read string by the pipe "|" to get individual s3 paths
-val reads_split = strings.Split(reads, "|")
-
-// Create a file for each element in the `read1s`, `read2s` string array
-// Now `r1`, `r1` are arrays of files
-val reads_files = [file(read) | read <- reads_split]
+val reads_files = utils.SplitByPipe(reads)
 
 val outdir = FastQC(reads_files)
 
-// Two files are output: stdin_fastqc.html and stdin_fastq.zip
-val (html, _) = dirs.Pick(outdir, "*html")
-
-// "zip" is a keyword in Reflow so say "zipfile" instead
-val (zipfile, _) = dirs.Pick(outdir, "*zip")
-
-outputs := ["html": html, "zip": zipfile]
-
-func Copy(extension string, item file) = {
-        suffix := "_fastqc." + extension
-        basename := strings.Join([id], suffix)
-        s3_output := path.Join([output, basename])
-        files.Copy(item, s3_output) ~> item
-}
-
-
-val Main =
-        [Copy(extension, item) | (extension, item) <- outputs]
+@requires(cpu := 1)
+val Main = utils.CopyRenamed(outdir, id, output)
