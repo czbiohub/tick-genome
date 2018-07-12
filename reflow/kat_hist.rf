@@ -13,29 +13,21 @@ param (
 // https://github.com/TGAC/KAT
 val kat = "quay.io/biocontainers/kat:2.4.0--py36h355e19c_3"
 
-func KatHist(fastq file) =
-    // Use kmer-hashing image which has latest khmer to avoid bug with basenames in reflow
+func KatHist(reads file) =
+    // First three lines are renaming nonsense because "kat hist" needs
+	// the filename to end in fastq.gz to detect the type
     exec(image := kat, cpu := 8, mem := 64*GiB) (outdir dir) {"
+    	export DIR=$PWD
+        mv {{reads}} {{id}}.fastq.gz
         cd {{outdir}}
-        mv {{fastq}} {{id}}.fastq.gz
-        kat hist --threads 8 {{id}}.fastq.gz
-        pwd
-        ls -lha
+        kat hist --threads 8 $DIR/{{id}}.fastq.gz
 "}
 
 
-// Instantiate the system modules "dirs" (system modules begin
-// with $), assigning its instance to the "dirs" identifier. To
-// view the documentation for this module, run "reflow doc
-// $/dirs".
-val dirs = make("$/dirs")
-val files = make("$/files")
+val utils = make("./utils.rf")
 
+val read_file = file(reads)
+val outdir = KatHist(read_file)
 
-// Cast the reads input into a file
-val reads_file = file(reads)
-
-val outdir = KatHist(reads_file)
-val (report, _) = dirs.Pick(outdir, "kat.hist*")
-
-val Main = files.Copy(report, output)
+@requires(cpu := 1)
+val Main = utils.CopyRenamed(outdir, id, output)
