@@ -1,2 +1,2 @@
 # tick-genome
-Assemble Ixodes Scapularis genome
+Assemble and annotate Ixodes Scapularis genome
