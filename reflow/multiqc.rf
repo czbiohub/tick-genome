@@ -10,7 +10,7 @@ val multiqc = "ewels/multiqc"
 
 func MultiQC(input dir) =
     exec(image := multiqc, cpu := 1) (outdir dir) {"
-        /usr/local/bin/multiqc --force --outdir {{outdir}} {{input}}
+        /usr/local/bin/multiqc --force -m htseq -m star -v --outdir {{outdir}} {{input}}
 "}
 
 // Instantiate the system modules "dirs" (system modules begin
