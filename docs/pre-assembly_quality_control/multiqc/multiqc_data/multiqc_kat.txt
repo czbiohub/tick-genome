@@ -1,0 +1,4 @@
+Sample	gc_peaks	mean_kmer_freq	kmer_peaks	est_genome_size
+Undetermined_S0_R1_kat.hist	0	339	2	3515309
+Undetermined_S0_R2_kat.hist	0	239	1	1595906
+tick_1_S1_R2_first1Mreads_kat.hist	0	0	0	0
