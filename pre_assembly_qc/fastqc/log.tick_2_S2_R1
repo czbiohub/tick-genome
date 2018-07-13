@@ -1,6 +1,0 @@
-2018/07/12 14:42:12 accepted alloc ec2-34-209-152-157.us-west-2.compute.amazonaws.com:9000/36474963d52da042
-2018/07/12 14:42:12 run tick_2_S2_R1: state: eval alloc ec2-34-209-152-157.us-west-2.compute.amazonaws.com:9000/36474963d52da042
-2018/07/12 14:42:12 evaluating with configuration: executor *client.clientAlloc transferer *repository.Manager flags cacheextern,cacheread,cachewrite,nogc,norecomputeempty,topdown flowconfig hashv2 cachelookuptimeout 1m0s
-2018/07/12 14:42:13  ->  utils.SplitByPipe 2bdafb68 run  intern ..8_A00111_0168_AHFVJVDMXX/rawdata/tick_2_S2_R1_001.fastq.gz
-2018/07/12 14:42:13 utils.SplitByPipe 2bdafb68 /Users/olgabot/code/tick-genome/reflow/utils.rf:23:7:
-	sha256:2bdafb680c50f1629f36ba782d196c428ccb0c3268634fe5680504b5f02302ca
