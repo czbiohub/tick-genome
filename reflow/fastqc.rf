@@ -18,7 +18,7 @@ func FastQC(reads [file]) =
 "}
 
 
-val utils = make("./utils.rf")
+val utils = make("../../reflow/utils.rf")
 
 val reads_files = utils.SplitByPipe(reads)
 
