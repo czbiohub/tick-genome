@@ -1,0 +1,16 @@
+2018/07/12 14:42:10 accepted alloc ec2-52-13-68-63.us-west-2.compute.amazonaws.com:9000/99a1d86d2e03f647
+2018/07/12 14:42:10 run tick_1_S1_R2: state: eval alloc ec2-52-13-68-63.us-west-2.compute.amazonaws.com:9000/99a1d86d2e03f647
+2018/07/12 14:42:10 evaluating with configuration: executor *client.clientAlloc transferer *repository.Manager flags cacheextern,cacheread,cachewrite,nogc,norecomputeempty,topdown flowconfig hashv2 cachelookuptimeout 1m0s
+2018/07/12 14:42:10  ->  utils.CopyRenamed 16edd2aa xfer extern 848.0KiB
+2018/07/12 14:42:10 utils.CopyRenamed 16edd2aa /Users/olgabot/code/tick-genome/reflow/utils.rf:13:7:
+	sha256:7adec7476efaa2d55574c68d2bfbdf5f6d4cef37be5dd286d040ab4e0773b97c
+	sha256:16edd2aa1b08f6425da80916aa97a369f21a2d6f236aa0216f9a993f25372e1a
+	transfer: sha256:16edd2aa1b08f6425da80916aa97a369f21a2d6f236aa0216f9a993f25372e1a
+2018/07/12 14:42:10  ->  utils.CopyRenamed 16edd2aa run  extern s3://tick-genome/dna/2018-06-28/ 848.0KiB
+2018/07/12 14:42:15  <-  utils.CopyRenamed 16edd2aa ok   extern 0s 0B
+2018/07/12 14:42:15 total n=2 time=5s
+	ident             n   ncache transfer runtime(m) cpu mem(GiB) disk(GiB) tmp(GiB)
+	utils.CopyRenamed 1   0      848.0KiB                                   
+	fastqc.FastQC     1   1      0B                                         
+	
+2018/07/12 14:42:15 run tick_1_S1_R2: state: done result val<>

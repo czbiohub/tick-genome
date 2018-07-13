@@ -1,0 +1,60 @@
+2018/07/12 14:42:13 accepted alloc ec2-34-219-39-163.us-west-2.compute.amazonaws.com:9000/fda04b02625f8ba9
+2018/07/12 14:42:13 run Undetermined_S0_R2: state: eval alloc ec2-34-219-39-163.us-west-2.compute.amazonaws.com:9000/fda04b02625f8ba9
+2018/07/12 14:42:13 evaluating with configuration: executor *client.clientAlloc transferer *repository.Manager flags cacheextern,cacheread,cachewrite,nogc,norecomputeempty,topdown flowconfig hashv2 cachelookuptimeout 1m0s
+2018/07/12 14:42:13  ->  fastqc.FastQC f1f0c491 xfer   exec 16.7GiB
+2018/07/12 14:42:13 fastqc.FastQC f1f0c491 /Users/olgabot/code/tick-genome/reflow/fastqc.rf:16:9:
+	resources: {mem:4.0GiB cpu:8 disk:0B}
+	sha256:e8ea3445de6225c44bcf69e471100eb368fe17156c32f7f19a8b6cdfe98e10c3
+	sha256:f1f0c491800932310bc94fdd4db79689192597275d048d882268a9f4c17b5f4e
+	transfer: sha256:f1f0c491800932310bc94fdd4db79689192597275d048d882268a9f4c17b5f4e
+	quay.io/biocontainers/fastqc:0.11.7--4
+	command:
+	    zcat {{reads}} | /usr/local/bin/fastqc -o {{outdir}} --threads 8 --format fastq stdin
+	where:
+	    {{reads}} = 
+	        list[0]:
+	          . sha256:86351312e57a39751b8aa072d2d96a70b33d95cf3992e3734974ff9ed2ecfcf5 16.7GiB
+2018/07/12 14:43:56  ->  fastqc.FastQC f1f0c491 run    exec quay.io/biocontainers/fastqc:0.11.7--4 zcat {{reads}} | /usr/local/b..hreads 8 --format fastq stdin
+2018/07/12 14:43:56 fastqc.FastQC f1f0c491 /Users/olgabot/code/tick-genome/reflow/fastqc.rf:16:9:
+	resources: {mem:4.0GiB cpu:8 disk:0B}
+	sha256:e8ea3445de6225c44bcf69e471100eb368fe17156c32f7f19a8b6cdfe98e10c3
+	sha256:f1f0c491800932310bc94fdd4db79689192597275d048d882268a9f4c17b5f4e
+	ec2-34-219-39-163.us-west-2.compute.amazonaws.com:9000/fda04b02625f8ba9/f1f0c491800932310bc94fdd4db79689192597275d048d882268a9f4c17b5f4e
+	quay.io/biocontainers/fastqc:0.11.7--4
+	command:
+	    zcat {{reads}} | /usr/local/bin/fastqc -o {{outdir}} --threads 8 --format fastq stdin
+	where:
+	    {{reads}} = 
+	        list[0]:
+	          . sha256:86351312e57a39751b8aa072d2d96a70b33d95cf3992e3734974ff9ed2ecfcf5 16.7GiB
+2018/07/12 15:08:02  <-  fastqc.FastQC f1f0c491 ok     exec 23m52s 818.0KiB
+2018/07/12 15:08:02 fastqc.FastQC f1f0c491 /Users/olgabot/code/tick-genome/reflow/fastqc.rf:16:9:
+	resources: {mem:4.0GiB cpu:8 disk:0B}
+	sha256:e8ea3445de6225c44bcf69e471100eb368fe17156c32f7f19a8b6cdfe98e10c3
+	sha256:f1f0c491800932310bc94fdd4db79689192597275d048d882268a9f4c17b5f4e
+	ec2-34-219-39-163.us-west-2.compute.amazonaws.com:9000/fda04b02625f8ba9/f1f0c491800932310bc94fdd4db79689192597275d048d882268a9f4c17b5f4e
+	quay.io/biocontainers/fastqc:0.11.7--4
+	command:
+	    zcat {{reads}} | /usr/local/bin/fastqc -o {{outdir}} --threads 8 --format fastq stdin
+	where:
+	    {{reads}} = 
+	        list[0]:
+	          . sha256:86351312e57a39751b8aa072d2d96a70b33d95cf3992e3734974ff9ed2ecfcf5 16.7GiB
+	result:
+	    {{outdir}} =
+	        stdin_fastqc.html sha256:0ca928bb2b2a7c3f8ce9b5d8537cf765b983ed3321dd2caaacdb8b272be2fef3 246.2KiB
+	        stdin_fastqc.zip sha256:510728e462801b7f9826e2db3e82ac05fa360f0a0ec90da41100573eb70dedb5 571.7KiB
+	profile:
+	    cpu mean=1.5 max=2.2
+	    mem mean=846.7MiB max=931.4MiB
+	    disk mean=0B max=0B
+	    tmp mean=32.0KiB max=32.0KiB
+2018/07/12 15:08:02  ->  utils.CopyRenamed 39865918 run  extern s3://tick-genome/dna/2018-06-28/ 818.0KiB
+2018/07/12 15:08:07  <-  utils.CopyRenamed 39865918 ok   extern 0s 0B
+2018/07/12 15:08:07 total n=3 time=25m54s
+	ident             n   ncache transfer runtime(m) cpu         mem(GiB)    disk(GiB)   tmp(GiB)
+	utils.CopyRenamed 1   0      0B                                                      
+	fastqc.FastQC     1   0      16.7GiB  24/24/24   1.5/1.5/1.5 0.9/0.9/0.9 0.0/0.0/0.0 0.0/0.0/0.0
+	utils.SplitByPipe 1   1      0B                                                      
+	
+2018/07/12 15:08:07 run Undetermined_S0_R2: state: done result val<>
