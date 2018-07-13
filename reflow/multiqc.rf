@@ -6,7 +6,7 @@ param (
     output string
 )
 
-val multiqc = "ewels/multiqc"
+val multiqc = "czbiohub/multiqc"
 
 func MultiQC(input dir) =
     exec(image := multiqc, cpu := 1) (outdir dir) {"
