@@ -22,7 +22,7 @@ val utils = make("../../reflow/utils.rf")
 
 val reads_file = file(reads)
 
-val outdir = FastQC(reads_files)
+val outdir = FastQC(reads_file)
 
 @requires(cpu := 1)
 val Main = utils.CopyRenamed(outdir, id, output)
