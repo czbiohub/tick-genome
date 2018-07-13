@@ -1,0 +1,54 @@
+param (
+    // S3 path to read1 of the fastq/fasta file. If multiple files, 
+    // can be pipe-separated e.g. sample1_01.fastq.gz|sample1_02.fastq.gz
+    reads string
+
+    // Full s3 file location to put the FastQC report
+    output string
+
+    // name of the sample
+    id string
+)
+
+// K-mer analysis toolkit (KAT)
+// https://github.com/TGAC/KAT
+val kat = "quay.io/biocontainers/kat:2.4.1--py36h355e19c_2"
+
+func Zcat(reads [file]) =
+    // Use kmer-hashing image which has latest khmer to avoid bug with basenames in reflow
+    exec(image := kat) (fastq file) {"
+    	zcat {{reads}} > {{fastq}}
+"}
+
+func KatGCP(fastq file) =
+    // GC Percentage
+    exec(image := kat, cpu := 4, mem := 4*GiB) (outdir dir) {"
+        cd {{outdir}}
+        cp {{fastq}} {{id}}.fastq
+        kat gcp --threads 4 {{id}}.fastq
+        ls
+"}
+
+
+// Instantiate the system modules "dirs" (system modules begin
+// with $), assigning its instance to the "dirs" identifier. To
+// view the documentation for this module, run "reflow doc
+// $/dirs".
+val dirs = make("$/dirs")
+val files = make("$/files")
+
+// Instantiate Go system module "strings"
+val strings = make("$/strings")
+
+// Split each read string by the pipe "|" to get individual s3 paths
+val reads_split = strings.Split(reads, "|")
+
+// Create a file for each element in the `read1s`, `read2s` string array
+// Now `r1`, `r1` are arrays of files
+val reads_files = [file(read) | read <- reads_split]
+
+val fastq = Zcat(reads_files)
+val outdir = KatHist(fastq)
+val (report, _) = dirs.Pick(outdir, "kat-gcp*")
+
+val Main = files.Copy(report, output)

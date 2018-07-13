@@ -18,6 +18,7 @@ func KatHist(reads file) =
 	// the filename to end in fastq.gz to detect the type
     exec(image := kat, cpu := 8, mem := 64*GiB) (outdir dir) {"
     	export DIR=$PWD
+        # Keep fastqs in their own folder so they don't get copied with everything
         mv {{reads}} {{id}}.fastq.gz
         cd {{outdir}}
         kat hist --threads 8 $DIR/{{id}}.fastq.gz
