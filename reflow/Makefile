@@ -11,3 +11,6 @@ tabula_muris_copy_logs:
 			s3://czbiohub-maca/remux_data/$${TABULA_MURIS_RUN}/results/ \
 			s3://olgabot-maca/multiqc_test_input/$${TABULA_MURIS_RUN}/; \
 	done
+
+test_multiqc:
+	reflow -cache=off run multiqc.rf -input s3://olgabot-maca/multiqc_test_input/170907_A00111_0051_BH2HWLDMXX/ -output s3://olgabot-maca/multiqc_test_output/170907_A00111_0051_BH2HWLDMXX/
