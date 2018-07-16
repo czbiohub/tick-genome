@@ -16,7 +16,7 @@ val kat = "quay.io/biocontainers/kat:2.4.0--py36h355e19c_3"
 func KatHist(reads file) =
     // First three lines are renaming nonsense because "kat hist" needs
 	// the filename to end in fastq.gz to detect the type
-    exec(image := kat, cpu := 8, mem := 64*GiB) (outdir dir) {"
+    exec(image := kat, cpu := 8, mem := 128*GiB) (outdir dir) {"
     	export DIR=$PWD
         # Keep fastqs in their own folder so they don't get copied with everything
         mv {{reads}} {{id}}.fastq.gz
