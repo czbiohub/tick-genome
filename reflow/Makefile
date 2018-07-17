@@ -14,3 +14,9 @@ tabula_muris_copy_logs:
 
 test_multiqc:
 	reflow -cache=off run multiqc.rf -input s3://olgabot-maca/multiqc_test_input/170907_A00111_0051_BH2HWLDMXX/ -output s3://olgabot-maca/multiqc_test_output/170907_A00111_0051_BH2HWLDMXX/
+
+test_cutadapt:
+	reflow run cutadapt.rf -read1=s3://tick-genome/dna/2018-06-28/tick_1_S1_R1_001_first1Mreads.fastq.gz -read2=s3://tick-genome/dna/2018-06-28/tick_1_S1_R2_001_first1Mreads.fastq.gz -libprep=nextera -id=tick_1_S1_first1Mreads -output=s3://tick-genome/dna/2018-06-28/adapter_trimmed
+
+test_adapterremoval:
+	reflow run adapter_removal.rf -read1=s3://tick-genome/dna/2018-06-28/tick_1_S1_R1_001_first1Mreads.fastq.gz -read2=s3://tick-genome/dna/2018-06-28/tick_1_S1_R2_001_first1Mreads.fastq.gz -libprep=nextera -id=tick_1_S1_first1Mreads -output=s3://tick-genome/dna/2018-06-28/adapter_trimmed/
