@@ -1,5 +1,0 @@
-Module	Section	Sample Name	Source
-FastQC	all_sections	tick_1_S1_R1	/arg/1/0/tick_1_S1_R1_fastqc.zip
-FastQC	all_sections	stdin	/arg/1/0/stdin_fastqc.zip
-FastQC	all_sections	Undetermined_S0_R1	/arg/1/0/Undetermined_S0_R1_fastqc.zip
-FastQC	all_sections	Undetermined_S0_R2	/arg/1/0/Undetermined_S0_R2_fastqc.zip
