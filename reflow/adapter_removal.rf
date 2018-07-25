@@ -23,6 +23,9 @@ param (
 val adapterremoval = "quay.io/biocontainers/adapterremoval:2.2.2--h96824bc_3"
 
 
+val utils = make("./utils.rf")
+val dirs = make("$/dirs")
+
 func IdentifyAdapters(read1, read2 file) = {
     // First three lines are renaming nonsense because "kat hist" needs
     // the filename to end in fastq.gz to detect the type
@@ -77,8 +80,6 @@ val adapter_reverse = if (libprep == "nextera"){
     ""
 }
 
-val utils = make("./utils.rf")
-val dirs = make("$/dirs")
 
 r1 := file(read1)
 r2 := file(read2)
