@@ -1,4 +1,8 @@
 
+# Ignore raw data files
+*.fastq.gz
+test-data/
+
 # Reflow stuff
 state.*
 log.*
