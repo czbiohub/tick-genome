@@ -1,0 +1,9 @@
+Sample	FastQC_mqc-generalstats-fastqc-percent_duplicates	FastQC_mqc-generalstats-fastqc-avg_sequence_length	FastQC_mqc-generalstats-fastqc-total_sequences	FastQC_mqc-generalstats-fastqc-percent_fails	FastQC_mqc-generalstats-fastqc-percent_gc	Adapter Removal_mqc-generalstats-adapter_removal-aligned_total	Adapter Removal_mqc-generalstats-adapter_removal-percent_aligned
+Undetermined_S0_R1	52.5610218861	143.0	221780046.0	9.09090909091	46.0		
+Undetermined_S0_R2	52.4578910476	143.0	221780046.0	18.1818181818	47.0		
+Undetermined_S0_adapterremoval.settings						182671792	41.18
+tick_1_S1_R1	54.6879450888	143.0	1815622521.0	36.3636363636	47.0		
+tick_1_S1_R2	51.4801748192	143.0	1815622521.0	36.3636363636	47.0		
+tick_1_S1_first1Mreads_adapterremoval.settings						1145816	57.29
+tick_2_S2_R1	58.4998577693	143.0	2039089796.0	27.2727272727	46.0		
+tick_2_S2_R2	54.9156033239	143.0	2039089796.0	18.1818181818	46.0		
