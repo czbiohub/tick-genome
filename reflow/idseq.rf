@@ -1,0 +1,7 @@
+// https://github.com/chanzuckerberg/idseq-dag/blob/master/idseq_dag/steps/run_gsnap_filter.py
+
+
+// 'gsnapl', '-A sam', '--batch=0', '--use-shared-memory=0',
+//             '--gmap-mode=all', '--npaths=1', '--ordered', '-t 32',
+//             '--max-mismatches=40', '-D', gsnap_base_dir, '-d', gsnap_index_name,
+//             '-o',
