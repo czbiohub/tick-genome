@@ -5,7 +5,7 @@ import glob
 
 readme = '''# Tick Genome Assembly and Annotation
 
-[MultiQC Summary](pre-assembly_quality_control/multiqc/multiqc_report.html)
+[MultiQC Summary](multiqc_report.html)
 
 ## Pre-Assembly FastQC reports
 
