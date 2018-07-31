@@ -1,19 +1,3 @@
-param (
-    // S3 path to a single fastq(.gz) file
-    read1 string
-
-    // S3 path to a single fastq(.gz) file
-    read2 string
-
-    // name of the sample
-    id string
-
-    // Full s3 file location to put the FastQC report
-    output string
-
-    // Minimum read length after trimming
-    minlength = 100
-)
 
 // phix Removal
 // http://phixremoval.readthedocs.io/en/latest/
@@ -22,37 +6,8 @@ val utils = make("./utils.rf")
 val dirs = make("$/dirs")
 
 
-func AdapterTrimming(read1, read2 file) = {
-    // Rename files to have fastq.gz endings
-    d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
-    exec(image := bbmap, cpu := 16, mem := 8*GiB) (outdir dir) {"
-        cd {{outdir}}
-        bbduk.sh ref=adapters \
-            in={{d}}/{{id}}_R1.fastq.gz \
-            in2={{d}}/{{id}}_R2.fastq.gz \
-            out={{id}}_R1_bbduk_adapter_trimmed.fastq.gz \
-            out2={{id}}_R2_bbduk_adapter_trimmed.fastq.gz \
-            outm={{id}}_R1_bbduk_adapter_failed.fastq.gz \
-            outm2={{id}}_R2_bbduk_adapter_failed.fastq.gz \
-            outs={{id}}_bbduk_adapter_failed_singleton.fastq.gz \
-            stats={{id}}_bbduk_adapter_trimmed.stats \
-            # Recommended ksize for adapters \
-            k=23 \
-            # hamming distance = 1 \
-            hdist=1 \
-            # Use smaller kmers for ends of reads, in this case k=11 \
-            mink=11 \
-            # trim everything to the right of the adapter \
-            ktrim=r \
-            minlen={{minlength}} \
-            # trim adapters based on pair overlap detection using BBMerge (which does not require known adapter sequences) \
-            tbo=t
-    "}
-
-}
-
-func PhiXTrimming(read1, read2 file) = {
+func PhiXTrimming(read1, read2 file, id string, minlength int) = {
     // Rename files to have fastq.gz endings
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
@@ -61,12 +16,12 @@ func PhiXTrimming(read1, read2 file) = {
         bbduk.sh ref=phix \
             in={{d}}/{{id}}_R1.fastq.gz \
             in2={{d}}/{{id}}_R2.fastq.gz \
-            out={{id}}_R1_bbduk_adapter_phix_trimmed.fastq.gz \
-            out2={{id}}_R2_bbduk_adapter_phix_trimmed.fastq.gz \
-            outm={{id}}_R1_bbduk_adapter_phix_failed.fastq.gz \
-            outm2={{id}}_R2_bbduk_adapter_phix_failed.fastq.gz \
-            outs={{id}}_bbduk_adapter_phix_failed_singleton.fastq.gz \
-            stats={{id}}_bbduk_adapter_phix_trimmed.stats \
+            out={{id}}_R1_bbduk_phix_trimmed.fastq.gz \
+            out2={{id}}_R2_bbduk_phix_trimmed.fastq.gz \
+            outm={{id}}_R1_bbduk_phix_failed.fastq.gz \
+            outm2={{id}}_R2_bbduk_phix_failed.fastq.gz \
+            outs={{id}}_bbduk_phix_failed_singleton.fastq.gz \
+            stats={{id}}_bbduk_phix_trimmed.stats \
             # Recommended ksize for adapters, hopefully applies to PhiX \
             k=23 \
             # hamming distance = 1 \
@@ -81,17 +36,3 @@ func PhiXTrimming(read1, read2 file) = {
 
 
 
-r1 := file(read1)
-r2 := file(read2)
-
-val adapter_trimmed_dir = AdapterTrimming(r1, r2)
-
-val (read1_adapter_trimmed, _) = dirs.Pick(adapter_trimmed_dir, "*R1*trimmed.fastq.gz")
-val (read2_adapter_trimmed, _) = dirs.Pick(adapter_trimmed_dir, "*R2*trimmed.fastq.gz")
-
-val phix_trimmed_dir = PhiXTrimming(read1_adapter_trimmed, read2_adapter_trimmed) 
-
-trimmed_dirs := [adapter_trimmed_dir, phix_trimmed_dir]
-
-@requires(cpu := 1)
-val Main = [dirs.Copy(d, output) | d <- trimmed_dirs]

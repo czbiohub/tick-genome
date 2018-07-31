@@ -1,47 +1,24 @@
-param (
-    // S3 path to a single fastq(.gz) file
-    read1 string
-
-    // S3 path to a single fastq(.gz) file
-    read2 string
-
-    // name of the sample
-    id string
-
-    // Type of library prep. Supported: "nextera"
-    libprep string
-
-    // Full s3 file location to put the FastQC report
-    output string
-
-    // Minimum read length after trimming
-    minlength = 100
-)
 
 // Adapter Removal
 // http://adapterremoval.readthedocs.io/en/latest/
 val adapterremoval = "quay.io/biocontainers/adapterremoval:2.2.2--h96824bc_3"
 
-
-val utils = make("./utils.rf")
 val dirs = make("$/dirs")
 
-func IdentifyAdapters(read1, read2 file) = {
-    // First three lines are renaming nonsense because "kat hist" needs
-    // the filename to end in fastq.gz to detect the type
-    d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
+func AdapterRemoval(read1, read2 file, id, libprep string, minlength int) = {
+    val adapter_forward = if (libprep == "nextera"){
+        "CTGTCTCTTATACACATCT"
+    } else {
+        ""
+    }
 
-    exec(image := adapterremoval, cpu := 16, mem := 8*GiB) (output file) {"
-        # Need to rename files to have fastq.gz ending or cutadapt fails
-        AdapterRemoval \
-            --file1 {{d}}/{{id}}_R1.fastq.gz \
-            --file2 {{d}}/{{id}}_R2.fastq.gz \
-            --identify-adapters > {{output}} 2>&1
-    "}
-}
+    val adapter_reverse = if (libprep == "nextera"){
+        "CTGTCTCTTATACACATCT"
+    } else {
+        ""
+    }
 
-func AdapterRemoval(read1, read2 file, adapter_forward, adapter_reverse string) = {
     // First three lines are renaming nonsense because "kat hist" needs
 	// the filename to end in fastq.gz to detect the type
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
@@ -49,14 +26,23 @@ func AdapterRemoval(read1, read2 file, adapter_forward, adapter_reverse string) 
     exec(image := adapterremoval, cpu := 16, mem := 8*GiB) (outdir dir) {"
         # Need to rename files to have fastq.gz ending or cutadapt fails
         cd {{outdir}}
+
         # For some reason the --file{1,2} parameters must come first
+
+        # Identify adapters and save the report
+        AdapterRemoval \
+            --file1 {{d}}/{{id}}_R1.fastq.gz \
+            --file2 {{d}}/{{id}}_R2.fastq.gz \
+            --identify-adapters > {{id}}_adapterremoval_identifyadapters.txt 2>&1
+
+        # remove known adapters
         AdapterRemoval \
             --file1 {{d}}/{{id}}_R1.fastq.gz \
             --file2 {{d}}/{{id}}_R2.fastq.gz \
             --gzip \
             --basename {{id}} \
-            --output1 {{id}}_R1_adapterremoval.fastq.gz \
-            --output2 {{id}}_R2_adapterremoval.fastq.gz \
+            --output1 {{id}}_R1_adapterremoval_trimmed.fastq.gz \
+            --output2 {{id}}_R2_adapterremoval_trimmed.fastq.gz \
             --settings {{id}}_adapterremoval.settings \
             --singleton {{id}}_adapterremoval.singleton.fastq.gz \
             --discarded {{id}}_adapterremoval.discarded.fastq.gz \
@@ -66,30 +52,4 @@ func AdapterRemoval(read1, read2 file, adapter_forward, adapter_reverse string) 
             --adapter2 {{adapter_reverse}}
         ls
     "}
-}
-
-val adapter_forward = if (libprep == "nextera"){
-    "CTGTCTCTTATACACATCT"
-} else {
-    ""
-}
-
-val adapter_reverse = if (libprep == "nextera"){
-    "CTGTCTCTTATACACATCT"
-} else {
-    ""
-}
-
-
-r1 := file(read1)
-r2 := file(read2)
-
-val identified_adapters = IdentifyAdapters(r1, r2)
-val outdir = AdapterRemoval(r1, r2, adapter_forward, adapter_reverse)
-
-@requires(cpu := 1)
-val Main = {
-    // For some reason the output needs to be assigned
-    asdf := utils.CopyRenamedFile(identified_adapters, id, output, "_adapterremoval_identifyadapters.txt")
-    dirs.Copy(outdir, output)
 }

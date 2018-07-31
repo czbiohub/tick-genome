@@ -1,0 +1,62 @@
+param (
+    // S3 path to a single fastq(.gz) file
+    read1 string
+
+    // S3 path to a single fastq(.gz) file
+    read2 string
+
+    // name of the sample
+    id string
+
+    // Type of library prep. Supported: "nextera"
+    libprep string
+
+    // Full s3 file location to put the FastQC report
+    output string
+
+)
+
+// Cutadapt
+// https://cutadapt.readthedocs.io/en/stable/index.html
+val cutadapt = "quay.io/biocontainers/cutadapt:1.16--py36_2"
+
+func Cutadapt(read1, read2 file, adapter_forward, adapter_reverse string) =
+    // First three lines are renaming nonsense because "kat hist" needs
+	// the filename to end in fastq.gz to detect the type
+    exec(image := cutadapt, cpu := 16, mem := 8*GiB) (outdir dir) {"
+        # Need to rename files to have fastq.gz ending or cutadapt fails
+        mv {{read1}} {{id}}_R1.fastq.gz
+        mv {{read2}} {{id}}_R2.fastq.gz
+        cd {{outdir}}
+    	cutadapt \
+            --cores 16 \
+            -a {{adapter_forward}} \
+            -A {{adapter_reverse}} \
+            -o {{id}}_R1_cutadapt.fastq.gz -p {{id}}_R2_cutadapt.fastq.gz \
+            {{id}}_R1.fastq.gz {{id}}_R2.fastq.gz
+        ls
+"}
+
+val adapter_forward = if (libprep == "nextera"){
+    "GTCTCGTGGGCTCGG"
+} else {
+    ""
+}
+
+val adapter_reverse = if (libprep == "nextera"){
+    "TCGTCGGCAGCGTC"
+} else {
+    ""
+}
+
+val utils = make("./utils.rf")
+val files = make("$/files")
+val dirs = make("$/dirs")
+
+r1 := file(read1)
+r2 := file(read2)
+
+val outdir = Cutadapt(r1, r2, adapter_forward, adapter_reverse)
+
+@requires(cpu := 1)
+val Main = dirs.Copy(outdir, output)
