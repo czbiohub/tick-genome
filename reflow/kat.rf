@@ -1,0 +1,33 @@
+
+// K-mer analysis toolkit (KAT)
+// https://github.com/TGAC/KAT
+val kat = "quay.io/biocontainers/kat:2.4.0--py36h355e19c_3"
+
+val dirs = make("$/dirs")
+
+// Kmer histogram
+func Hist(reads file, id string) = {
+    // First three lines are renaming nonsense because "kat hist" needs
+	// the filename to end in fastq.gz to detect the type
+
+    // Ensure input file has fastq.gz ending
+    d := dirs.Make([id+".fastq.gz": reads])
+
+    exec(image := kat, cpu := 8, mem := 128*GiB) (outdir dir) {"
+        cd {{outdir}}
+        kat hist --threads 8 {{d}}/{{id}}.fastq.gz
+    "}
+}
+
+
+// GC Percentage
+func GCP(reads file, id string) = {
+    // Ensure input file has fastq.gz ending
+    d := dirs.Make([id+".fastq.gz": reads])
+
+    exec(image := kat, cpu := 4, mem := 4*GiB) (outdir dir) {"
+        cd {{outdir}}
+        kat gcp --threads 4 {{d}}{{id}}.fastq
+        ls
+    "}
+}

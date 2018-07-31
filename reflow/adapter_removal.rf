@@ -1,22 +1,3 @@
-param (
-    // S3 path to a single fastq(.gz) file
-    read1 string
-
-    // S3 path to a single fastq(.gz) file
-    read2 string
-
-    // name of the sample
-    id string
-
-    // Type of library prep. Supported: "nextera"
-    libprep string
-
-    // Full s3 file location to put the FastQC report
-    output string
-
-    // Minimum read length after trimming
-    minlength = 100
-)
 
 // Adapter Removal
 // http://adapterremoval.readthedocs.io/en/latest/

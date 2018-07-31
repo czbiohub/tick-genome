@@ -1,19 +1,14 @@
-param (
-    // S3 path to a single fastq.gz file
-    reads string
-
-    // Full s3 path location to put the FastQC reports
-    output string
-
-    // name of the sample
-    id string
-)
 
 val fastqc = "quay.io/biocontainers/fastqc:0.11.7--4"
 
-func FastQC(reads file, id) =
-    // Use kmer-hashing image which has latest khmer to avoid bug with basenames in reflow
-    exec(image := fastqc, mem := 4*GiB, cpu := 8) (outdir dir) {"
-    	mv {{reads}} {{id}}.fastq.gz
-        /usr/local/bin/fastqc -o {{outdir}} --threads 8 {{id}}.fastq.gz
-"}
+val dirs = make("$/dirs")
+
+
+func FastQC(reads file, id string) = {
+	// Ensure input file has fastq.gz ending
+    d := dirs.Make([id+".fastq.gz": reads])
+
+	    exec(image := fastqc, mem := 4*GiB, cpu := 8) (outdir dir) {"
+	        /usr/local/bin/fastqc -o {{outdir}} --threads 8 {{d}}/{{id}}.fastq.gz
+	"}
+}

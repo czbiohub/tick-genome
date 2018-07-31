@@ -1,0 +1,121 @@
+param (
+	threads = 8
+)
+
+
+val files = "$/files"
+
+val samtools = "quay.io/biocontainers/samtools:1.9--h46bd0b3_0"
+
+
+func SamToBam(sam_or_bam file, is_sam bool) = {
+	val sam_flag = if is_sam { "-S" } else { "" }
+
+    exec(image := samtools, cpu := threads, mem := 16*GiB) (bam file) {"
+		samtools view --threads {{threads}} {{sam_flag}} -b {{sam_or_bam}} > {{bam}}
+	"}
+}
+
+
+func ExtractProperlyMappedReads(bam file) = 
+    exec(image := samtools, cpu := threads, mem := 16*GiB) (aligned_bam file) {"
+		samtools view --threads {{threads}}  -u -f 1 -F 12 {{bam}} > {{aligned_bam}}
+"}
+
+func ExtractUnmappedR1(bam file) = 
+    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+		# R1 unmapped, R2 mapped
+		samtools view --threads {{threads}}  -u -f 4 -F 264 {{bam}} > {{output_bam}}
+"}
+
+
+func ExtractUnmappedR2(bam file) = 
+    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+		# R1 mapped, R2 unmapped
+		samtools view --threads {{threads}}  -u -f 8 -F 260 {{bam}} > {{output_bam}}
+"}
+
+func ExtractUnmappedR1andR2(bam file) = 
+    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+		# R1 & R2 unmapped
+		samtools view --threads {{threads}}  -u -f 12 -F 256 {{bam}} > {{output_bam}}
+"}
+
+func Merge(bams [file]) = 
+    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+		samtools merge --threads {{threads}} {{output_bam}} {{bams}}
+"}
+
+
+func SortByCoordinates(bam file) = 
+    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+		samtools sort --threads -m 16G {{threads}} {{bam}} > {{output_bam}}
+"}
+
+
+func SortByName(bam file) =
+    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+		samtools sort -n -m 16G --threads {{threads}} {{bam}} > {{output_bam}}
+"}
+
+
+func BamToFastq(bam file, id string) =
+	// Outputs folder containing:
+	// - {{id}}_R1.fastq.gz
+	// - {{id}}_R2.fastq.gz
+	// - {{id}}_singleton.fastq.gz
+    exec(image := samtools, cpu := threads, mem := 16*GiB) (output dir) {"
+    	cd {{output}}
+		samtools fastq --threads {{threads}} -s {{id}}_singleton.fastq.gz \
+			-1 {{id}}_R1.fastq.gz -2 {{id}}_R2.fastq.gz {{bam}}
+"}
+
+
+func Flagstat(bam file) =
+    exec(image := samtools, cpu := threads, mem := 8*GiB) (output file) {"
+		samtools flagstat --threads {{threads}} {{bam}} > {{output}}
+"}
+
+
+
+func ExtractMappedBAMandUnmappedFASTQ(sam_or_bam file, is_sam bool, id string) = {
+	// Outputs a directory containing:
+- {{id}}.bam
+- {{id}}.flagstat
+- {{id}}_mapped.bam
+- {{id}}_mapped.flagstat
+- {{id}}_unmapped.flagstat
+- {{id}}_unmapped_R1.fastq.gz
+- {{id}}_unmapped_R2.fastq.gz
+- {{id}}_unmapped_singleton.fastq.gz
+
+	bam := SamToBam(sam_or_bam, is_sam)
+	initial_flagstat := Flagstat(bam)
+
+	// Extract mapped reads, sort by genomic location, and spot-check the flags
+	mapped := ExtractProperlyMappedReads(bam)
+	mapped_sorted := SortByCoordinates(mapped)
+	mapped_flagstat := Flagstat(mapped)
+
+	// Extract mapped reads
+	unmapped_r1 := ExtractUnmappedR1(bam)
+	unmapped_r2 := ExtractUnmappedR2(bam)
+	unmapped_r1_and_r2 := ExtractUnmappedR1andR2(bam)
+
+	// Merge into one bam and sort by read ID
+	unmapped := Merge([unmapped_r1, unmapped_r2, unmapped_r1_and_r2])
+	unmapped_sorted := SortByName(unmapped)
+	unmapped_flagstat := Flagstat(unmapped_sorted)
+
+	// Extract read1, read2, and singletons
+	fastq_dir := BamToFastq(unmapped_sorted, id + "_unmapped")
+
+	files_to_copy := [
+		".flagstat": initial_flagstat, 
+		".bam": bam, 
+		"_mapped.bam": mapped_sorted, 
+		"_mapped.flagstat": mapped_flagstat,
+		"_unmapped.flagstat": unmapped_flagstat]
+	asdf := [utils.CopyRenamedFile(f, id, fastq_dir, suffix) | (suffix, f) <- files_to_copy]
+	fastq_dir
+}

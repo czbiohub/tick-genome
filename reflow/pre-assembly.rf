@@ -18,30 +18,39 @@ param (
     minlength = 135
 )
 
+// System modules
+val dirs = make("$/dirs")
 
-val adapter_removal := make("./adapter_removal.rf")
-val bbduk := make("./bbduk.rf")
-val fastqc := make("./fastqc.rf")
 
-val r1_fastqc_reports := fastqc.FastQC(r1, id + "_R1")
-val r2_fastqc_reports := fastqc.FastQC(r2, id + "_R2")
+val adapter_removal = make("./adapter_removal.rf")
+val fastqc = make("./fastqc.rf")
+val bbduk = make("./bbduk.rf")
+val idseq = make("./idseq.rf")
+val kat = make("./kat.rf")
+
+
+val r1 = file(read1)
+val r2 = file(read2)
+
+val r1_fastqc_reports = fastqc.FastQC(r1, id + "_R1")
+val r2_fastqc_reports = fastqc.FastQC(r2, id + "_R2")
 
 // -- Remove Illumina Nextera Adapters --- //
-val adapter_removed := adapter_removal.AdapterRemoval(r1, r2, id, libprep, minlength)
+val adapter_removed = adapter_removal.AdapterRemoval(r1, r2, id, libprep, minlength)
 
 // Extract R1, R2 read pairs from output directory
-val r1_adapter_trimmed = dirs.Pick(adapter_removed, "*_R1_adapterremoval_trimmed.fastq.gz")
-val r2_adapter_trimmed = dirs.Pick(adapter_removed, "*_R2_adapterremoval_trimmed.fastq.gz")
+val (r1_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R1_adapterremoval_trimmed.fastq.gz")
+val (r2_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R2_adapterremoval_trimmed.fastq.gz")
 
 // -- Remove PhiX Sequences --- //
-val phix_trimmed := bbduk.PhiXTrimming(r1_adapter_trimmed, r2_adapter_trimmed, id, minlength)
+val phix_trimmed = bbduk.PhiXTrimming(r1_adapter_trimmed, r2_adapter_trimmed, id, minlength)
 
-// // Extract R1, R2 read pairs from output directory
-// val r1_phix_trimmed = dirs.Pick(phix_trimmed, "*_R1_bbduk_phix_trimmed.fastq.gz")
-// val r2_phix_trimmed = dirs.Pick(phix_trimmed, "*_R2_bbduk_phix_trimmed.fastq.gz")
+// Extract R1, R2 read pairs from output directory
+val r1_phix_trimmed = dirs.Pick(phix_trimmed, "*_R1_bbduk_phix_trimmed.fastq.gz")
+val r2_phix_trimmed = dirs.Pick(phix_trimmed, "*_R2_bbduk_phix_trimmed.fastq.gz")
 
-// // -- Remove Human Sequences --- //
-// val human_removed := idseq.RemoveHumanPanTro(r1_phix_trimmed, r2_phix_trimmed)
+// -- Remove Human Sequences --- //
+val human_removed = idseq.RemoveHuman(r1_phix_trimmed, r2_phix_trimmed, id)
 
 // // -- Get kmer distribution histograms before normalization --- //
 // val kat_hist_pre_normalization := kat.Hist(human_removed)
@@ -66,7 +75,7 @@ val phix_trimmed := bbduk.PhiXTrimming(r1_adapter_trimmed, r2_adapter_trimmed, i
 // val search_refseq_genbank := sourmash.Search(signatures)
 
 
-output_dirs = [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
+output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
     phix_trimmed]
     // human_removed, 
     // kat_hist_pre_normalization, normalized, kat_hist_pre_normalization, 
@@ -74,4 +83,4 @@ output_dirs = [r1_fastqc_reports, r2_fastqc_reports, adapter_removed,
 
 
 @requires(cpu := 1)
-val Main = [dirs.copy(d, output) | d <- output_dirs]
+val Main = [dirs.Copy(d, output) | d <- output_dirs]
