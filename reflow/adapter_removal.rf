@@ -12,7 +12,7 @@ func AdapterRemoval(read1, read2 file, id string, adapter_list file, minlength i
 	// the filename to end in fastq.gz to detect the type
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
-    exec(image := adapterremoval, cpu := 32, mem := 16*GiB) (outdir dir) {"
+    exec(image := adapterremoval, cpu := 32, mem := 60*GiB) (outdir dir) {"
         # Need to rename files to have fastq.gz ending or cutadapt fails
         cd {{outdir}}
 
