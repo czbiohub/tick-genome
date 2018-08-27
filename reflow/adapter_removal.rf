@@ -6,7 +6,7 @@ val adapterremoval = "quay.io/biocontainers/adapterremoval:2.2.2--h96824bc_3"
 val dirs = make("$/dirs")
 
 
-func AdapterRemoval(read1, read2 file, id, adapter_list file, minlength int) = {
+func AdapterRemoval(read1, read2 file, id string, adapter_list file, minlength int) = {
 
     // First three lines are renaming nonsense because "kat hist" needs
 	// the filename to end in fastq.gz to detect the type
