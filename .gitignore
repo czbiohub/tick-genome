@@ -4,6 +4,8 @@
 test-data/
 *.fa
 
+.DS_Store
+
 # Reflow stuff
 state.*
 log.*
