@@ -6,24 +6,13 @@ val adapterremoval = "quay.io/biocontainers/adapterremoval:2.2.2--h96824bc_3"
 val dirs = make("$/dirs")
 
 
-func AdapterRemoval(read1, read2 file, id, libprep string, minlength int) = {
-    val adapter_forward = if (libprep == "nextera"){
-        "CTGTCTCTTATACACATCT"
-    } else {
-        ""
-    }
-
-    val adapter_reverse = if (libprep == "nextera"){
-        "CTGTCTCTTATACACATCT"
-    } else {
-        ""
-    }
+func AdapterRemoval(read1, read2 file, id string, adapter_list file, minlength int) = {
 
     // First three lines are renaming nonsense because "kat hist" needs
 	// the filename to end in fastq.gz to detect the type
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
-    exec(image := adapterremoval, cpu := 16, mem := 8*GiB) (outdir dir) {"
+    exec(image := adapterremoval, cpu := 32, mem := 16*GiB) (outdir dir) {"
         # Need to rename files to have fastq.gz ending or cutadapt fails
         cd {{outdir}}
 
@@ -46,10 +35,9 @@ func AdapterRemoval(read1, read2 file, id, libprep string, minlength int) = {
             --settings {{id}}_adapterremoval.settings \
             --singleton {{id}}_adapterremoval.singleton.fastq.gz \
             --discarded {{id}}_adapterremoval.discarded.fastq.gz \
-            --threads 16 \
+            --threads 32 \
             --minlength {{minlength}} \
-            --adapter1 {{adapter_forward}} \
-            --adapter2 {{adapter_reverse}}
+            --adapter-list {{adapter_list}}
         ls
     "}
 }
