@@ -4,6 +4,8 @@ param (
 
 
 val files = "$/files"
+val dirs = "$/dirs"
+val utils = make("./utils.rf")
 
 val samtools = "quay.io/biocontainers/samtools:1.9--h46bd0b3_0"
 
@@ -59,16 +61,12 @@ func SortByName(bam file) =
 "}
 
 
-func BamToFastq(bam file, id string) =
-	// Outputs folder containing:
-	// - {{id}}_R1.fastq.gz
-	// - {{id}}_R2.fastq.gz
-	// - {{id}}_singleton.fastq.gz
-    exec(image := samtools, cpu := threads, mem := 16*GiB) (output dir) {"
-    	cd {{output}}
-		samtools fastq --threads {{threads}} -s {{id}}_singleton.fastq.gz \
-			-1 {{id}}_R1.fastq.gz -2 {{id}}_R2.fastq.gz {{bam}}
-"}
+func BamToFastq(bam file) {r1, r2, singleton file} = {
+    val (r1, r2, singleton) = exec(image := samtools, cpu := threads, mem := 16*GiB) (r1, r2, singleton file) {"
+        samtools fastq --threads {{threads}} -s {{singleton}}.fq.gz -1 {{r1}}.fq.gz -2 {{r2}}.fq.gz {{bam}}
+    "}
+    {r1, r2, singleton}
+}
 
 
 func Flagstat(bam file) =
@@ -77,45 +75,72 @@ func Flagstat(bam file) =
 "}
 
 
-
-func ExtractMappedBAMandUnmappedFASTQ(sam_or_bam file, is_sam bool, id string) = {
-	// Outputs a directory containing:
-- {{id}}.bam
-- {{id}}.flagstat
-- {{id}}_mapped.bam
-- {{id}}_mapped.flagstat
-- {{id}}_unmapped.flagstat
-- {{id}}_unmapped_R1.fastq.gz
-- {{id}}_unmapped_R2.fastq.gz
-- {{id}}_unmapped_singleton.fastq.gz
-
+func InitialQC(sam_or_bam file, is_sam bool) = {
+	// Ensure output is bam and perform initial samtools flagstat
 	bam := SamToBam(sam_or_bam, is_sam)
 	initial_flagstat := Flagstat(bam)
 
+	{bam, initial_flagstat}
+}
+
+
+func ExtractMapped(bam file) = {
 	// Extract mapped reads, sort by genomic location, and spot-check the flags
 	mapped := ExtractProperlyMappedReads(bam)
-	mapped_sorted := SortByCoordinates(mapped)
-	mapped_flagstat := Flagstat(mapped)
 
-	// Extract mapped reads
+	mapped_sortbyname := SortByName(mapped)
+	mapped_flagstat := Flagstat(mapped)
+	{mapped_sortbyname, mapped_flagstat}
+}
+
+
+func ExtractUnmapped(bam file) = {
+	// Extract unmapped reads as bam files
+
 	unmapped_r1 := ExtractUnmappedR1(bam)
 	unmapped_r2 := ExtractUnmappedR2(bam)
 	unmapped_r1_and_r2 := ExtractUnmappedR1andR2(bam)
 
 	// Merge into one bam and sort by read ID
 	unmapped := Merge([unmapped_r1, unmapped_r2, unmapped_r1_and_r2])
-	unmapped_sorted := SortByName(unmapped)
-	unmapped_flagstat := Flagstat(unmapped_sorted)
+
+	// Sort by name and flagstat
+	unmapped_sortbyname := SortByName(unmapped)
+	unmapped_flagstat := Flagstat(unmapped)
+	{unmapped_sortbyname, unmapped_flagstat}
+}
+
+func ExtractMappedBAMandUnmappedFASTQ(sam_or_bam file, is_sam bool, id string) = {
+	// Outputs a directory containing:
+	// - {{id}}.bam
+	// - {{id}}.flagstat
+	// - {{id}}_mapped.bam
+	// - {{id}}_mapped.flagstat
+	// - {{id}}_unmapped.flagstat
+	// - {{id}}_unmapped_R1.fastq.gz
+	// - {{id}}_unmapped_R2.fastq.gz
+	// - {{id}}_unmapped_singleton.fastq.gz
+
+	val {bam, initial_flagstat} = InitialQC(sam_or_bam, is_sam)
+
+	val {mapped_sortbyname, mapped_flagstat} = ExtractMapped(bam)
+
+	val {unmapped_sortbyname, unmapped_flagstat} = ExtractUnmapped(bam)
 
 	// Extract read1, read2, and singletons
-	fastq_dir := BamToFastq(unmapped_sorted, id + "_unmapped")
+	val {r1, r2, singleton} = BamToFastq(unmapped_sortbyname)
 
 	files_to_copy := [
 		".flagstat": initial_flagstat, 
 		".bam": bam, 
-		"_mapped.bam": mapped_sorted, 
+		"_mapped.sortbyname.bam": mapped_sortbyname, 
 		"_mapped.flagstat": mapped_flagstat,
-		"_unmapped.flagstat": unmapped_flagstat]
-	asdf := [utils.CopyRenamedFile(f, id, fastq_dir, suffix) | (suffix, f) <- files_to_copy]
-	fastq_dir
+		"_unmapped.sortbyname.bam": unmapped_sortbyname,
+		"_unmapped.flagstat": unmapped_flagstat,
+		"_unmapped_R1.fastq.gz": r1,
+		"_unmapped_R2.fastq.gz": r2,
+		"_singleton.fastq.gz": singleton,]
+	val renamed = [(id + suffix, f) | (suffix, f) <- files_to_copy]
+	// dirs.Make(map(renamed))
+	renamed
 }
