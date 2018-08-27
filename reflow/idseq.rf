@@ -7,7 +7,7 @@ param (
 )
 
 
-val fastqc = "chanzuckerberg/idseq-dag"
+val fastqc = "czbiohub/idseq-dag"
 
 val dirs = make("$/dirs")
 val path = make("$/path")
