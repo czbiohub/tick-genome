@@ -11,8 +11,9 @@ param (
     // S3 folder to put all the fastqs and reports
     output string
 
-    // Type of library prep. Supported: "nextera"
-    libprep = "nextera"
+    // two-columnm, whitespace-separated file containing adapters. 
+    // First column is R1 adapters, second is R2 adapters
+    adapter_list string
 
     // Minimum read length after trimming
     minlength = 135
@@ -32,11 +33,13 @@ val kat = make("./kat.rf")
 val r1 = file(read1)
 val r2 = file(read2)
 
+val adapter_file = file(adapter_list)
+
 val r1_fastqc_reports = fastqc.FastQC(r1, id + "_R1")
 val r2_fastqc_reports = fastqc.FastQC(r2, id + "_R2")
 
 // -- Remove Illumina Nextera Adapters --- //
-val adapter_removed = adapter_removal.AdapterRemoval(r1, r2, id, libprep, minlength)
+val adapter_removed = adapter_removal.AdapterRemoval(r1, r2, id, adapter_file, minlength)
 
 // Extract R1, R2 read pairs from output directory
 val (r1_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R1_adapterremoval_trimmed.fastq.gz")
@@ -46,11 +49,12 @@ val (r2_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R2_adapterremoval_tr
 val phix_trimmed = bbduk.PhiXTrimming(r1_adapter_trimmed, r2_adapter_trimmed, id, minlength)
 
 // Extract R1, R2 read pairs from output directory
-val r1_phix_trimmed = dirs.Pick(phix_trimmed, "*_R1_bbduk_phix_trimmed.fastq.gz")
-val r2_phix_trimmed = dirs.Pick(phix_trimmed, "*_R2_bbduk_phix_trimmed.fastq.gz")
+val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*_R1_bbduk_phix_trimmed.fastq.gz")
+val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*_R2_bbduk_phix_trimmed.fastq.gz")
 
 // -- Remove Human Sequences --- //
 val human_removed = idseq.RemoveHuman(r1_phix_trimmed, r2_phix_trimmed, id)
+
 
 // // -- Get kmer distribution histograms before normalization --- //
 // val kat_hist_pre_normalization := kat.Hist(human_removed)
@@ -75,12 +79,12 @@ val human_removed = idseq.RemoveHuman(r1_phix_trimmed, r2_phix_trimmed, id)
 // val search_refseq_genbank := sourmash.Search(signatures)
 
 
-output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-    phix_trimmed]
+// output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
+//     phix_trimmed, human_removed]
     // human_removed, 
     // kat_hist_pre_normalization, normalized, kat_hist_pre_normalization, 
     // re_paired, signatures, search_refseq_genbank]
 
 
 @requires(cpu := 1)
-val Main = [dirs.Copy(d, output) | d <- output_dirs]
+val Main = human_removed//[dirs.Copy(d, output) | d <- output_dirs]
