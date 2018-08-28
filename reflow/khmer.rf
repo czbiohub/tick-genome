@@ -1,0 +1,108 @@
+khmer := "quay.io/biocontainers/khmer:3.0.0a1--py36hfc679d8_0"
+
+threads := 16
+memory := 64
+
+func Hist(fastq file, ksize int) = {
+	// Compute k-mer abundance histogram. How many kmers appear once, twice, 100x?
+	val sam_flag = if is_sam { "-S" } else { "" }
+
+    exec(image := khmer, cpu := threads, mem := memory*GiB) (histogram file) {"
+		abundance-dist-single.py \
+			--ksize {{ksize}} \
+			-max-memory-usage {{memory}}G \
+			--threads {{threads}} \
+			{{fastq}} \
+			{{histogram}}
+	"}
+}
+
+
+func Interleave(r1, r2 file) = {
+	// Produce interleaved files from R1/R2 paired files
+
+    exec(image := khmer) (paired file) {"
+        interleave-reads.py \
+        	--gzip \
+            --output {{paired}} \
+             {{r1}} {{r2}}"}
+}
+
+func NormalizeByMedian(fastq [file], ksize, cutoff int, unpaired bool) = {
+	// Do digital normalization (remove mostly redundant sequences)
+
+	val unpaired_flag = if unpaired { "--unpaired-reads" } else { "" }
+
+    exec(image := khmer, mem := memory*GiB) (normalized, countgraph file) {"
+        normalize-by-median.py \
+        	--paired \
+        	--gzip \
+            --cutoff cutoff \
+            --ksize ksize \
+            {{unpaired_flag}} \
+            --max-memory-usage {{memory}}G \
+            --savegraph {{countgraph}} \
+            --output {{normalized}} \
+             {{fastq}}"}
+}
+
+func FilterAbundance(fastq, countgraph file, ksize, cutoff int) = {
+	// Trim sequences at a minimum k-mer abundance. Run this after NormalizeByMedian
+    exec(image := khmer, cpu := threads, mem := memory*GiB) (filtered file) {"
+        filter-abund.py \
+        	--gzip \
+            --cutoff cutoff \
+            --ksize ksize \
+            --threads {{threads}} \
+            --max-memory-usage {{memory}}G \
+            --output {{filtered}} \
+             {{countgraph}} {{fastq}}"}
+}
+
+
+func ExtractPaired(fastq, countgraph file, ksize, cutoff int) = {
+	// Take a mixture of reads and split into pairs and orphans.
+
+	// TODO: Make sure this command works
+    exec(image := khmer) (output dir, singletons file) {"
+        extract-paired-reads.py \
+        	--gzip \
+            --output-dir {{output}} \
+            --output-single {{singletons}}
+             {{fastq}}"}
+}
+
+
+func NormalizeHighCoverage(r1, r2 file, ksize int) = {
+	// Recommended steps for digital normalization of high-coverage genome sequencing data
+	// https://khmer.readthedocs.io/en/v2.1.1/user/guide.html#genome-assembly-including-mda-samples-and-highly-polymorphic-genomes
+
+	// Interleave read pairs into a single file
+	val interleaved = Interleave(r1, r2)
+	val reads = [interleaved]
+
+	// -- First pass normalization - remove high abundance kmers --
+	// Cut out reads with kmers that appear 20 or more times (cutoff=20), with unpaired=False
+	val (normalized_1pass, countgraph_1pass) = NormalizeByMedian(reads, ksize, 20, false)
+ 
+ 	// -- Second pass - filter low abundance kmers--
+	// Use reads containing kmers that appear at least 2 times
+	val filtered_2pass = FilterAbundance(normalized_1pass, countgraph_1pass, ksize, 2)
+
+	// Split remaining paired-end/interleaved and single-end reads
+	val (paired_2pass, singletons_2pass) = ExtractPaired(filtered_2pass)
+	reads_2pass := dir.Files(paired_2pass) + [singletons_2pass]
+
+	// -- Third pass normalization - remove high abundance kmers yet again --
+	// Rerun digital normalization on last reads with cutoff=5 and unpaired=True
+	val (normalized_3pass, countgraph_3pass) = \
+		NormalizeByMedian(reads_2pass, ksize, 5, true)
+
+	val (paired_3pass, singletons_3pass) = ExtractPaired(normalized_3pass)
+
+	// Are these the right patterns?
+	val (r1_normalized, _) := dirs.Pick(paired_3pass, "*R1*")
+	val (r2_normalized, _) := dirs.Pick(paired_2pass, "*R2*")
+
+	{r1_normalized, r2_normalized}
+}
