@@ -17,6 +17,9 @@ param (
 
     // Minimum read length after trimming
     minlength = 135
+
+    // 
+    ksize = 32
 )
 
 // System modules
@@ -55,28 +58,35 @@ val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*_R2_bbduk_phix_trimmed.fast
 // -- Remove Human Sequences --- //
 val human_removed = idseq.RemoveHuman(r1_phix_trimmed, r2_phix_trimmed, id)
 
+// Extract R1 and R2
+val (r1_human_removed, _) = dirs.Pick(human_removed, "*_unmapped_R1.fastq.gz")
+val (r2_human_removed, _) = dirs.Pick(human_removed, "*_unmapped_R2.fastq.gz")
 
-// // -- Get kmer distribution histograms before normalization --- //
-// val kat_hist_pre_normalization := kat.Hist(human_removed)
+// -- Get kmer distribution histograms before normalization --- //
+val reads_human_removed = [r1_human_removed, r2_human_removed]
+val hist_pre_normalization = [khmer.Hist(reads) | reads <- reads_human_removed]
 
-// // -- Remove reads with too-high or too-low abundance -- //
-// // Why?
-// //   - high-abundance kmers mess up assembly
-// //   - low-abundance kmers are probably erroneous
-// val normalized := khmer.Trim(human_removed)
+// -- Perform Digital Normalization --
+// -- Remove reads with too-high or too-low abundance -- //
+//   Why?
+//   - high-abundance kmers mess up assembly
+//   - low-abundance kmers are probably erroneous
+val (r1_normalized, r2_normalized) = khmer.NormalizeHighCoverage(
+    r1_human_removed, r2_human_removed, ksize)
 
-// // -- Get kmer distribution histograms post-normalization --
-// val kat_hist_pre_normalization := kat.Hist(normalized)
+// -- Get kmer distribution histograms after normalization --- //
+val reads_normalized = [r1_normalized, r2_normalized]
+val hist_post_normalization = [khmer.Hist(reads) | reads <- reads_normalized]
 
-// // -- Fix read pair order -- //
-// // khmer's trimming messes up the read pair order
-// val re_paired := khmer.ExtractPairedReads(normalized)
 
-// // -- Compute sourmash signature -- //
-// val signatures := sourmash.Compute(normalized, track_abundance=false)
+// -- Compute sourmash signature -- //
+signatures_unnormalized := sourmash.Compute(reads_human_removed)
+signatures_normalized := sourmash.Compute(reads_normalized)
 
-// // -- Check against sourmash RefSeq and GenBank databases -- //
-// val search_refseq_genbank := sourmash.Search(signatures)
+// -- Check against sourmash RefSeq and GenBank databases -- //
+val search_refseq_genbank_unnormalized := sourmash.Search(signatures_unnormalized)
+val search_refseq_genbank_normalized := sourmash.Search(signatures_normalized, 
+    track_abundance=false)
 
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
