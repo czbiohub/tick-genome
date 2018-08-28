@@ -26,7 +26,7 @@ func MapToHuman(read1, read2 file, id string) = {
 	// https://github.com/chanzuckerberg/idseq-dag/blob/master/idseq_dag/steps/run_gsnap_filter.py
     exec(image := fastqc, mem := 60*GiB, cpu := threads) (sam file) {"
     	gsnapl -A sam --batch=0 --use-shared-memory=0 --gmap-mode=all \
-    		--npaths=1 --ordered -t threads --max-mismatches=40 \
+    		--npaths=1 --ordered -t {{threads}} --max-mismatches=40 \
     		-D {{host_genome_dir}} -d {{host_genome_name}} \
     		# output sam file \
     		-o {{sam}} {{d}}/{{id}}_R1.fastq.gz {{d}}/{{id}}_R2.fastq.gz
