@@ -79,14 +79,14 @@ val reads_normalized = [r1_normalized, r2_normalized]
 val hist_post_normalization = [khmer.Hist(reads) | reads <- reads_normalized]
 
 
-// -- Compute sourmash signature -- //
-signatures_unnormalized := sourmash.Compute(reads_human_removed)
-signatures_normalized := sourmash.Compute(reads_normalized)
+// // -- Compute sourmash signature -- //
+// signatures_unnormalized := sourmash.Compute(reads_human_removed)
+// signatures_normalized := sourmash.Compute(reads_normalized)
 
-// -- Check against sourmash RefSeq and GenBank databases -- //
-val search_refseq_genbank_unnormalized := sourmash.Search(signatures_unnormalized)
-val search_refseq_genbank_normalized := sourmash.Search(signatures_normalized, 
-    track_abundance=false)
+// // -- Check against sourmash RefSeq and GenBank databases -- //
+// val search_refseq_genbank_unnormalized := sourmash.Search(signatures_unnormalized)
+// val search_refseq_genbank_normalized := sourmash.Search(signatures_normalized, 
+//     track_abundance=false)
 
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
