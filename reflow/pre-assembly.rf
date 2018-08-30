@@ -79,12 +79,12 @@ val human_removed = idseq.RemoveHuman(r1_phix_trimmed, r2_phix_trimmed, id)
 // val search_refseq_genbank := sourmash.Search(signatures)
 
 
-// output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-//     phix_trimmed, human_removed]
+output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
+    phix_trimmed, human_removed]
     // human_removed, 
     // kat_hist_pre_normalization, normalized, kat_hist_pre_normalization, 
     // re_paired, signatures, search_refseq_genbank]
 
 
-@requires(cpu := 1)
-val Main = human_removed//[dirs.Copy(d, output) | d <- output_dirs]
+@requires(cpu := 2)
+val Main = [dirs.Copy(d, output) | d <- output_dirs]
