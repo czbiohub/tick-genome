@@ -1,9 +1,16 @@
-multiqc:
+multiqc: multiqc_sync multiqc_reflow
+
+multiqc_sync:
 	# Copy FastQC and other reports
 	aws s3 sync --exclude "*.fastq.gz" s3://tick-genome/dna/2018-06-28/pre-assembly_quality_control/reports/ s3://tick-genome/multiqc/data-for-multiqc/  
 	# Copy adapter trimming reports
 	aws s3 sync --exclude "*.fastq.gz" s3://tick-genome/dna/2018-06-28/adapter_trimmed/ s3://tick-genome/multiqc/data-for-multiqc/
-	reflow run multiqc.rf -input=s3://tick-genome/multiqc/data-for-multiqc/  -output=s3://tick-genome/multiqc/multiqc_output/
+	# Copy test_pre_assembly
+	aws s3 sync --exclude "*.fastq.gz" --exclude "*bam*" s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v2/  s3://tick-genome/multiqc/data-for-multiqc/
+		# Run multiqc
+
+multiqc_reflow:
+	reflow -cache=off run multiqc.rf -reset -input=s3://tick-genome/multiqc/data-for-multiqc/  -output=s3://tick-genome/multiqc/multiqc_output/
 
 TABULA_MURIS_RUNS = 170907_A00111_0051_BH2HWLDMXX 170907_A00111_0052_AH2HTCDMXX 170910_A00111_0053_BH2HGKDMXX 170910_A00111_0054_AH2HGWDMXX 170914_A00111_0057_BH3FY7DMXX 170914_A00111_0058_AH3FYKDMXX 170918_A00111_0059_BH3G22DMXX 170918_A00111_0060_AH3FYVDMXX 170921_A00111_0062_BH3FYHDMXX 170921_A00111_0063_AH3G23DMXX 170925_A00111_0066_AH3TKNDMXX 170925_A00111_0067_BH3M5YDMXX 170928_A00111_0068_AH3YKKDMXX 170928_A00111_0069_BH52YMDMXX
 
