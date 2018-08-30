@@ -3,74 +3,85 @@ param (
 )
 
 
-val files = "$/files"
-val dirs = "$/dirs"
+val files = make("$/files")
+val dirs = make("$/dirs")
 val utils = make("./utils.rf")
 
 val samtools = "quay.io/biocontainers/samtools:1.9--h46bd0b3_0"
 
+// Various gigabytes of memory variables
+val memory_small = 8
+val memory_medium = 16
+
+// Samtools sort needs to use 75% of actual available memory otherwise it fails
+val memory_large_sort = 24
+// Actual amount of memory on machine
+val memory_large = 32
 
 func SamToBam(sam_or_bam file, is_sam bool) = {
 	val sam_flag = if is_sam { "-S" } else { "" }
 
-    exec(image := samtools, cpu := threads, mem := 16*GiB) (bam file) {"
+    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (bam file) {"
 		samtools view --threads {{threads}} {{sam_flag}} -b {{sam_or_bam}} > {{bam}}
 	"}
 }
 
 
 func ExtractProperlyMappedReads(bam file) = 
-    exec(image := samtools, cpu := threads, mem := 16*GiB) (aligned_bam file) {"
+    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (aligned_bam file) {"
 		samtools view --threads {{threads}}  -u -f 1 -F 12 {{bam}} > {{aligned_bam}}
 "}
 
 func ExtractUnmappedR1(bam file) = 
-    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (output_bam file) {"
 		# R1 unmapped, R2 mapped
 		samtools view --threads {{threads}}  -u -f 4 -F 264 {{bam}} > {{output_bam}}
 "}
 
 
 func ExtractUnmappedR2(bam file) = 
-    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (output_bam file) {"
 		# R1 mapped, R2 unmapped
 		samtools view --threads {{threads}}  -u -f 8 -F 260 {{bam}} > {{output_bam}}
 "}
 
 func ExtractUnmappedR1andR2(bam file) = 
-    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (output_bam file) {"
 		# R1 & R2 unmapped
 		samtools view --threads {{threads}}  -u -f 12 -F 256 {{bam}} > {{output_bam}}
 "}
 
 func Merge(bams [file]) = 
-    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
+    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (output_bam file) {"
 		samtools merge --threads {{threads}} {{output_bam}} {{bams}}
 "}
 
 
 func SortByCoordinates(bam file) = 
-    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
-		samtools sort --threads -m 16G {{threads}} {{bam}} > {{output_bam}}
+    exec(image := samtools, cpu := threads, mem := memory_large*GiB) (output_bam file) {"
+		samtools sort --threads -m {{memory_large_sort}}G {{threads}} {{bam}} > {{output_bam}}
 "}
 
 
 func SortByName(bam file) =
-    exec(image := samtools, cpu := threads, mem := 16*GiB) (output_bam file) {"
-		samtools sort -n -m 16G --threads {{threads}} {{bam}} > {{output_bam}}
+    exec(image := samtools, cpu := threads, mem := memory_large*GiB) (output_bam file) {"
+		samtools sort -n -m {{memory_large_sort}}G --threads {{threads}} {{bam}} > {{output_bam}}
 "}
 
 
-func BamToFastq(bam file) {r1, r2, singleton file} = {
-    val (r1, r2, singleton) = exec(image := samtools, cpu := threads, mem := 16*GiB) (r1, r2, singleton file) {"
-        samtools fastq --threads {{threads}} -s {{singleton}}.fq.gz -1 {{r1}}.fq.gz -2 {{r2}}.fq.gz {{bam}}
-    "}
-    {r1, r2, singleton}
-}
+func BamToFastq(bam file) =
+    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (output dir) {"
+    	cd {{output}}
+        samtools fastq --threads {{threads}} \
+            -s singleton.fastq.gz \
+            -0 R0.fastq.gz \
+            -1 R1.fastq.gz \
+            -2 R2.fastq.gz {{bam}}
+"}
 
 
 func Flagstat(bam file) =
-    exec(image := samtools, cpu := threads, mem := 8*GiB) (output file) {"
+    exec(image := samtools, cpu := threads, mem := memory_small*GiB) (output file) {"
 		samtools flagstat --threads {{threads}} {{bam}} > {{output}}
 "}
 
@@ -128,7 +139,12 @@ func ExtractMappedBAMandUnmappedFASTQ(sam_or_bam file, is_sam bool, id string) =
 	val {unmapped_sortbyname, unmapped_flagstat} = ExtractUnmapped(bam)
 
 	// Extract read1, read2, and singletons
-	val {r1, r2, singleton} = BamToFastq(unmapped_sortbyname)
+	val fastq_dir = BamToFastq(unmapped_sortbyname)
+
+	val (r0, _) = dirs.Pick(fastq_dir, "R0.fastq.gz")
+	val (r1, _) = dirs.Pick(fastq_dir, "R1.fastq.gz")
+	val (r2, _) = dirs.Pick(fastq_dir, "R2.fastq.gz")
+	val (singleton, _) = dirs.Pick(fastq_dir, "singleton.fastq.gz")
 
 	files_to_copy := [
 		".flagstat": initial_flagstat, 
@@ -137,10 +153,11 @@ func ExtractMappedBAMandUnmappedFASTQ(sam_or_bam file, is_sam bool, id string) =
 		"_mapped.flagstat": mapped_flagstat,
 		"_unmapped.sortbyname.bam": unmapped_sortbyname,
 		"_unmapped.flagstat": unmapped_flagstat,
+		"_unmapped_R0.fastq.gz": r0,
 		"_unmapped_R1.fastq.gz": r1,
 		"_unmapped_R2.fastq.gz": r2,
 		"_singleton.fastq.gz": singleton,]
 	val renamed = [(id + suffix, f) | (suffix, f) <- files_to_copy]
-	// dirs.Make(map(renamed))
-	renamed
+	dirs.Make(map(renamed))
+	// renamed
 }
