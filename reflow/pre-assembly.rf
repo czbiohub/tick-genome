@@ -55,16 +55,10 @@ val phix_trimmed = bbduk.PhiXTrimming(r1_adapter_trimmed, r2_adapter_trimmed, id
 val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*_R1_bbduk_phix_trimmed.fastq.gz")
 val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*_R2_bbduk_phix_trimmed.fastq.gz")
 
-// -- Remove Human Sequences --- //
-val human_removed = idseq.RemoveHuman(r1_phix_trimmed, r2_phix_trimmed, id)
+// Create list of reads
+val reads_phix_trimmed = [r1_phix_trimmed, r2_phix_trimmed]
+val hist_pre_normalization = [khmer.Hist(reads) | reads <- reads_phix_trimmed]
 
-// Extract R1 and R2
-val (r1_human_removed, _) = dirs.Pick(human_removed, "*_unmapped_R1.fastq.gz")
-val (r2_human_removed, _) = dirs.Pick(human_removed, "*_unmapped_R2.fastq.gz")
-
-// -- Get kmer distribution histograms before normalization --- //
-val reads_human_removed = [r1_human_removed, r2_human_removed]
-val hist_pre_normalization = [khmer.Hist(reads) | reads <- reads_human_removed]
 
 // -- Perform Digital Normalization --
 // -- Remove reads with too-high or too-low abundance -- //
