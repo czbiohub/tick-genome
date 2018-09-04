@@ -89,7 +89,6 @@ val hist_post_normalization = [khmer.Hist(reads) | reads <- reads_normalized]
 //     track_abundance=false)
 
 
-
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
     phix_trimmed, human_removed]
     // human_removed, 
