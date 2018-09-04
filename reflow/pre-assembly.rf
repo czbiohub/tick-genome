@@ -1,3 +1,13 @@
+// This workflow performs the following steps:
+// 1. Run FastQC on R1 and R2
+// 2. Remove Nextera adapters using AdapterRemoval
+// 3. Remove PhiX sequences usinb BBduk
+// 4. Run FastQC on Adapter-trimmed, PhiX-removed reads
+// 5. Get kmer distributions and estimated genome size from R1 and R2
+// 6. Remove super-high and super-low coverage regions to perform "Digital Normalization"
+// 7. Get kmer distributions on digitial normalization data
+// 8. Run FastQC on digitally normalized data
+
 param (
     // S3 path to a single fastq(.gz) file
     read1 string
@@ -31,6 +41,8 @@ val fastqc = make("./fastqc.rf")
 val bbduk = make("./bbduk.rf")
 val idseq = make("./idseq.rf")
 val kat = make("./kat.rf")
+val khmer = make("./khmer.rf")
+val utils = make("./utils.rf")
 
 
 val r1 = file(read1)
@@ -38,8 +50,10 @@ val r2 = file(read2)
 
 val adapter_file = file(adapter_list)
 
-val r1_fastqc_reports = fastqc.FastQC(r1, id + "_R1")
-val r2_fastqc_reports = fastqc.FastQC(r2, id + "_R2")
+status := "_pre_trimming"
+
+val r1_fastqc_reports = fastqc.FastQC(r1, id + "_R1" + status)
+val r2_fastqc_reports = fastqc.FastQC(r2, id + "_R2" + status)
 
 // -- Remove Illumina Nextera Adapters --- //
 val adapter_removed = adapter_removal.AdapterRemoval(r1, r2, id, adapter_file, minlength)
@@ -56,22 +70,46 @@ val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*_R1_bbduk_phix_trimmed.fast
 val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*_R2_bbduk_phix_trimmed.fastq.gz")
 
 // Create list of reads
-val reads_phix_trimmed = [r1_phix_trimmed, r2_phix_trimmed]
-val hist_pre_normalization = [khmer.Hist(reads) | reads <- reads_phix_trimmed]
+status := "_post-trimming"
+val reads_phix_trimmed = ["_R1" + status: r1_phix_trimmed, "_R2" + status: r2_phix_trimmed]
 
+
+// Do FastQC AGAIN after trimming to make sure
+val fastqc_post_trimming = [
+    fastqc.FastQC(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
+
+// Get kmer histogram before trimming
+val hist_pre_normalization = [
+    kat.Hist(reads, id + read_number, ksize) | (read_number, reads) <- reads_phix_trimmed]
+val khmer_hist_pre_normalization = [
+    (id + read_number + "_khmer.histogram", khmer.Hist(reads, ksize)) | (read_number, reads) <- reads_phix_trimmed]
 
 // -- Perform Digital Normalization --
 // -- Remove reads with too-high or too-low abundance -- //
 //   Why?
 //   - high-abundance kmers mess up assembly
 //   - low-abundance kmers are probably erroneous
-val (r1_normalized, r2_normalized) = khmer.NormalizeHighCoverage(
-    r1_human_removed, r2_human_removed, ksize)
+val normalized = khmer.NormalizeHighCoverage(
+    r1_phix_trimmed, r2_phix_trimmed, ksize)
 
 // -- Get kmer distribution histograms after normalization --- //
-val reads_normalized = [r1_normalized, r2_normalized]
-val hist_post_normalization = [khmer.Hist(reads) | reads <- reads_normalized]
+status := "_post-digital_normalization"
+val reads_normalized = ["_R1" + status: normalized.r1_normalized, 
+    "_R2" + status: normalized.r2_normalized]
+val hist_post_normalization = [
+    kat.Hist(reads, id + read_number, ksize) | (read_number, reads) <- reads_normalized]
+val khmer_hist_post_normalization = [
+    (id + read_number + "_khmer.histogram", khmer.Hist(reads, ksize)) | (read_number, reads) <- reads_normalized]
 
+val renamed = [(id + read_number + ".fastq.gz", reads) | (read_number, reads) <- reads_phix_trimmed]
+val normalized_dir = dirs.Make(map(renamed))
+
+// Do FastQC AGAIN after normalization to make sure
+val fastqc_post_normalization = [
+    fastqc.FastQC(reads, id + read_number) | (read_number, reads) <- reads_normalized]
+
+val khmer_histograms = khmer_hist_pre_normalization + khmer_hist_post_normalization
+val khmer_dir = dirs.Make(map(khmer_histograms))
 
 // // -- Compute sourmash signature -- //
 // signatures_unnormalized := sourmash.Compute(reads_human_removed)
@@ -84,11 +122,12 @@ val hist_post_normalization = [khmer.Hist(reads) | reads <- reads_normalized]
 
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-    phix_trimmed]
+    phix_trimmed, normalized_dir, khmer_dir] + fastqc_post_trimming + hist_pre_normalization + hist_post_normalization + fastqc_post_normalization
     // human_removed, 
     // kat_hist_pre_normalization, normalized, kat_hist_pre_normalization, 
     // re_paired, signatures, search_refseq_genbank]
 
 
 @requires(cpu := 2)
-val Main = [dirs.Copy(d, output) | d <- output_dirs]
+val Main = 
+    [dirs.Copy(d, output) | d <- output_dirs]
