@@ -1,0 +1,2 @@
+Sample	percent_aligned	total	retained	aligned_total	truncated_cp	unaligned	reads_total	discarded_m2	discarded_m1	full-length_cp	unaligned_total	singleton_m1	singleton_m2	aligned	retained_reads	discarded_total
+tick_1_S1_first1Mreads_adapterremoval.settings	57.16	1000000	23310	1143182	0	428409	2000000	192202	192202	0	856818	0	0	571591	23310	1976690
