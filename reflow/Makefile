@@ -52,4 +52,4 @@ preqc:
 	reflow run preqc.rf -read1=$$READ1 -read2=$$READ2 -ids=$$IDS -output=s3://tick-genome/dna/2018-06-28/test_preqc_v1/
 
 test_multiqc_pre_assembly:
-	reflow -cache=off run multiqc.rf -input=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v3/ -output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v3_multiqc/
+	reflow -cache=off run multiqc.rf -input=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6/ -output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6_multiqc/
