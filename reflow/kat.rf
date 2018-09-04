@@ -5,6 +5,8 @@ val kat = "quay.io/biocontainers/kat:2.4.0--py36h355e19c_3"
 
 val dirs = make("$/dirs")
 
+threads := 8
+
 // Kmer histogram
 func Hist(reads file, id string) = {
     // First three lines are renaming nonsense because "kat hist" needs
@@ -13,9 +15,9 @@ func Hist(reads file, id string) = {
     // Ensure input file has fastq.gz ending
     d := dirs.Make([id+".fastq.gz": reads])
 
-    exec(image := kat, cpu := 8, mem := 128*GiB) (outdir dir) {"
+    exec(image := kat, cpu := threads, mem := 128*GiB) (outdir dir) {"
         cd {{outdir}}
-        kat hist --threads 8 {{d}}/{{id}}.fastq.gz
+        kat hist --threads {{threads}} --output_prefix {{id}}.kat.hist {{d}}/{{id}}.fastq.gz
     "}
 }
 
@@ -25,9 +27,9 @@ func GCP(reads file, id string) = {
     // Ensure input file has fastq.gz ending
     d := dirs.Make([id+".fastq.gz": reads])
 
-    exec(image := kat, cpu := 4, mem := 4*GiB) (outdir dir) {"
+    exec(image := kat, cpu := threads, mem := 4*GiB) (outdir dir) {"
         cd {{outdir}}
-        kat gcp --threads 4 {{d}}{{id}}.fastq
+        kat gcp --threads {{threads}} {{d}}{{id}}.fastq
         ls
     "}
 }
