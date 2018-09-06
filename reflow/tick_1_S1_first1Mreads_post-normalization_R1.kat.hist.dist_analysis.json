@@ -1,0 +1,20 @@
+{
+    "k": 27,
+    "nb_peaks": 0,
+    "global_minima": {
+        "freq": 39,
+        "count": 40
+    },
+    "global_maxima": {
+        "freq": 40,
+        "count": 43
+    },
+    "mean_freq": 0,
+    "peaks": [],
+    "hom_peak": {
+        "freq": 0,
+        "index": 0
+    },
+    "est_genome_size": 0,
+    "est_het_rate": 0
+}
