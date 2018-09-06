@@ -39,3 +39,10 @@ test_bbduk_adapterremoval:
 
 test_pre_assembly:
 	reflow run pre-assembly.rf -read1=s3://tick-genome/dna/2018-06-28/tick_1_S1_R1_001_first1Mreads.fastq.gz -read2=s3://tick-genome/dna/2018-06-28/tick_1_S1_R2_001_first1Mreads.fastq.gz -id=tick_1_S1_first1Mreads -output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v2/ -adapter_list=../pre_assembly_qc/nextera_pe_adapters.tsv
+
+
+preqc:
+	READ1='s3://czbiohub-seqbot/fastqs/180628_A00111_0168_AHFVJVDMXX/rawdata/Undetermined_S0_R1_001.fastq.gz|s3://czbiohub-seqbot/fastqs/180628_A00111_0168_AHFVJVDMXX/rawdata/tick_1_S1_R1_001.fastq.gz|s3://czbiohub-seqbot/fastqs/180628_A00111_0168_AHFVJVDMXX/rawdata/tick_2_S2_R1_001.fastq.gz'
+	READ2='s3://czbiohub-seqbot/fastqs/180628_A00111_0168_AHFVJVDMXX/rawdata/Undetermined_S0_R2_001.fastq.gz|s3://czbiohub-seqbot/fastqs/180628_A00111_0168_AHFVJVDMXX/rawdata/tick_1_S1_R2_001.fastq.gz|s3://czbiohub-seqbot/fastqs/180628_A00111_0168_AHFVJVDMXX/rawdata/tick_2_S2_R2_001.fastq.gz'
+	IDS='Undetermined_S0|tick_1_S1|tick_2_S2'
+	reflow run preqc.rf -read1=$$READ1 -read2=$$READ2 -ids=$$IDS -output=s3://tick-genome/dna/2018-06-28/test_preqc_v1/
