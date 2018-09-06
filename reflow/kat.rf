@@ -18,7 +18,9 @@ func Hist(reads file, id string, ksize int) = {
     exec(image := kat, cpu := threads, mem := 200*GiB) (outdir dir) {"
         cd {{outdir}}
         kat hist --mer_len {{ksize}} \
-            --threads {{threads}} --output_prefix {{id}}.kat.hist {{d}}/{{id}}.fastq.gz
+            --threads {{threads}} \
+            --hash_size 10000000000 \
+            --output_prefix {{id}}.kat.hist {{d}}/{{id}}.fastq.gz
     "}
 }
 
