@@ -1,0 +1,71 @@
+
+
+sga := "quay.io/biocontainers/sga:0.10.15--hd4ff3c4_3"
+
+val dirs = make("$/dirs")
+
+
+func Preprocess(read1, read2 file, id string) = {
+
+    // First three lines are renaming nonsense because "kat hist" needs
+	// the filename to end in fastq.gz to detect the type
+    d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
+
+    outdir := exec(image := sga, cpu := 32, mem := 60*GiB) (outdir dir) {"
+		sga preprocess --pe-mode 1 \
+			{{d}}/{{id}}_R1.fastq.gz \
+			{{d}}/{{id}}_R2.fastq.gz \
+			> {{outdir}}/{{id}}_sga_preprocessed.fastq
+    "}
+    val (preprocessed, _) = dirs.Pick(outdir, "*_sga_preprocessed.fastq")
+    preprocessed
+}
+
+func Index(preproccessed file, id string) = {
+	// Outputs a folder with:
+	// - {{id}}_sga_preprocessed.bwt
+	// - {{id}}_sga_preprocessed.sai
+
+    // First three lines are renaming nonsense because "kat hist" needs
+	// the filename to end in fastq.gz to detect the type
+    d := dirs.Make([id+"_sga_preproccessed.fastq": preproccessed])
+
+    exec(image := sga, cpu := 32, mem := 60*GiB) (outdir dir) {"
+		sga index -a ropebwt --no-reverse -t 8 {{d}}/{{id}}_sga_preprocessed.fastq
+    "}
+}
+
+func PreQC(preproccessed file, index dir, id string) = {
+	// Make sure preprocessed file has same name as it was when it was indexed
+    d := dirs.Make([id+"_sga_preproccessed.fastq": preproccessed])
+
+    exec(image := sga, cpu := 32, mem := 60*GiB) (output file) {"
+    	cd {{index}}
+		sga preqc -t 8 {{d}}/{{id}}_sga_preprocessed.fastq > {{output}}
+
+    "}
+}
+
+func PreQCReport(preqcs [file], ids [string]) = {
+
+    d := dirs.Make([id + ".preqc": preqc | (preqc, id) <- zip(preqcs, ids)])
+
+    exec(image := sga, cpu := 32, mem := 60*GiB) (output file) {"
+    	sga-preqc-report.py {{d}}/*.preqc
+    "}
+}
+
+
+// sga preprocess --pe-mode 1 reads_R1.fastq reads_R2.fastq > mygenome.fastq
+// sga index -a ropebwt --no-reverse -t 8 mygenome.fastq
+// sga preqc -t 8 mygenome.fastq > mygenome.preqc
+// sga-preqc-report.py mygenome.preqc sga/src/examples/*.preqc
+
+
+func RunPreQC(read1, read2 file, id string) = {
+
+	preprocessed := Preprocess(read1, read2, id)
+	index := Index(preprocessed, id)
+	preqc := PreQC(preprocessed, index, id)
+	PreQCReport([preqc], [id])
+}
