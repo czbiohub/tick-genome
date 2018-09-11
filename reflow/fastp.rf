@@ -1,5 +1,5 @@
 param (
-	threads = 32
+	threads = 16
 )
 
 khmer := "quay.io/biocontainers/fastp:0.19.4--hd28b015_0"
@@ -18,6 +18,5 @@ func Interleave(r1, r2 file) =
         	--disable_trim_poly_g \
         	--in1 {{r1}} \
         	--in2 {{r2}} \
-        	--stdout \
-        		| gzip > {{fastq}}
+        	--stdout > {{fastq}}
 "}
