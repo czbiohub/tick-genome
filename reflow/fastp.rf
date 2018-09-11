@@ -1,10 +1,11 @@
+param (
+	threads = 32
+)
+
 khmer := "quay.io/biocontainers/fastp:0.19.4--hd28b015_0"
 
-threads := 16
-memory := 64
 
 val dirs = make("$/dirs")
-
 
 func Interleave(r1, r2 file) = 
 	// Produce interleaved files from R1/R2 paired files
