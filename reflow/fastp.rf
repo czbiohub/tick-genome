@@ -1,0 +1,22 @@
+khmer := "quay.io/biocontainers/fastp:0.19.4--hd28b015_0"
+
+threads := 16
+memory := 64
+
+val dirs = make("$/dirs")
+
+
+func Interleave(r1, r2 file) = 
+	// Produce interleaved files from R1/R2 paired files
+
+    exec(image := khmer, cpu := threads) (fastq file) {"
+        fastp \
+        	--thread {{threads}} \
+	        --disable_adapter_trimming \
+        	--disable_quality_filtering \
+        	--disable_trim_poly_g \
+        	--in1 {{r1}} \
+        	--in2 {{r2}} \
+        	--stdout \
+        		| gzip > {{fastq}}
+"}
