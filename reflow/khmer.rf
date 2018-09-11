@@ -21,8 +21,10 @@ func Hist(fastq file, ksize int) =
 "}
 
 
-func NormalizeByMedian(fastq file, ksize, cutoff int) =
+func NormalizeByMedian(fastq file, ksize, cutoff int) = {
 	// Do digital normalization (remove mostly redundant sequences)
+
+    d := dirs.Make(["reads.fastq": fastq])
 
     exec(image := khmer, mem := memory*GiB) (normalized, countgraph file) {"
         normalize-by-median.py \
@@ -33,25 +35,27 @@ func NormalizeByMedian(fastq file, ksize, cutoff int) =
             --max-memory-usage {{memory}}G \
             --savegraph {{countgraph}} \
             --output {{normalized}} \
-             {{fastq}}"}
-
+             {{d}}/reads.fastq"}
+}
 
 
 func NormalizeByMedianUnpaired(fastq, singletons file, ksize, cutoff int) = 
 	// Do digital normalization (remove mostly redundant sequences), this time with singletons!
 
+    d := dirs.Make(["reads.fastq": fastq, "singletons.fastq": singletons])
+
     exec(image := khmer, mem := memory*GiB) (normalized, countgraph file) {"
         normalize-by-median.py \
         	--paired \
         	--gzip \
             --cutoff {{cutoff}} \
             --ksize {{ksize}} \
-            --unpaired-reads {{singletons}} \
+            --unpaired-reads {{d}}/singletons.fastq \
             --max-memory-usage {{memory}}G \
             --savegraph {{countgraph}} \
             --output {{normalized}} \
-             {{fastq}}"}
-
+             {{d}}/reads.fastq"}
+}
 
 
 func FilterAbundance(fastq, countgraph file, cutoff int) = 
