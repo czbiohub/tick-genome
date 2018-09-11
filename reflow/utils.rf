@@ -30,3 +30,8 @@ func SplitByPipe(pipe_separated string) = {
 	[file(filename) | filename <- split]
 }
 
+
+func ParallelGzip(filename file, threads int) =
+    exec(image := "genevera/docker-pigz", cpu := threads) (gzipped file) {"
+    	pigz --processes {{threads}} -c {{filename}} > {{gzipped}}
+"}
