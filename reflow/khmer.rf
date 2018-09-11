@@ -4,6 +4,8 @@ threads := 16
 memory := 64
 
 val dirs = make("$/dirs")
+val utils = make("./utils.rf")
+val fastp = make("./fastp.rf")
 
 
 func Hist(fastq file, ksize int) = 
@@ -17,17 +19,6 @@ func Hist(fastq file, ksize int) =
 			{{fastq}} \
 			{{histogram}}
 "}
-
-
-
-func Interleave(r1, r2 file) = 
-	// Produce interleaved files from R1/R2 paired files
-
-    exec(image := khmer) (paired file) {"
-        interleave-reads.py \
-        	--gzip \
-            --output {{paired}} \
-             {{r1}} {{r2}}"}
 
 
 func NormalizeByMedian(fastq file, ksize, cutoff int) =
@@ -102,7 +93,7 @@ func NormalizeHighCoverage(r1, r2 file, ksize int) = {
 	// https://khmer.readthedocs.io/en/v2.1.1/user/guide.html#genome-assembly-including-mda-samples-and-highly-polymorphic-genomes
 
 	// Interleave read pairs into a single file
-	val interleaved = Interleave(r1, r2)
+	val interleaved = fastp.Interleave(r1, r2)
 
 	// -- First pass normalization - remove high abundance kmers --
 	// Cut out reads with kmers that appear 20 or more times (cutoff=20)
