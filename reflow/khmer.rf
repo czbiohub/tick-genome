@@ -39,7 +39,7 @@ func NormalizeByMedian(fastq file, ksize, cutoff int) = {
 }
 
 
-func NormalizeByMedianUnpaired(fastq, singletons file, ksize, cutoff int) = 
+func NormalizeByMedianUnpaired(fastq, singletons file, ksize, cutoff int) = {
 	// Do digital normalization (remove mostly redundant sequences), this time with singletons!
 
     d := dirs.Make(["reads.fastq": fastq, "singletons.fastq": singletons])
