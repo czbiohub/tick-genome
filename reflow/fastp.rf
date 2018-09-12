@@ -7,8 +7,10 @@ khmer := "quay.io/biocontainers/fastp:0.19.4--hd28b015_0"
 
 val dirs = make("$/dirs")
 
-func Interleave(r1, r2 file) = 
-	// Produce interleaved files from R1/R2 paired files
+func Interleave(r1, r2 file) = {
+	// Produce interleaved files from R1/R2 paired fastq.gz files
+
+    d := dirs.Make(["R1.fastq.gz": r1, "R2.fastq.gz": r2])
 
     exec(image := khmer, cpu := threads) (fastq file) {"
         fastp \
@@ -16,7 +18,8 @@ func Interleave(r1, r2 file) =
 	        --disable_adapter_trimming \
         	--disable_quality_filtering \
         	--disable_trim_poly_g \
-        	--in1 {{r1}} \
-        	--in2 {{r2}} \
+        	--in1 {{d}}/R1.fastq.gz \
+        	--in2 {{d}}/R2.fastq.gz \
         	--stdout > {{fastq}}
-"}
+	"}
+}
