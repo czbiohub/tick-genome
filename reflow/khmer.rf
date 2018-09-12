@@ -98,10 +98,11 @@ func NormalizeHighCoverage(r1, r2 file, ksize int) = {
 
 	// Interleave read pairs into a single file
 	val interleaved = fastp.Interleave(r1, r2)
+    val interleaved_gz = utils.ParallelGzip(interleaved)
 
 	// -- First pass normalization - remove high abundance kmers --
 	// Cut out reads with kmers that appear 20 or more times (cutoff=20)
-	val (normalized_1pass, countgraph_1pass) = NormalizeByMedian(interleaved, ksize, 20)
+	val (normalized_1pass, countgraph_1pass) = NormalizeByMedian(interleaved_gz, ksize, 20)
  
  	// -- Second pass - filter low abundance kmers--
 	// Use reads containing kmers that appear at least 2 times
