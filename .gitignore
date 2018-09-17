@@ -3,6 +3,8 @@
 *.fastq.gz
 test-data/
 *.fa
+*.fastq
+*.bwt
 
 .DS_Store
 
