@@ -1,5 +1,5 @@
 Sample	gc_peaks	mean_kmer_freq	kmer_peaks	est_genome_size
-tick_1_S1_first1Mreads_post-normalization_R1.kat.hist	0	0	0	0
-tick_1_S1_first1Mreads_post-normalization_R2.kat.hist	0	0	0	0
-tick_1_S1_first1Mreads_pre-normalization_R1.kat.hist	0	0	0	0
-tick_1_S1_first1Mreads_pre-normalization_R2.kat.hist	0	0	0	0
+tick_1_S1_first1Mreads_R1_post-digital_normalization.kat.hist	0	0	0	0
+tick_1_S1_first1Mreads_R1_post-trimming.kat.hist	0	0	0	0
+tick_1_S1_first1Mreads_R2_post-digital_normalization.kat.hist	0	0	0	0
+tick_1_S1_first1Mreads_R2_post-trimming.kat.hist	0	0	0	0
