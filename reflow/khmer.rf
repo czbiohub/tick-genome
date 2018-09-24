@@ -1,0 +1,125 @@
+khmer := "quay.io/biocontainers/khmer:3.0.0a1--py36hfc679d8_0"
+
+threads := 16
+memory := 64
+
+val dirs = make("$/dirs")
+val utils = make("./utils.rf")
+val fastp = make("./fastp.rf")
+
+
+func Hist(fastq file, ksize int) = 
+	// Compute k-mer abundance histogram. How many kmers appear once, twice, 100x?
+
+    exec(image := khmer, cpu := threads, mem := memory*GiB) (histogram file) {"
+		abundance-dist-single.py \
+			--ksize {{ksize}} \
+			--max-memory-usage {{memory}}G \
+			--threads {{threads}} \
+			{{fastq}} \
+			{{histogram}}
+"}
+
+
+func NormalizeByMedian(fastq file, ksize, cutoff int) = {
+	// Do digital normalization (remove mostly redundant sequences)
+
+    d := dirs.Make(["reads.fastq": fastq])
+
+    exec(image := khmer, mem := memory*GiB) (normalized, countgraph file) {"
+        normalize-by-median.py \
+        	--paired \
+        	--gzip \
+            --cutoff {{cutoff}} \
+            --ksize {{ksize}} \
+            --max-memory-usage {{memory}}G \
+            --savegraph {{countgraph}} \
+            --output {{normalized}} \
+             {{d}}/reads.fastq"}
+}
+
+
+func NormalizeByMedianUnpaired(fastq, singletons file, ksize, cutoff int) = {
+	// Do digital normalization (remove mostly redundant sequences), this time with singletons!
+
+    d := dirs.Make(["reads.fastq": fastq, "singletons.fastq": singletons])
+
+    exec(image := khmer, mem := memory*GiB) (normalized, countgraph file) {"
+        normalize-by-median.py \
+        	--paired \
+        	--gzip \
+            --cutoff {{cutoff}} \
+            --ksize {{ksize}} \
+            --unpaired-reads {{d}}/singletons.fastq \
+            --max-memory-usage {{memory}}G \
+            --savegraph {{countgraph}} \
+            --output {{normalized}} \
+             {{d}}/reads.fastq"}
+}
+
+
+func FilterAbundance(fastq, countgraph file, cutoff int) = 
+	// Trim sequences at a minimum k-mer abundance. Run this after NormalizeByMedian
+    exec(image := khmer, cpu := threads, mem := memory*GiB) (filtered file) {"
+        filter-abund.py \
+        	--gzip \
+            --cutoff {{cutoff}} \
+            --threads {{threads}} \
+            --output {{filtered}} \
+             {{countgraph}} {{fastq}}"}
+
+
+func ExtractPaired(fastq file) = 
+	// Take a mixture of reads and split into pairs and orphans.
+    exec(image := khmer) (paired, singletons file) {"
+        extract-paired-reads.py \
+        	--gzip \
+            --output-paired {{paired}} \
+            --output-single {{singletons}} \
+             {{fastq}}"}
+
+
+
+func SplitPaired(paired file) = 
+	// Convert single fastq file with R1 (left) and R2 (right) 
+	// de-interleaved into two separate files
+
+    exec(image := khmer) (read1, read2 file) {"
+        split-paired-reads.py \
+        	--gzip \
+            -1 {{read1}} \
+            -2 {{read2}} \
+             {{paired}}"}
+
+
+func NormalizeHighCoverage(r1, r2 file, ksize int) = {
+	// Recommended steps for digital normalization of high-coverage genome sequencing data
+	// https://khmer.readthedocs.io/en/v2.1.1/user/guide.html#genome-assembly-including-mda-samples-and-highly-polymorphic-genomes
+
+	// Interleave read pairs into a single file
+	val interleaved = fastp.Interleave(r1, r2)
+    val interleaved_gz = utils.ParallelGzip(interleaved, threads)
+
+	// -- First pass normalization - remove high abundance kmers --
+	// Cut out reads with kmers that appear 20 or more times (cutoff=20)
+	val (normalized_1pass, countgraph_1pass) = NormalizeByMedian(interleaved_gz, ksize, 20)
+ 
+ 	// -- Second pass - filter low abundance kmers--
+	// Use reads containing kmers that appear at least 2 times
+	val filtered_2pass = FilterAbundance(normalized_1pass, countgraph_1pass, 2)
+
+	// Split remaining paired-end/interleaved and single-end reads
+	val (paired_2pass, singletons_2pass) = ExtractPaired(filtered_2pass)
+	reads_2pass := [paired_2pass, singletons_2pass]
+
+	// -- Third pass normalization - remove high abundance kmers yet again --
+	// Rerun digital normalization on last reads with cutoff=5 and unpaired=True
+	val (normalized_3pass, countgraph_3pass) = 
+		NormalizeByMedianUnpaired(paired_2pass, singletons_2pass, ksize, 5)
+
+	val (paired_3pass, singletons_3pass) = ExtractPaired(normalized_3pass)
+
+	val (r1_normalized, r2_normalized) = SplitPaired(paired_3pass)
+
+	{r1_normalized, r2_normalized}
+}
