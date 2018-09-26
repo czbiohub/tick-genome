@@ -69,7 +69,6 @@ val polyg_removed = fastp.TrimPolyG(r1_adapter_trimmed, r2_adapter_trimmed, id, 
 val (r1_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R1_*.fastq.gz")
 val (r2_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R2_*.fastq.gz")
 
-
 // -- Remove PhiX Sequences --- //
 val phix_trimmed = bbduk.PhiXTrimming(polyg_removed, polyg_removed, id, minlength)
 
