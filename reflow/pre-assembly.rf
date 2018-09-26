@@ -59,15 +59,23 @@ val r2_fastqc_reports = fastqc.FastQC(r2, id + "_R2" + status)
 val adapter_removed = adapter_removal.AdapterRemoval(r1, r2, id, adapter_file, minlength)
 
 // Extract R1, R2 read pairs from output directory
-val (r1_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R1_adapterremoval_trimmed.fastq.gz")
-val (r2_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R2_adapterremoval_trimmed.fastq.gz")
+val (r1_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R1_*.fastq.gz")
+val (r2_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R2_*.fastq.gz")
 
-// -- Remove PhiX Sequences --- //
-val phix_trimmed = bbduk.PhiXTrimming(r1_adapter_trimmed, r2_adapter_trimmed, id, minlength)
+// --- Remove Poly-G (known NovaSeq issue) ---
+val polyg_removed = fastp.TrimPolyG(r1_adapter_trimmed, r2_adapter_trimmed, id, minlength)
 
 // Extract R1, R2 read pairs from output directory
-val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*_R1_bbduk_phix_trimmed.fastq.gz")
-val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*_R2_bbduk_phix_trimmed.fastq.gz")
+val (r1_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R1_*.fastq.gz")
+val (r2_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R2_*.fastq.gz")
+
+
+// -- Remove PhiX Sequences --- //
+val phix_trimmed = bbduk.PhiXTrimming(polyg_removed, polyg_removed, id, minlength)
+
+// Extract R1, R2 read pairs from output directory
+val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R1*.fastq.gz")
+val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R2*.fastq.gz")
 
 // Create list of reads
 status := "_post-trimming"
