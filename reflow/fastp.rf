@@ -23,3 +23,25 @@ func Interleave(r1, r2 file) = {
         	--stdout > {{fastq}}
 	"}
 }
+
+
+func TrimPolyG(r1, r2 file, id string, minlength int) = {
+	// Remove adapters, 4nt windows of Q20 or lower reads, and poly-G (for NextSeq)
+
+    d := dirs.Make(["R1.fastq.gz": r1, "R2.fastq.gz": r2])
+
+    exec(image := khmer, cpu := threads) (outdir dir) {"
+    	cd {{outdir}}
+        fastp \
+        	--length_required {{minlength}} \
+	        --disable_adapter_trimming \
+        	--disable_quality_filtering \
+        	--thread {{threads}} \
+        	--in1 {{d}}/R1.fastq.gz \
+        	--in2 {{d}}/R2.fastq.gz \
+			--out1 {{id}}_R1_fastp_trimmed.fastq.gz \
+            --out2 {{id}}_R2_fastp_trimmed.fastq.gz \
+            --json {{id}}_fastp.json \
+            --html {{id}}_fastp.html 
+	"}
+}
