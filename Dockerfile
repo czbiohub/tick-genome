@@ -18,5 +18,14 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ${PACKAGES} && \
     apt-get clean
 
+ARG slug
+ENV slug ${slug:jhcepas/eggnog-mapper}
+
+RUN conda create -n eggnog-mapper-env python=2.7
+RUN conda activate eggnog-mapper-env
+RUN git clone https://github.com/${slug}.git@${branch}
+RUN cd eggnog-mapper && pip install .
+RUN ./download_eggnog_data.py -y all
+
 
 USER main

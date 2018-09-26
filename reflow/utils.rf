@@ -6,6 +6,8 @@ val dirs = make("$/dirs")
 val files = make("$/files")
 val path = make("$/path")
 
+val tick_genome = "czbiohub/tick-genome"
+
 // Instantiate Go system module "strings"
 val strings = make("$/strings")
 
@@ -32,6 +34,6 @@ func SplitByPipe(pipe_separated string) = {
 
 
 func ParallelGzip(filename file, threads int) =
-    exec(image := "genevera/docker-pigz", cpu := threads) (gzipped file) {"
+    exec(image := tick_genome, cpu := threads) (gzipped file) {"
     	pigz --processes {{threads}} -c {{filename}} > {{gzipped}}
 "}
