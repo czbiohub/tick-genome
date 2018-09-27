@@ -1,0 +1,27 @@
+// Assemble paired-end Illumina sequencing data
+
+param (
+    // S3 path to a single fastq(.gz) file
+    read1 string
+
+    // S3 path to a single fastq(.gz) file
+    read2 string
+
+    // name of the sample
+    id string
+
+    // S3 folder to put all the fastqs and reports
+    output string
+
+    // K-mer size for assembly
+    ksize int
+)
+
+// System modules
+val dirs = make("$/dirs")
+
+val abyss = make("./abyss.rf")
+
+val abyss_output = abyss.AssemblePairedEnd(read1, read2, id, ksize)
+
+val Main = dirs.Copy(abyss_output, output)
