@@ -1,3 +1,8 @@
+param (
+      threads = 8
+)
+      
+
 
 val fastqc = "quay.io/biocontainers/fastqc:0.11.7--4"
 
@@ -8,7 +13,7 @@ func FastQC(reads file, id string) = {
 	// Ensure input file has fastq.gz ending
     d := dirs.Make([id+".fastq.gz": reads])
 
-	    exec(image := fastqc, mem := 4*GiB, cpu := 8) (outdir dir) {"
-	        /usr/local/bin/fastqc -o {{outdir}} --threads 8 {{d}}/{{id}}.fastq.gz
+	    exec(image := fastqc, mem := 4*GiB, cpu := threads) (outdir dir) {"
+	        /usr/local/bin/fastqc -o {{outdir}} --threads {{threads}} {{d}}/{{id}}.fastq.gz
 	"}
 }

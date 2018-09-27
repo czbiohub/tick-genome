@@ -1,5 +1,5 @@
 param (
-	threads = 16
+	threads = 8
 )
 
 khmer := "quay.io/biocontainers/fastp:0.19.4--hd28b015_0"

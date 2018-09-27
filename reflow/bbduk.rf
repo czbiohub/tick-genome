@@ -1,3 +1,8 @@
+param (
+      threads = 8
+)
+      
+
 
 // phix Removal
 // http://phixremoval.readthedocs.io/en/latest/
@@ -11,7 +16,7 @@ func PhiXTrimming(read1, read2 file, id string, minlength int) = {
     // Rename files to have fastq.gz endings
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
-    exec(image := bbmap, cpu := 16, mem := 8*GiB) (outdir dir) {"
+    exec(image := bbmap, cpu := threads, mem := 8*GiB) (outdir dir) {"
         cd {{outdir}}
         bbduk.sh ref=phix \
             in={{d}}/{{id}}_R1.fastq.gz \
@@ -22,6 +27,7 @@ func PhiXTrimming(read1, read2 file, id string, minlength int) = {
             outm2={{id}}_R2_bbduk_phix_failed.fastq.gz \
             outs={{id}}_bbduk_phix_failed_singleton.fastq.gz \
             stats={{id}}_bbduk_phix_trimmed.stats \
+	    thread={{threads}} \
             # Recommended ksize for adapters, hopefully applies to PhiX \
             k=23 \
             # hamming distance = 1 \

@@ -39,10 +39,10 @@ val dirs = make("$/dirs")
 val adapter_removal = make("./adapter_removal.rf")
 val fastqc = make("./fastqc.rf")
 val bbduk = make("./bbduk.rf")
-val idseq = make("./idseq.rf")
 val kat = make("./kat.rf")
 val khmer = make("./khmer.rf")
 val utils = make("./utils.rf")
+val fastp = make("./fastp.rf")
 
 
 val r1 = file(read1)
@@ -70,7 +70,7 @@ val (r1_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R1_*.fastq.gz")
 val (r2_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R2_*.fastq.gz")
 
 // -- Remove PhiX Sequences --- //
-val phix_trimmed = bbduk.PhiXTrimming(polyg_removed, polyg_removed, id, minlength)
+val phix_trimmed = bbduk.PhiXTrimming(r1_polyg_removed, r2_polyg_removed, id, minlength)
 
 // Extract R1, R2 read pairs from output directory
 val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R1*.fastq.gz")
