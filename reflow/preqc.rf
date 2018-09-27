@@ -67,9 +67,9 @@ func PreQCReport(preqcs [file], ids [string]) = {
 
 
 func RunPreQC(read1s, read2s [file], ids [string]) = {
-	interleaved := [fastp.Interleave(r1, r2, id) | (r1, r2, id) <- zip(read1s, read2s, ids)]
+	interleaved := [fastp.Interleave(r1, r2, id) | ((r1, r2), id) <- zip(zip(read1s, read2s), ids)]
 	indexed := [Index(fastq, id) | (f, id) <- zip(interleaved, ids)]
-	preqcs := [PreQC(f, index, id) | (f, index, id) <- zip(interleaved, indexed, ids)]
+	preqcs := [PreQC(f, index, id) | (f, (index, id)) <- zip(interleaved, zip(indexed, ids))]
 
 	// Rename files by id
     dirs.Make(map([(id + ".preqc.json", preqc) | (preqc, id) <- zip(preqcs, ids)]))
