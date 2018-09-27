@@ -6,7 +6,7 @@ param (
     read2s string
 
     // Pipe-separated, ordered list of sample ids
-    id string
+    ids string
 
     // Full s3 folder location to put preqc json files
     output string
@@ -24,6 +24,9 @@ sga := "quay.io/biocontainers/sga:0.10.15--hd4ff3c4_3"
 val dirs = make("$/dirs")
 val utils = make("./utils.rf")
 val fastp = make("./fastp.rf")
+
+// Instantiate Go system module "strings"
+val strings = make("$/strings")
 
 preprocessed_suffix := "_sga_preprocessed.fastq"
 
@@ -67,8 +70,8 @@ func PreQCReport(preqcs [file], ids [string]) = {
 
 
 func RunPreQC(read1s, read2s [file], ids [string]) = {
-	interleaved := [fastp.Interleave(r1, r2, id) | ((r1, r2), id) <- zip(zip(read1s, read2s), ids)]
-	indexed := [Index(fastq, id) | (f, id) <- zip(interleaved, ids)]
+	interleaved := [fastp.Interleave(r1, r2) | ((r1, r2), id) <- zip(zip(read1s, read2s), ids)]
+	indexed := [Index(f, id) | (f, id) <- zip(interleaved, ids)]
 	preqcs := [PreQC(f, index, id) | (f, (index, id)) <- zip(interleaved, zip(indexed, ids))]
 
 	// Rename files by id
@@ -78,7 +81,7 @@ func RunPreQC(read1s, read2s [file], ids [string]) = {
 
 r1s := utils.SplitByPipe(read1s)
 r2s := utils.SplitByPipe(read2s)
-ids_split := utils.SplitByPipe(ids)
+ids_split := strings.Split(ids, "|")
 
 outdir := RunPreQC(r1s, r2s, ids_split)
 
