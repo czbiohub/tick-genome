@@ -41,6 +41,7 @@ val fastqc = make("./fastqc.rf")
 val bbduk = make("./bbduk.rf")
 val kat = make("./kat.rf")
 val khmer = make("./khmer.rf")
+val kmergenie = make("./kmergenie.rf")
 val utils = make("./utils.rf")
 val fastp = make("./fastp.rf")
 
@@ -128,9 +129,15 @@ val khmer_dir = dirs.Make(map(khmer_histograms))
 // val search_refseq_genbank_normalized := sourmash.Search(signatures_normalized, 
 //     track_abundance=false)
 
+// Use kmergenie to estimate best kmer size
+val kmergenie_trimmed = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
+val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_normalized]
+
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-    phix_trimmed, normalized_dir, khmer_dir] + fastqc_post_trimming + hist_pre_normalization + hist_post_normalization + fastqc_post_normalization
+    phix_trimmed, normalized_dir, khmer_dir] + fastqc_post_trimming + \
+        hist_pre_normalization + hist_post_normalization + fastqc_post_normalization + \
+        kmergenie_trimmed + kmergenie_normalized
     // human_removed, 
     // kat_hist_pre_normalization, normalized, kat_hist_pre_normalization, 
     // re_paired, signatures, search_refseq_genbank]

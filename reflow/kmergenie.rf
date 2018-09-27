@@ -1,0 +1,45 @@
+
+param (
+    threads = 16
+)
+
+
+// KmerGenie estimates the best k-mer length for genome de novo assembly.
+// http://kmergenie.bx.psu.edu/
+val kmergenie = "quay.io/biocontainers/kmergenie:1.7016--py27r341ha92aebf_3"
+
+val dirs = make("$/dirs")
+
+
+
+// bash-4.2# kmergenie --diploid $R1 $R2                                                     
+// KmerGenie
+
+// Usage:
+//     kmergenie <read_file> [options]
+
+// Options:
+//     --diploid    use the diploid model (default: haploid model)
+//     --one-pass   skip the second pass to estimate k at 2 bp resolution (default: two passes)
+//     -k <value>   largest k-mer size to consider (default: 121)
+//     -l <value>   smallest k-mer size to consider (default: 15)
+//     -s <value>   interval between consecutive kmer sizes (default: 10)
+//     -e <value>   k-mer sampling value (default: auto-detected to use ~200 MB memory/thread)
+//     -t <value>   number of threads (default: number of cores minus one)
+//     -o <prefix>  prefix of the output files (default: histograms)
+//     --debug      developer output of R scripts
+
+
+// Kmer histogram
+func Run(reads file, id string) = {
+    // First three lines are renaming nonsense because "kat hist" needs
+	// the filename to end in fastq.gz to detect the type
+
+    // Ensure input file has fastq.gz ending
+    d := dirs.Make([id+".fastq.gz": reads])
+
+    exec(image := kmergenie, cpu := threads, mem := 16*GiB) (outdir dir) {"
+        cd {{outdir}}
+        kmergenie -t {{threads}} --diploid {{d}}/{{id}}.fastq.gz
+    "}
+}
