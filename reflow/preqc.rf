@@ -23,25 +23,10 @@ sga := "quay.io/biocontainers/sga:0.10.15--hd4ff3c4_3"
 
 val dirs = make("$/dirs")
 val utils = make("./utils.rf")
+val fastp = make("./fastp.rf")
 
 preprocessed_suffix := "_sga_preprocessed.fastq"
 
-
-func Preprocess(read1, read2 file, id string) = {
-
-    // First three lines are renaming nonsense because "kat hist" needs
-	// the filename to end in fastq.gz to detect the type
-    d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
-
-    outdir := exec(image := sga, cpu := 1, mem := 32*GiB) (outdir dir) {"
-		sga preprocess --pe-mode 1 \
-			{{d}}/{{id}}_R1.fastq.gz \
-			{{d}}/{{id}}_R2.fastq.gz \
-			> {{outdir}}/{{id}}{{preprocessed_suffix}}
-    "}
-    val (preprocessed, _) = dirs.Pick(outdir, "*{{preprocessed_suffix}}")
-    preprocessed
-}
 
 func Index(preproccessed file, id string) = {
 	// Outputs a folder with:
@@ -82,9 +67,9 @@ func PreQCReport(preqcs [file], ids [string]) = {
 
 
 func RunPreQC(read1s, read2s [file], ids [string]) = {
-	preprocessed := [Preprocess(r1, r2, id) | (r1, r2, id) <- zip(read1s, read2s, ids)]
-	indexed := [Index(f, id) | (f, id) <- zip(preprocessed, ids)]
-	preqcs := [PreQC(f, index, id) | (f, index, id) <- zip(preprocessed, indexed, ids)]
+	interleaved := [fastp.Interleave(r1, r2, id) | (r1, r2, id) <- zip(read1s, read2s, ids)]
+	indexed := [Index(fastq, id) | (f, id) <- zip(interleaved, ids)]
+	preqcs := [PreQC(f, index, id) | (f, index, id) <- zip(interleaved, indexed, ids)]
 
 	// Rename files by id
     dirs.Make(map([(id + ".preqc.json", preqc) | (preqc, id) <- zip(preqcs, ids)]))
