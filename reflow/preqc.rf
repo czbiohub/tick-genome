@@ -30,6 +30,21 @@ val strings = make("$/strings")
 
 preprocessed_suffix := "_sga_preprocessed.fastq"
 
+func Preprocess(interleaved file, id string) = {
+
+    // First three lines are renaming nonsense because "kat hist" needs
+        // the filename to end in fastq.gz to detect the type
+    d := dirs.Make([id+"_interleaved.fastq.gz": interleaved])
+
+    outdir := exec(image := sga, cpu := 1, mem := 32*GiB) (outdir dir) {"
+                sga preprocess --pe-mode 1 \
+                        {{d}}/{{id}}_interleaved.fastq.gz \
+                        > {{outdir}}/{{id}}{{preprocessed_suffix}}
+    "}
+    val (preprocessed, _) = dirs.Pick(outdir, "*{{preprocessed_suffix}}")
+    preprocessed
+}
+
 
 func Index(preproccessed file, id string) = {
 	// Outputs a folder with:
@@ -71,7 +86,8 @@ func PreQCReport(preqcs [file], ids [string]) = {
 
 func RunPreQC(read1s, read2s [file], ids [string]) = {
 	interleaved := [fastp.Interleave(r1, r2) | ((r1, r2), id) <- zip(zip(read1s, read2s), ids)]
-	indexed := [Index(f, id) | (f, id) <- zip(interleaved, ids)]
+    preprocessed := [Preprocess(fastq, id) | (fastq, id) <- zip(interleaved, ids)]
+	indexed := [Index(f, id) | (f, id) <- zip(preprocessed, ids)]
 	preqcs := [PreQC(f, index, id) | (f, (index, id)) <- zip(interleaved, zip(indexed, ids))]
 
 	// Rename files by id
