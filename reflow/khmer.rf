@@ -1,7 +1,15 @@
+
+param (
+      // number of processors
+      threads = 8
+
+      // gigabytes of memory
+      memory = 64
+      )
+      
+
 khmer := "quay.io/biocontainers/khmer:3.0.0a1--py36hfc679d8_0"
 
-threads := 16
-memory := 64
 
 val dirs = make("$/dirs")
 val utils = make("./utils.rf")
