@@ -30,17 +30,67 @@ val strings = make("$/strings")
 
 preprocessed_suffix := "_sga_preprocessed.fastq"
 
-func Preprocess(interleaved file, id string) = {
+
+// bash-4.2# sga preprocess -h
+// preprocess: option requires an argument -- 'h'
+// preprocess: missing arguments
+
+// Usage: sga preprocess [OPTION] READS1 READS2 ...
+// Prepare READS1, READS2, ... data files for assembly
+// If pe-mode is turned on (pe-mode=1) then if a read is discarded its pair will be discarded as well.
+
+//       --help                           display this help and exit
+//       -v, --verbose                    display verbose output
+//           --seed                       set random seed
+
+// Input/Output options:
+//       -o, --out=FILE                   write the reads to FILE (default: stdout)
+//       -p, --pe-mode=INT                0 - do not treat reads as paired (default)
+//                                        1 - reads are paired with the first read in READS1 and the second
+//                                        read in READS2. The paired reads will be interleaved in the output file
+//                                        2 - reads are paired and the records are interleaved within a single file.
+//           --pe-orphans=FILE            if one half of a read pair fails filtering, write the passed half to FILE
+
+// Conversions/Filtering:
+//           --phred64                    convert quality values from phred-64 to phred-33.
+//           --discard-quality            do not output quality scores
+//       -q, --quality-trim=INT           perform Heng Li's BWA quality trim algorithm. 
+//                                        Reads are trimmed according to the formula:
+//                                        argmax_x{\sum_{i=x+1}^l(INT-q_i)} if q_l<INT
+//                                        where l is the original read length.
+//       -f, --quality-filter=INT         discard the read if it contains more than INT low-quality bases.
+//                                        Bases with phred score <= 3 are considered low quality. Default: no filtering.
+//                                        The filtering is applied after trimming so bases removed are not counted.
+//                                        Do not use this option if you are planning to use the BCR algorithm for indexing.
+//       -m, --min-length=INT             discard sequences that are shorter than INT
+//                                        this is most useful when used in conjunction with --quality-trim. Default: 40
+//       -h, --hard-clip=INT              clip all reads to be length INT. In most cases it is better to use
+//                                        the soft clip (quality-trim) option.
+//       --permute-ambiguous              Randomly change ambiguous base calls to one of possible bases.
+//                                        If this option is not specified, the entire read will be discarded.
+//       -s, --sample=FLOAT               Randomly sample reads or pairs with acceptance probability FLOAT.
+//       --dust                           Perform dust-style filtering of low complexity reads.
+//       --dust-threshold=FLOAT           filter out reads that have a dust score higher than FLOAT (default: 4.0).
+//       --suffix=SUFFIX                  append SUFFIX to each read ID
+
+// Adapter/Primer checks:
+//           --no-primer-check            disable the default check for primer sequences
+//       -r, --remove-adapter-fwd=STRING
+//       -c, --remove-adapter-rev=STRING  Remove the adapter STRING from input reads.
+
+// Report bugs to js18@sanger.ac.uk
+func Preprocess(read1, read2 file, id string) = {
 
     // First three lines are renaming nonsense because "kat hist" needs
         // the filename to end in fastq.gz to detect the type
-    d := dirs.Make([id+"_interleaved.fastq.gz": interleaved])
+    d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
     outdir := exec(image := sga, cpu := 1, mem := 32*GiB) (outdir dir) {"
                 sga preprocess --pe-mode 1 \
                         --permute-ambiguous \
                         --no-primer-check \
-                        {{d}}/{{id}}_interleaved.fastq.gz \
+                        {{d}}/{{id}}_R1.fastq.gz \
+                        {{d}}/{{id}}_R2.fastq.gz \
                         > {{outdir}}/{{id}}{{preprocessed_suffix}}
     "}
     val (preprocessed, _) = dirs.Pick(outdir, "*{{preprocessed_suffix}}")
@@ -87,8 +137,7 @@ func PreQCReport(preqcs [file], ids [string]) = {
 
 
 func RunPreQC(read1s, read2s [file], ids [string]) = {
-	interleaved := [fastp.Interleave(r1, r2) | ((r1, r2), id) <- zip(zip(read1s, read2s), ids)]
-    preprocessed := [Preprocess(fastq, id) | (fastq, id) <- zip(interleaved, ids)]
+    preprocessed := [Preprocess(r1, r2, id) | (r1, r2, id) <- zip(read1s, read2s, ids)]
 	indexed := [Index(f, id) | (f, id) <- zip(preprocessed, ids)]
 	preqcs := [PreQC(f, index, id) | (f, (index, id)) <- zip(interleaved, zip(indexed, ids))]
 
