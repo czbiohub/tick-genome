@@ -24,6 +24,7 @@ func Interleave(r1, r2 file) = {
 	"}
 }
 
+
 func TrimPolyG(r1, r2 file, id string, minlength int) = {
 	// Remove adapters, 4nt windows of Q20 or lower reads, and poly-G (for NextSeq)
 

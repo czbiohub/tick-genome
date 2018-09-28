@@ -46,5 +46,16 @@ test_pre_assembly:
 		-output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6/ \
 		-adapter_list=../pre_assembly_qc/nextera_pe_adapters.tsv
 
+preqc:
+	$(eval READ1='s3://tick-genome/dna/2018-06-28/pre-assembly_v3/Undetermined_S0_R1_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R1_post-trimming.fastq.gz')
+	$(eval READ2='s3://tick-genome/dna/2018-06-28/pre-assembly_v3/Undetermined_S0_R2_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R2_post-trimming.fastq.gz')
+	$(eval IDS='Undetermined_S0|tick_1_S1|tick_2_S2')
+	echo READ1 ${READ1}
+	reflow run preqc.rf \
+		-read1s=${READ1} \
+		-read2s=${READ2} \
+		-ids=${IDS} \
+		 -output=s3://tick-genome/dna/2018-06-28/test_preqc_v1/
+
 test_multiqc_pre_assembly:
 	reflow -cache=off run multiqc.rf -input=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6/ -output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6_multiqc/

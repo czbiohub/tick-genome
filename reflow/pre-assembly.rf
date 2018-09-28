@@ -72,6 +72,7 @@ val (r2_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R2_*.fastq.gz")
 // -- Remove PhiX Sequences --- //
 val phix_trimmed = bbduk.PhiXTrimming(r1_polyg_removed, r2_polyg_removed, id, minlength)
 
+
 // Extract R1, R2 read pairs from output directory
 val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R1*.fastq.gz")
 val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R2*.fastq.gz")
