@@ -38,6 +38,8 @@ func Preprocess(interleaved file, id string) = {
 
     outdir := exec(image := sga, cpu := 1, mem := 32*GiB) (outdir dir) {"
                 sga preprocess --pe-mode 1 \
+                        --permute-ambiguous \
+                        --no-primer-check \
                         {{d}}/{{id}}_interleaved.fastq.gz \
                         > {{outdir}}/{{id}}{{preprocessed_suffix}}
     "}
