@@ -93,7 +93,7 @@ func Preprocess(read1, read2 file, id string) = {
                         {{d}}/{{id}}_R2.fastq.gz \
                         > {{outdir}}/{{id}}{{preprocessed_suffix}}
     "}
-    val (preprocessed, _) = dirs.Pick(outdir, "*{{preprocessed_suffix}}")
+    val (preprocessed, _) = dirs.Pick(outdir, "*" + preprocessed_suffix)
     preprocessed
 }
 
