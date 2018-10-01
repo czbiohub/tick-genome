@@ -97,14 +97,39 @@ func Preprocess(read1, read2 file, id string) = {
     preprocessed
 }
 
+// bash-4.2# sga index -hc
+// index: invalid option -- 'h'
+// index: missing arguments
 
+// Usage: sga index [OPTION] ... READSFILE
+// Index the reads in READSFILE using a suffixarray/bwt
+
+//   -v, --verbose                        display verbose output
+//       --help                           display this help and exit
+//   -a, --algorithm=STR                  BWT construction algorithm. STR can be:
+//                                        sais - induced sort algorithm, slower but works for very long sequences (default)
+//                                        ropebwt - very fast and memory efficient. use this for short (<200bp) reads
+//   -d, --disk=NUM                       use disk-based BWT construction algorithm. The suffix array/BWT will be constructed
+//                                        for batchs of NUM reads at a time. To construct the suffix array of 200 megabases of sequence
+//                                        requires ~2GB of memory, set this parameter accordingly.
+//   -t, --threads=NUM                    use NUM threads to construct the index (default: 1)
+//   -c, --check                          validate that the suffix array/bwt is correct
+//   -p, --prefix=PREFIX                  write index to file using PREFIX instead of prefix of READSFILE
+//       --no-reverse                     suppress construction of the reverse BWT. Use this option when building the index
+//                                        for reads that will be error corrected using the k-mer corrector, which only needs the forward index
+//       --no-forward                     suppress construction of the forward BWT. Use this option when building the forward and reverse index separately
+//       --no-sai                         suppress construction of the SAI file. This option only applies to -a ropebwt
+//   -g, --gap-array=N                    use N bits of storage for each element of the gap array. Acceptable values are 4,8,16 or 32. Lower
+//                                        values can substantially reduce the amount of memory required at the cost of less predictable memory usage.
+//                                        When this value is set to 32, the memory requirement is essentially deterministic and requires ~5N bytes where
+//                                        N is the size of the FM-index of READS2.
+//                                        The default value is 8.
 func Index(preproccessed file, id string) = {
 	// Outputs a folder with:
 	// - {{id}}_sga_preprocessed.bwt
 	// - {{id}}_sga_preprocessed.sai
 
-    // First three lines are renaming nonsense because "kat hist" needs
-	// the filename to end in fastq.gz to detect the type
+    // Program won't run if the suffix is not fastq
     d := dirs.Make([id + preprocessed_suffix: preproccessed])
 
     exec(image := sga, cpu := threads, mem := 32*GiB) (outdir dir) {"
@@ -117,7 +142,7 @@ func PreQC(preproccessed file, index dir, id string) = {
 	// Outputs a json file
 
 	// Make sure preprocessed file has same name as it was when it was indexed
-    d := dirs.Make([id+"_sga_preproccessed.fastq": preproccessed])
+    d := dirs.Make([id + preprocessed_suffix: preproccessed])
 
     exec(image := sga, cpu := threads, mem := 32*GiB) (output file) {"
     	cd {{index}}
