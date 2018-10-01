@@ -108,6 +108,7 @@ func Index(preproccessed file, id string) = {
     d := dirs.Make([id + preprocessed_suffix: preproccessed])
 
     exec(image := sga, cpu := threads, mem := 32*GiB) (outdir dir) {"
+        cd {{outdir}}
 		sga index -a ropebwt --no-reverse -t {{threads}} {{d}}/{{id}}{{preprocessed_suffix}}
     "}
 }
