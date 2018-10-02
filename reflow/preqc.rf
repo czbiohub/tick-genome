@@ -21,12 +21,14 @@ param (
 
 sga := "quay.io/biocontainers/sga:0.10.15--hd4ff3c4_3"
 
+// Instantiate Go system module "strings"
+val strings = make("$/strings")
 val dirs = make("$/dirs")
+val filesets = make("$/filesets")
+
 val utils = make("./utils.rf")
 val fastp = make("./fastp.rf")
 
-// Instantiate Go system module "strings"
-val strings = make("$/strings")
 
 preprocessed_suffix := "_sga_preprocessed.fastq"
 
@@ -141,8 +143,15 @@ func Index(preproccessed file, id string) = {
 func PreQC(preproccessed file, index dir, id string) = {
 	// Outputs a json file
 
+    val index_files = dirs.Files(index)
+    val index_fileset = filesets.Dir(index)
+
+    // preprocessed and files from index must be in the same folder
+    index_filenames_to_file := [(name, f) | (name, f)  <- index_fileset]
+    preprocessed_with_index := [(id + preprocessed_suffix, preproccessed)] + index_filenames_to_file
+
 	// Make sure preprocessed file has same name as it was when it was indexed
-    d := dirs.Make([id + preprocessed_suffix: preproccessed])
+    d := dirs.Make(map(preprocessed_with_index))
 
     exec(image := sga, cpu := threads, mem := 32*GiB) (output file) {"
     	cd {{index}}
