@@ -1,12 +1,10 @@
 multiqc: multiqc_sync multiqc_reflow
 
 multiqc_sync:
-	# Copy FastQC and other reports
-	aws s3 sync --exclude "*.fastq.gz" s3://tick-genome/dna/2018-06-28/pre-assembly_quality_control/reports/ s3://tick-genome/multiqc/data-for-multiqc/  
-	# Copy adapter trimming reports
-	aws s3 sync --exclude "*.fastq.gz" s3://tick-genome/dna/2018-06-28/adapter_trimmed/ s3://tick-genome/multiqc/data-for-multiqc/
-	# Copy test_pre_assembly
-	aws s3 sync --exclude "*.fastq.gz" --exclude "*bam*" s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v2/  s3://tick-genome/multiqc/data-for-multiqc/
+	# Clear the folder
+	aws s3 rm s3://tick-genome/multiqc/data-for-multiqc/
+
+	# Copy the new outputs into the folder
 	aws s3 sync --exclude "*.fastq.gz" --exclude "*bam*" s3://tick-genome/dna/2018-06-28/pre-assembly_v3/ s3://tick-genome/multiqc/data-for-multiqc/
 		# Run multiqc
 
