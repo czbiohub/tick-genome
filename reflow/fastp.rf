@@ -16,7 +16,6 @@ func Interleave(r1, r2 file) = {
         fastp \
         	--thread {{threads}} \
 	        --disable_adapter_trimming \
-        	--disable_quality_filtering \
         	--disable_trim_poly_g \
         	--in1 {{d}}/R1.fastq.gz \
         	--in2 {{d}}/R2.fastq.gz \
