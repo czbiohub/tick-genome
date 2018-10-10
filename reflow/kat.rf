@@ -19,7 +19,7 @@ func Hist(reads file, id string, ksize int) = {
         cd {{outdir}}
         kat hist --mer_len {{ksize}} \
             --threads {{threads}} \
-            --hash_size 200000000000 \
+            --hash_size 20000000000 \
             --output_prefix {{id}}.kat.hist {{d}}/{{id}}.fastq.gz
     "}
 }
