@@ -87,10 +87,10 @@ val fastqc_post_trimming = [
     fastqc.FastQC(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
 
 // Get kmer histogram before trimming
-val hist_pre_normalization = [
-    kat.Hist(reads, id + read_number, ksize) | (read_number, reads) <- reads_phix_trimmed]
-val khmer_hist_pre_normalization = [
-    (id + read_number + "_khmer.histogram", khmer.Hist(reads, ksize)) | (read_number, reads) <- reads_phix_trimmed]
+// val hist_pre_normalization = [
+//     kat.Hist(reads, id + read_number, ksize) | (read_number, reads) <- reads_phix_trimmed]
+// val khmer_hist_pre_normalization = [
+//     (id + read_number + "_khmer.histogram", khmer.Hist(reads, ksize)) | (read_number, reads) <- reads_phix_trimmed]
 
 // -- Perform Digital Normalization --
 // -- Remove reads with too-high or too-low abundance -- //
@@ -130,7 +130,9 @@ val khmer_dir = dirs.Make(map(khmer_histograms))
 
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-    phix_trimmed, normalized_dir, khmer_dir] + fastqc_post_trimming + hist_pre_normalization + hist_post_normalization + fastqc_post_normalization
+    phix_trimmed, normalized_dir, khmer_dir] \
+    + fastqc_post_trimming \
+    + hist_post_normalization + fastqc_post_normalization
     // human_removed, 
     // kat_hist_pre_normalization, normalized, kat_hist_pre_normalization, 
     // re_paired, signatures, search_refseq_genbank]
