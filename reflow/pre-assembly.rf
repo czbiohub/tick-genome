@@ -130,9 +130,7 @@ val khmer_dir = dirs.Make(map(khmer_histograms))
 
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-    phix_trimmed, normalized_dir, khmer_dir] \
-    + fastqc_post_trimming \
-    + hist_post_normalization + fastqc_post_normalization
+    phix_trimmed, normalized_dir, khmer_dir] + fastqc_post_trimming + hist_post_normalization + fastqc_post_normalization
     // human_removed, 
     // kat_hist_pre_normalization, normalized, kat_hist_pre_normalization, 
     // re_paired, signatures, search_refseq_genbank]
