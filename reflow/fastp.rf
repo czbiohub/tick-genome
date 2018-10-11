@@ -35,7 +35,6 @@ func TrimPolyG(r1, r2 file, id string, minlength int) = {
         fastp \
         	--length_required {{minlength}} \
 	        --disable_adapter_trimming \
-        	--disable_quality_filtering \
         	--thread {{threads}} \
         	--in1 {{d}}/R1.fastq.gz \
         	--in2 {{d}}/R2.fastq.gz \

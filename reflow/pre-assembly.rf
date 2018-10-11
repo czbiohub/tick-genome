@@ -75,8 +75,8 @@ val phix_trimmed = bbduk.PhiXTrimming(r1_polyg_removed, r2_polyg_removed, id, mi
 
 
 // Extract R1, R2 read pairs from output directory
-val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R1*.fastq.gz")
-val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R2*.fastq.gz")
+val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R1*trimmed.fastq.gz")
+val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R2*trimmed.fastq.gz")
 
 // Create list of reads
 status := "_post-trimming"
@@ -88,8 +88,6 @@ val fastqc_post_trimming = [
     fastqc.FastQC(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
 
 // Get kmer histogram before trimming
-val hist_pre_normalization = [
-    kat.Hist(reads, id + read_number, ksize) | (read_number, reads) <- reads_phix_trimmed]
 val khmer_hist_pre_normalization = [
     (id + read_number + "_khmer.histogram", khmer.Hist(reads, ksize)) | (read_number, reads) <- reads_phix_trimmed]
 
@@ -105,8 +103,6 @@ val normalized = khmer.NormalizeHighCoverage(
 status := "_post-digital_normalization"
 val reads_normalized = ["_R1" + status: normalized.r1_normalized, 
     "_R2" + status: normalized.r2_normalized]
-val hist_post_normalization = [
-    kat.Hist(reads, id + read_number, ksize) | (read_number, reads) <- reads_normalized]
 val khmer_hist_post_normalization = [
     (id + read_number + "_khmer.histogram", khmer.Hist(reads, ksize)) | (read_number, reads) <- reads_normalized]
 
@@ -120,14 +116,10 @@ val fastqc_post_normalization = [
 val khmer_histograms = khmer_hist_pre_normalization + khmer_hist_post_normalization
 val khmer_dir = dirs.Make(map(khmer_histograms))
 
-// // -- Compute sourmash signature -- //
-// signatures_unnormalized := sourmash.Compute(reads_human_removed)
-// signatures_normalized := sourmash.Compute(reads_normalized)
 
-// // -- Check against sourmash RefSeq and GenBank databases -- //
-// val search_refseq_genbank_unnormalized := sourmash.Search(signatures_unnormalized)
-// val search_refseq_genbank_normalized := sourmash.Search(signatures_normalized, 
-//     track_abundance=false)
+// Use kmergenie to estimate best kmer size
+val kmergenie_trimmed = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
+val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_normalized]
 
 // Use kmergenie to estimate best kmer size
 val kmergenie_trimmed = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
@@ -135,13 +127,11 @@ val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_numbe
 
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-    phix_trimmed, normalized_dir, khmer_dir] +
-    fastqc_post_trimming + hist_pre_normalization +
-    hist_post_normalization + fastqc_post_normalization + 
-    kmergenie_trimmed + kmergenie_normalized
-    // human_removed, 
-    // kat_hist_pre_normalization, normalized, kat_hist_pre_normalization, 
-    // re_paired, signatures, search_refseq_genbank]
+    phix_trimmed, normalized_dir, khmer_dir, polyg_removed] + 
+        fastqc_post_trimming + 
+        fastqc_post_normalization + 
+        kmergenie_trimmed + kmergenie_normalized
+
 
 
 @requires(cpu := 2)
