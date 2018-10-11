@@ -1,11 +1,11 @@
 pipeline:
  # This field specifies which pipeline needs to be run. Only implemented pipelines can be run.
- [assemble, QCcontrol, align]
+ QCcontrol
 # Which tools need to be used, and in which order.
 tools:
- [abyss, soapdenovo, allpaths]
+ [kmergenie, align]
 # Prefix to append to all output files
-output: tick_assembly_v1
+output: tick_qualitycontrol_v1
 # Minimum contig length to be considered. This parameter is used in several steps in order to 
 # discard short contigs (default 1000)
 minCtgLength: 1000

@@ -1,0 +1,36 @@
+pipeline:
+ # This field specifies which pipeline needs to be run. Only implemented pipelines can be run.
+ assemble
+# Which tools need to be used, and in which order.
+tools:
+ [abyss, soapdenovo, allpaths]
+# Prefix to append to all output files
+output: tick_assembly_v1
+# Minimum contig length to be considered. This parameter is used in several steps in order to 
+# discard short contigs (default 1000)
+minCtgLength: 1000
+# Expected genome size. Used by some assemblers, if unsure, give a rough estimate.
+genomeSize: 2400000000
+# Number of threads to be used in parallel steps.
+threads: 32
+# In case a tool needs a predefined kmer size (Rule-of-thumb, try 61 first)
+kmer: 61
+# This field is mandatory when an alignment needs to be executed, e.g, the tools in the evaluation  
+# pipeline use the .bam alignments to work. 
+reference: PATH_TO_REFERENCE
+libraries:
+ tick_1:
+  pair1: /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz
+  pair2: /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz
+  orientation: innie
+  insert: 16881
+  # CV%: 83.99 = stdev/mean --> stdev = 16881*(83.99/100) = 14178.3519
+  std: 14178
+ tick_2:
+  pair1: /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R1_post-trimming.fastq.gz
+  pair2: /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R2_post-trimming.fastq.gz
+  orientation: innie
+  insert: 12938
+  # CV%: 101.26 = stdev/mean --> stdev = 12938*(101.26/100) = 13101.0188
+  std: 13101
+reference: /home/olga/scratch/tick-genome/dna/2018-10-10-dovetail/ixodes_scapularis_06May2018_kaVVW.fasta
