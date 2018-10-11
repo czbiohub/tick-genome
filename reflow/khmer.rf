@@ -68,7 +68,7 @@ func NormalizeByMedianUnpaired(fastq, singletons file, ksize, cutoff int) = {
 
 func FilterAbundance(fastq, countgraph file, cutoff int) = 
 	// Trim sequences at a minimum k-mer abundance. Run this after NormalizeByMedian
-    exec(image := khmer, cpu := threads, mem := 144*GiB) (filtered file) {"
+    exec(image := khmer, cpu := threads) (filtered file) {"
         filter-abund.py \
         	--gzip \
             --cutoff {{cutoff}} \
