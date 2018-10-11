@@ -59,7 +59,7 @@ func Merge(bams [file]) =
 
 func SortByCoordinates(bam file) = 
     exec(image := samtools, cpu := threads, mem := memory_large*GiB) (output_bam file) {"
-		samtools sort --threads -m {{memory_large_sort}}G {{threads}} {{bam}} > {{output_bam}}
+		samtools sort --threads {{threads}} -m {{memory_large_sort}}G {{bam}} > {{output_bam}}
 "}
 
 

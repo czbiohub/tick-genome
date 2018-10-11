@@ -9,10 +9,10 @@
 // 8. Run FastQC on digitally normalized data
 
 param (
-    // S3 path to a single fastq(.gz) file
+    // S3 path to a single fastq.gz file
     read1 string
 
-    // S3 path to a single fastq(.gz) file
+    // S3 path to a single fastq.gz file
     read2 string
 
     // name of the sample
@@ -25,15 +25,23 @@ param (
     // First column is R1 adapters, second is R2 adapters
     adapter_list string
 
+    // reference genome fasta.gz files, pipe-separated
+    references string
+
+    // pipe-separated unique ids for the reference names
+    references_ids string
+
     // Minimum read length after trimming
     minlength = 135
 
-    // 
+    // kmer size to use for khmer trimming and histograms
     ksize = 32
+
 )
 
 // System modules
 val dirs = make("$/dirs")
+val strings = make("$/strings")
 
 
 val adapter_removal = make("./adapter_removal.rf")
@@ -44,10 +52,15 @@ val khmer = make("./khmer.rf")
 val kmergenie = make("./kmergenie.rf")
 val utils = make("./utils.rf")
 val fastp = make("./fastp.rf")
+val bwa = make("./bwa.rf")
 
 
 val r1 = file(read1)
 val r2 = file(read2)
+
+val reference_fastas = utils.SplitByPipe(references)
+val reference_ids = strings.Split(references_ids, "|")
+val reference_map = map(zip(reference_ids, reference_fastas))
 
 val adapter_file = file(adapter_list)
 
@@ -81,6 +94,13 @@ val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R2*trimmed.fastq.gz")
 // Create list of reads
 status := "_post-trimming"
 val reads_phix_trimmed = ["_R1" + status: r1_phix_trimmed, "_R2" + status: r2_phix_trimmed]
+
+// Aligned trimmed to reference
+val reference_aligned_trimmed = [
+    bwa.Align(r1_phix_trimmed, 
+        r2_phix_trimmed, id + status, 
+        fasta, ref_id) | 
+        (ref_id, fasta) <- reference_map]
 
 
 // Do FastQC AGAIN after trimming to make sure
@@ -121,10 +141,13 @@ val khmer_dir = dirs.Make(map(khmer_histograms))
 val kmergenie_trimmed = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
 val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_normalized]
 
-// Use kmergenie to estimate best kmer size
-val kmergenie_trimmed = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
-val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_normalized]
 
+// Align digitially normalized to reference
+val reference_aligned_normalized = [
+    bwa.Align(normalized.r1_normalized, 
+        normalized.r2_normalized, id + status, 
+        fasta, ref_id) | 
+        (ref_id, fasta) <- reference_map]
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
     phix_trimmed, normalized_dir, khmer_dir, polyg_removed] + 
