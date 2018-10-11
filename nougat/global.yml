@@ -1,0 +1,57 @@
+Pipelines:
+ QCcontrol: ["fastqc", "abyss", "trimmomatic", "kmergenie", "align"]
+ assemble: ["abyss", "allpaths", "cabog",  "masurca", "soapdenovo", "spades", "trinity"]
+ evaluaqte: ["align", "qaTools", "FRC", "BUSCO"]
+ align: []
+Tools:
+ kmergenie:
+  bin: /home/olga/anaconda/envs/kmergenie/bin/kmergenie
+  options: [""]
+ fastqc:
+  bin: /sw/apps/bioinfo/fastqc/0.11.2/milou/fastqc
+  options: [--threads,  "16" ,  --outdir,  fastqc, --extract]
+ trimmomatic:
+  bin: /proj/a2010002/nobackup/sw/mf/bioinfo-tools/misc/trimmomatic/0.30/trimmomatic-0.30.jar
+  options: [""]
+ bwa:
+  bin: /home/olga/miniconda3/envs/bwa/bin/bwa
+  options: ""
+ picard:
+  bin: /sw/apps/bioinfo/picard/1.92/milou/
+  options: ""
+ samtools:
+  bin: /sw/apps/bioinfo/samtools/0.1.19/milou/bin/samtools
+  options: ""
+ abyss:
+  bin: /home/olga/anaconda/envs/abyss/bin/
+  options: [""]
+ abyss_mergePairs:
+  bin: /home/olga/anaconda/envs/abyss/bin/abyss-mergepairs
+  options: ["-m 20", "-1 230", "-2 230"]
+ allpaths:
+  bin: /home/olga/anaconda/envs/allpaths/bin/  
+  options: ["PLOIDY=2"]
+ cabog:
+  bin: /sw/apps/bioinfo/cabog/8.1/Linux-amd64/bin/
+  options: [""]
+ masurca:
+  bin: /home/olga/miniconda3/envs/MaSuRCA/bin/
+  options: [""]
+ soapdenovo:
+  bin: /home/olga/anaconda/envs/soapdenovo2/bin/SOAPdenovo-63mer
+  options: [""]
+ spades:
+  bin: /sw/apps/bioinfo/spades/3.6.0/milou/bin/spades.py
+  options: ["--careful", "-t 8"]
+ trinity:
+  bin: /sw/apps/bioinfo/trinity/2014-07-17/milou/
+  options: []
+ FRC:
+  bin: /proj/a2010002/nobackup/sw/mf/bioinfo-tools/misc/FRC_align/bin/FRC
+  options: ""
+ qaTools:
+  bin: /proj/a2010002/nobackup/sw/mf/bioinfo-tools/misc/qaTools/qaCompute
+  options: ""
+ BUSCO:
+  bin: /sw/apps/bioinfo/BUSCO/1.22/milou/BUSCO
+  options:  ["-m", "genome", "-f"]

@@ -1,0 +1,20 @@
+pipeline:
+ # This field specifies which pipeline needs to be run. Only implemented pipelines can be run.
+ assemble
+# Which tools need to be used, and in which order.
+tools:
+ [kmergenie, abyss, soapdenovo, allpaths]
+# Prefix to append to all output files
+output: tick_assembly
+# Minimum contig length to be considered. This parameter is used in several steps in order to 
+# discard short contigs (default 1000)
+minCtgLength: 1000
+# Expected genome size. Used by some assemblers, if unsure, give a rough estimate.
+genomeSize: 2400000000
+# Number of threads to be used in parallel steps.
+threads: 32
+# In case a tool needs a predefined kmer size (Rule-of-thumb, try 61 first)
+kmer: 61
+# This field is mandatory when an alignment needs to be executed, e.g, the tools in the evaluation  
+# pipeline use the .bam alignments to work. 
+reference: PATH_TO_REFERENCE
