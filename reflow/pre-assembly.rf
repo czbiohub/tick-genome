@@ -121,12 +121,17 @@ val khmer_dir = dirs.Make(map(khmer_histograms))
 val kmergenie_trimmed = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
 val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_normalized]
 
+// Use kmergenie to estimate best kmer size
+val kmergenie_trimmed = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
+val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_normalized]
+
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
     phix_trimmed, normalized_dir, khmer_dir, polyg_removed] + 
         fastqc_post_trimming + 
         fastqc_post_normalization + 
         kmergenie_trimmed + kmergenie_normalized
+
 
 
 @requires(cpu := 2)
