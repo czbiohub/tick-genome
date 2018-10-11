@@ -20,7 +20,7 @@ Tools:
   bin: /home/olga/miniconda3/envs/picard/bin/
   options: ""
  samtools:
-  bin: /sw/apps/bioinfo/samtools/0.1.19/milou/bin/samtools
+  bin: /home/olga/miniconda3/envs/samtools/bin/samtools
   options: ""
  abyss:
   bin: /home/olga/anaconda/envs/abyss/bin/
