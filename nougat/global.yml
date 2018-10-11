@@ -17,7 +17,7 @@ Tools:
   bin: /home/olga/miniconda3/envs/bwa/bin/bwa
   options: ""
  picard:
-  bin: /sw/apps/bioinfo/picard/1.92/milou/
+  bin: /home/olga/miniconda3/envs/picard/bin/
   options: ""
  samtools:
   bin: /sw/apps/bioinfo/samtools/0.1.19/milou/bin/samtools
