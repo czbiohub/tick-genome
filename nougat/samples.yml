@@ -1,9 +1,9 @@
 pipeline:
  # This field specifies which pipeline needs to be run. Only implemented pipelines can be run.
- assemble
+ [assemble, QCcontrol, align]
 # Which tools need to be used, and in which order.
 tools:
- [kmergenie, abyss, soapdenovo, allpaths]
+ [abyss, soapdenovo, allpaths]
 # Prefix to append to all output files
 output: tick_assembly_v1
 # Minimum contig length to be considered. This parameter is used in several steps in order to 
@@ -33,3 +33,4 @@ libraries:
   insert: 12938
   # CV%: 101.26 = stdev/mean --> stdev = 12938*(101.26/100) = 13101.0188
   std: 13101
+reference: /home/olga/scratch/tick-genome/dna/2018-10-10-dovetail/ixodes_scapularis_06May2018_kaVVW.fasta
