@@ -123,7 +123,7 @@ val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_numbe
 
 
 output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-    phix_trimmed, normalized_dir, khmer_dir] + 
+    phix_trimmed, normalized_dir, khmer_dir, polyg_removed] + 
         fastqc_post_trimming + 
         fastqc_post_normalization + 
         kmergenie_trimmed + kmergenie_normalized
