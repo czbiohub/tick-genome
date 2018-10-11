@@ -75,8 +75,8 @@ val phix_trimmed = bbduk.PhiXTrimming(r1_polyg_removed, r2_polyg_removed, id, mi
 
 
 // Extract R1, R2 read pairs from output directory
-val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R1*.fastq.gz")
-val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R2*.fastq.gz")
+val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R1*trimmed.fastq.gz")
+val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R2*trimmed.fastq.gz")
 
 // Create list of reads
 status := "_post-trimming"
