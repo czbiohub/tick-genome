@@ -128,6 +128,7 @@ output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed,
         fastqc_post_normalization + 
         kmergenie_trimmed + kmergenie_normalized
 
+
 @requires(cpu := 2)
 val Main = 
     [dirs.Copy(d, output) | d <- output_dirs]
