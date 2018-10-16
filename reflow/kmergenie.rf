@@ -40,6 +40,9 @@ func Run(reads file, id string) = {
 
     exec(image := kmergenie, cpu := threads, mem := 16*GiB) (outdir dir) {"
         cd {{outdir}}
-        kmergenie -t {{threads}} --diploid {{d}}/{{id}}.fastq.gz
+        kmergenie -t {{threads}} \
+        	--debug \
+        	--prefix {{id}}_kmergenie_histogram \
+        	--diploid {{d}}/{{id}}.fastq.gz
     "}
 }
