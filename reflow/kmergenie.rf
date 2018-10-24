@@ -43,7 +43,7 @@ func Run(reads file, id string) = {
         kmergenie {{d}}/{{id}}.fastq.gz \
 	        -t {{threads}} \
 	        	--debug \
-	        	--prefix {{id}}_kmergenie_histogram \
+	        	-o {{id}}_kmergenie_histogram \
 	        	--diploid
     "}
 }
