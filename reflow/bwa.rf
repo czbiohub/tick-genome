@@ -1,0 +1,56 @@
+param (
+	threads = 8
+)
+
+bwa := "quay.io/biocontainers/bwa:0.7.4--ha92aebf_0"
+
+
+val dirs = make("$/dirs")
+
+val samtools = make("./samtools.rf")
+
+func Index(fasta file, id string) = {
+	// Create a bwt index of the fasta
+
+    d := dirs.Make([id + ".fasta": fasta])
+
+    outdir := exec(image := bwa, cpu := 1) (outdir dir) {"
+        ln -s {{outdir}}/{{id}}.fasta
+        bwa index {{outdir}}/{{id}}.fasta
+	"}
+
+    val (index, _) = dirs.Pick(outdir, "*.bwt")
+    index
+}
+
+
+func Mem(r1, r2 file, id string, 
+    index_fasta, index_bwt file, index_name string) = {
+    // Run BWA-MEM to align reads to reference
+
+    index := dirs.Make([index_name + ".fasta": index_fasta, 
+        index_name + ".bwt": index_bwt])
+    d := dirs.Make(["R1.fastq.gz": r1, "R2.fastq.gz": r2])
+
+    exec(image := bwa, cpu := threads, mem := 120*GiB) (output file) {"
+        cd {{index}}
+        bwa mem -M -t {{threads}} \
+            {{index_name}} \
+            {{d}}/R1.fastq.gz \
+            {{d}}/R2.fastq.gz > {{output}}
+    "}
+}
+
+
+func Align(r1, r2 file, id string, fasta file, ref_id string) = {
+    // Run BWA-MEM to align reads to reference, return sorted bam
+
+    // Create an index of the fasta if it hasn't been created already
+    bwt := Index(fasta, ref_id)
+
+    aligned_sam := Mem(r1, r2, id, fasta, bwt, ref_id)
+    aligned_bam := samtools.SamToBam(aligned_sam, false)
+
+    // Return sorted bam file
+    samtools.SortByCoordinates(aligned_bam)
+}
