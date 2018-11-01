@@ -16,7 +16,7 @@ func PhiXTrimming(read1, read2 file, id string, minlength int) = {
     // Rename files to have fastq.gz endings
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
-    exec(image := bbmap, cpu := threads, mem := 8*GiB) (outdir dir) {"
+    outdir := exec(image := bbmap, cpu := threads, mem := 8*GiB) (outdir dir) {"
         cd {{outdir}}
         bbduk.sh ref=phix \
             in={{d}}/{{id}}_R1.fastq.gz \
@@ -38,6 +38,15 @@ func PhiXTrimming(read1, read2 file, id string, minlength int) = {
             # trim everything to the right of PhiX \
             ktrim=r 
     "}
+
+    val (r1, _) = dirs.Pick(outdir, "*_R1_bbduk_phix_trimmed.fastq.gz")
+    val (r2, _) = dirs.Pick(outdir, "*_R2_bbduk_phix_trimmed.fastq.gz")
+    val stats = dirs.Pick(outdir, "*bbduk_phix_trimmed.stats")
+
+    val reports = utils.MakeReportDir([stats])
+
+    // Return a "bundle" with easy-to-grab items
+    {r1, r2, reports}
 }
 
 
