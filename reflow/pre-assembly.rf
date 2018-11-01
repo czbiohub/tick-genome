@@ -70,21 +70,16 @@ val r1_fastqc_reports = fastqc.FastQC(r1, id + "_R1" + status)
 val r2_fastqc_reports = fastqc.FastQC(r2, id + "_R2" + status)
 
 // -- Remove Illumina Nextera Adapters --- //
-val adapter_removed = adapter_removal.AdapterRemoval(r1, r2, id, adapter_file, minlength)
-
-// Extract R1, R2 read pairs from output directory
-val (r1_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R1_*.fastq.gz")
-val (r2_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R2_*.fastq.gz")
+val adapter_removed = adapter_removal.AdapterRemoval(r1, r2, id, 
+    adapter_file, minlength)
 
 // --- Remove Poly-G (known NovaSeq issue) ---
-val polyg_removed = fastp.TrimPolyG(r1_adapter_trimmed, r2_adapter_trimmed, id, minlength)
-
-// Extract R1, R2 read pairs from output directory
-val (r1_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R1_*.fastq.gz")
-val (r2_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R2_*.fastq.gz")
+val polyg_removed = fastp.TrimPolyG(adapter_removed.r1, adapter_removed.r2, 
+    id, minlength)
 
 // -- Remove PhiX Sequences --- //
-val phix_trimmed = bbduk.PhiXTrimming(r1_polyg_removed, r2_polyg_removed, id, minlength)
+val phix_trimmed = bbduk.PhiXTrimming(polyg_removed.r1, polyg_removed.r2, 
+    id, minlength)
 
 
 // Extract R1, R2 read pairs from output directory
@@ -149,8 +144,10 @@ val reference_aligned_normalized = [
         fasta, ref_id) | 
         (ref_id, fasta) <- reference_map]
 
-output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-    phix_trimmed, normalized_dir, khmer_dir, polyg_removed] + 
+output_dirs := [r1_fastqc_reports, r2_fastqc_reports, 
+                adapter_removed.reports, 
+    phix_trimmed.reports, 
+    normalized_dir, khmer_dir, polyg_removed] + 
         fastqc_post_trimming + 
         fastqc_post_normalization + 
         kmergenie_trimmed + kmergenie_normalized
