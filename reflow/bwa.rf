@@ -54,9 +54,11 @@ func Align(r1, r2 file, id string, fasta file, ref_id string) = {
     // Return sorted bam file
     bam := samtools.SortByCoordinates(bam_unsorted)
     bai := samtools.Index(bam)
+    flagstat := samtools.Flagstat(bam)
 
     prefix := id + "_" + ref_id
 
-    items := [prefix + ".bai": bai, prefix + ".bam": bam]
+    items := [prefix + ".bai": bai, prefix + ".bam": bam,
+              prefix + ".flagstat": flagstat]
     dirs.Make(items)
 }
