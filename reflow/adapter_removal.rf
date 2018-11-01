@@ -49,9 +49,10 @@ func AdapterRemoval(read1, read2 file, id string, adapter_list file, minlength i
     "}
     val (r1, _) = dirs.Pick(outdir, "*R1*.fastq.gz")
     val (r2, _) = dirs.Pick(outdir, "*R2*.fastq.gz")
-    val identify_adapters = dirs.Pick(outdir, "_adapterremoval_identifyadapters.txt")
+    val identify_adapters = dirs.Pick(outdir, "*_adapterremoval_identifyadapters.txt")
+    val settings = dirs.Pick(outdir, ("*settings"))
 
-    val reports = utils.MakeReportDir([identify_adapters])
+    val reports = utils.MakeReportDir([settings, identify_adapters])
 
     // return a bundle with the files
     {r1, r2, reports}

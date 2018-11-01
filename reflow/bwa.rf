@@ -48,9 +48,15 @@ func Align(r1, r2 file, id string, fasta file, ref_id string) = {
     // Create an index of the fasta if it hasn't been created already
     bwt := Index(fasta, ref_id)
 
-    aligned_sam := Mem(r1, r2, id, fasta, bwt, ref_id)
-    aligned_bam := samtools.SamToBam(aligned_sam, false)
+    sam := Mem(r1, r2, id, fasta, bwt, ref_id)
+    bam_unsorted := samtools.SamToBam(sam, false)
 
     // Return sorted bam file
-    samtools.SortByCoordinates(aligned_bam)
+    bam := samtools.SortByCoordinates(bam_unsorted)
+    bai := samtools.Index(bam)
+
+    prefix := id + "_" + ref_id
+
+    items := [prefix + ".bai": bai, prefix + ".bam": bam]
+    dirs.Make(items)
 }
