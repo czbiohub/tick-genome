@@ -1,0 +1,5 @@
+/mnt/data/tick/fake-genome-transcriptome/tick0.fake.genome.fasta,/mnt/data/tick/fake-genome-transcriptome/tick1.fake.genome.fasta,/mnt/data/tick/fake-genome-transcriptome/tick2.fake.genome.fasta,/mnt/data/tick/fake-genome-transcriptome/tick4.fake.genome.fasta
+1.0,0.07,0.04,0.064
+0.07,1.0,0.132,0.046
+0.04,0.132,1.0,0.03
+0.064,0.046,0.03,1.0
