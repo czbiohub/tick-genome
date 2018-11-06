@@ -15,7 +15,7 @@ func Index(fasta file, id string) = {
     d := dirs.Make([id + ".fasta": fasta])
 
     outdir := exec(image := bwa, cpu := 1) (outdir dir) {"
-        ln -s {{outdir}}/{{id}}.fasta
+        ln -s {{fasta}} {{outdir}}/{{id}}.fasta
         bwa index {{outdir}}/{{id}}.fasta
 	"}
 
