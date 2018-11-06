@@ -64,52 +64,44 @@ val reference_map = map(zip(reference_ids, reference_fastas))
 
 val adapter_file = file(adapter_list)
 
-status := "_pre_trimming"
+// Create map of read number + status for each read
+val reads_pre_trimming = utils.MakeNamedStatusReads(
+        r1, r2, id, "_pre_trimming")
 
-val r1_fastqc_reports = fastqc.FastQC(r1, id + "_R1" + status)
-val r2_fastqc_reports = fastqc.FastQC(r2, id + "_R2" + status)
+val pre_trimming_fastqc = [fastqc.FastQC(read, name) | (name, read) <- reads_pre_trimming]
 
 // -- Remove Illumina Nextera Adapters --- //
-val adapter_removed = adapter_removal.AdapterRemoval(r1, r2, id, adapter_file, minlength)
-
-// Extract R1, R2 read pairs from output directory
-val (r1_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R1_*.fastq.gz")
-val (r2_adapter_trimmed, _) = dirs.Pick(adapter_removed, "*_R2_*.fastq.gz")
+val adapter_removed = adapter_removal.AdapterRemoval(r1, r2, id, 
+    adapter_file, minlength)
 
 // --- Remove Poly-G (known NovaSeq issue) ---
-val polyg_removed = fastp.TrimPolyG(r1_adapter_trimmed, r2_adapter_trimmed, id, minlength)
-
-// Extract R1, R2 read pairs from output directory
-val (r1_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R1_*.fastq.gz")
-val (r2_polyg_removed, _) = dirs.Pick(polyg_removed, "*_R2_*.fastq.gz")
+val polyg_removed = fastp.TrimPolyG(adapter_removed.r1, adapter_removed.r2, 
+    id, minlength)
 
 // -- Remove PhiX Sequences --- //
-val phix_trimmed = bbduk.PhiXTrimming(r1_polyg_removed, r2_polyg_removed, id, minlength)
+val phix_trimmed = bbduk.PhiXTrimming(polyg_removed.r1, polyg_removed.r2, 
+    id, minlength)
 
-
-// Extract R1, R2 read pairs from output directory
-val (r1_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R1*trimmed.fastq.gz")
-val (r2_phix_trimmed, _) = dirs.Pick(phix_trimmed, "*R2*trimmed.fastq.gz")
-
-// Create list of reads
 status := "_post-trimming"
-val reads_phix_trimmed = ["_R1" + status: r1_phix_trimmed, "_R2" + status: r2_phix_trimmed]
-
 // Aligned trimmed to reference
 val reference_aligned_trimmed = [
-    bwa.Align(r1_phix_trimmed, 
-        r2_phix_trimmed, id + status, 
+    bwa.Align(phix_trimmed.r1, 
+        phix_trimmed.r2, id + status, 
         fasta, ref_id) | 
         (ref_id, fasta) <- reference_map]
+
+// Create map of read number + status for each read
+val reads_phix_trimmed = utils.MakeNamedStatusReads(
+        phix_trimmed.r1, phix_trimmed.r2, id, status)
 
 
 // Do FastQC AGAIN after trimming to make sure
 val fastqc_post_trimming = [
-    fastqc.FastQC(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
+    fastqc.FastQC(reads, name) | (name, reads) <- reads_phix_trimmed]
 
 // Get kmer histogram before trimming
 val khmer_hist_pre_normalization = [
-    (id + read_number + "_khmer.histogram", khmer.Hist(reads, ksize)) | (read_number, reads) <- reads_phix_trimmed]
+    (name + "_khmer.histogram", khmer.Hist(reads, ksize)) | (name, reads) <- reads_phix_trimmed]
 
 // -- Perform Digital Normalization --
 // -- Remove reads with too-high or too-low abundance -- //
@@ -117,7 +109,7 @@ val khmer_hist_pre_normalization = [
 //   - high-abundance kmers mess up assembly
 //   - low-abundance kmers are probably erroneous
 val normalized = khmer.NormalizeHighCoverage(
-    r1_phix_trimmed, r2_phix_trimmed, ksize)
+    phix_trimmed.r1, phix_trimmed.r2, ksize)
 
 // -- Get kmer distribution histograms after normalization --- //
 status := "_post-digital_normalization"
@@ -149,11 +141,17 @@ val reference_aligned_normalized = [
         fasta, ref_id) | 
         (ref_id, fasta) <- reference_map]
 
-output_dirs := [r1_fastqc_reports, r2_fastqc_reports, adapter_removed, 
-    phix_trimmed, normalized_dir, khmer_dir, polyg_removed] + 
+output_dirs := [adapter_removed.reports, 
+                polyg_removed.reports,
+    phix_trimmed.reports, 
+    normalized_dir, khmer_dir] + 
+    pre_trimming_fastqc +
         fastqc_post_trimming + 
         fastqc_post_normalization + 
-        kmergenie_trimmed + kmergenie_normalized
+        kmergenie_trimmed + 
+        kmergenie_normalized +
+        reference_aligned_trimmed +
+        reference_aligned_normalized
 
 
 

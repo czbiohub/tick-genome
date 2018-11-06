@@ -1,3 +1,7 @@
+test:
+	reflow doc pre-assembly.rf
+
+
 multiqc: multiqc_sync multiqc_reflow
 
 multiqc_sync:
