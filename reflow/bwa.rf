@@ -18,9 +18,7 @@ func Index(fasta file, id string) = {
         bwa index {{d}}/{{id}}.fasta
 	"}
     x := trace(outdir)
-    x
     y := trace(d)
-    y
     val (index, _) = dirs.Pick(d, "*.bwt")
     index
 }
