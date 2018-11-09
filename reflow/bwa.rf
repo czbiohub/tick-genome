@@ -14,14 +14,15 @@ func Index(fasta file, id string) = {
 
     d := dirs.Make([id + ".fasta": fasta])
 
+    u := trace(d)
     outdir := exec(image := bwa, cpu := 1) (outdir dir) {"
         cd {{outdir}}
         ln -s {{d}}/{{id}}.fasta .
         bwa index {{id}}.fasta
 	"}
     v := trace(outdir)
-    v := trace(d)
     val (index, _) = dirs.Pick(d, "*.bwt")
+    w := trace(index)
     index
 }
 
