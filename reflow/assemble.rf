@@ -22,6 +22,10 @@ val dirs = make("$/dirs")
 
 val abyss = make("./abyss.rf")
 
-val abyss_output = abyss.AssemblePairedEnd(read1, read2, id, ksize)
+r1 := file(read1)
+r2 := file(read2)
+
+val abyss_output = abyss.AssemblePairedEnd(
+    r1, r2, id, ksize)
 
 val Main = dirs.Copy(abyss_output, output)

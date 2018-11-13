@@ -48,3 +48,12 @@ test_pre_assembly:
 
 test_multiqc_pre_assembly:
 	reflow -cache=off run multiqc.rf -input=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6/ -output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6_multiqc/
+
+tick1_assembly:
+	reflow run assemble.rf \
+		-read1=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz \
+		-read2=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz \
+		-output=s3://tick-genome/dna/2018-06-28/assembly_v1/ \
+		-id=tick_1_S1 \
+		-ksize=61
+
