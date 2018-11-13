@@ -53,7 +53,7 @@ tick1_assembly:
 	sudo reflow run -local assemble.rf \
 		-read1=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz \
 		-read2=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz \
-		-output=s3://tick-genome/dna/2018-06-28/assembly_v1/ \
+		-output=s3://tick-genome/dna/2018-06-28/assembly_k75/ \
 		-id=tick_1_S1 \
-		-ksize=61
+		-ksize=75
 

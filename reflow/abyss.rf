@@ -14,7 +14,7 @@ func AssemblePairedEnd(read1, read2 file, id string, ksize int) = {
     d := trace(d)
     exec(image := abyss, cpu := threads, mem := 256*GiB) (outdir dir) {"
     	cd {{outdir}}
-        abyss-pe j={{threads}} name={{id}} k={{ksize}} \
+        abyss-pe np={{threads}} j={{threads}} name={{id}} k={{ksize}} \
         	in='{{d}}/{{id}}_R1.fastq.gz {{d}}/{{id}}_R2.fastq.gz'
 
     "} 
