@@ -51,6 +51,7 @@ test_multiqc_pre_assembly:
 
 tick1_assembly:
 	sudo reflow run -local assemble.rf \
+		-localdir /home/olga/scratch/reflow-tmp/ \
 		-read1=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz \
 		-read2=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz \
 		-output=s3://tick-genome/dna/2018-06-28/assembly_k75/ \
