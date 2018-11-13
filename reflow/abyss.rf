@@ -11,7 +11,7 @@ val abyss = "quay.io/biocontainers/abyss:2.1.1--h02d93b8_0"
 func AssemblePairedEnd(read1, read2 file, id string, ksize int) = {
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
-    d = trace(d)
+    d := trace(d)
     exec(image := abyss, cpu := threads, mem := 256*GiB) (outdir dir) {"
     	cd {{outdir}}
         abyss-pe j={{threads}} name={{id}} k={{ksize}} \
