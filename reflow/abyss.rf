@@ -2,7 +2,7 @@
 
 val dirs = make("$/dirs")
 
-threads := 32
+threads := 60
 
 val abyss = "quay.io/biocontainers/abyss:2.1.1--h02d93b8_0"
 
@@ -12,7 +12,7 @@ func AssemblePairedEnd(read1, read2 file, id string, ksize int) = {
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
     d := trace(d)
-    exec(image := abyss, cpu := threads, mem := 256*GiB) (outdir dir) {"
+    exec(image := abyss, cpu := threads, mem := 230*GiB) (outdir dir) {"
     	cd {{outdir}}
         abyss-pe np={{threads}} j={{threads}} name={{id}} k={{ksize}} \
         	in='{{d}}/{{id}}_R1.fastq.gz {{d}}/{{id}}_R2.fastq.gz' \
@@ -20,3 +20,12 @@ func AssemblePairedEnd(read1, read2 file, id string, ksize int) = {
 
     "} 
 }
+
+sudo reflow run -local \
+        -localdir /mnt/data/reflow-tmp/ \
+        assemble.rf \
+        -read1=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz \
+        -read2=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz \
+        -output=s3://tick-genome/dna/2018-06-28/assembly_k75/ \
+        -id=tick_1_S1 \
+        -ksize=75
