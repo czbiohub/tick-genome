@@ -19,18 +19,7 @@ func Index(fasta file, id string) = {
         bwa index {{id}}.fasta
 	"}
     d := trace(d)
-
-     // NOTE: outdir is not being used anywhere, so it wont get evaluated
-    outdir := trace(outdir)
-    d := trace(d)
-
-    val (index, _) = dirs.Pick(d, "*.bwt")
-
-    // to force outdir evaluation, remove above line and uncomment below.
-
-    val (index, _) = outdir ~> dirs.Pick(d, "*.bwt")
-
-    index
+    d
 }
 
 
