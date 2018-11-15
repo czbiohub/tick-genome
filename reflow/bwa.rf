@@ -24,11 +24,8 @@ func Index(fasta file, id string) = {
 
 
 func Mem(r1, r2 file, id string, 
-    index_fasta, index_bwt file, index_name string) = {
+    index dir, index_name string) = {
     // Run BWA-MEM to align reads to reference
-
-    index := dirs.Make([index_name + ".fasta": index_fasta, 
-        index_name + ".bwt": index_bwt])
     d := dirs.Make(["R1.fastq.gz": r1, "R2.fastq.gz": r2])
 
     exec(image := bwa, cpu := threads, mem := 120*GiB) (output file) {"
@@ -45,9 +42,9 @@ func Align(r1, r2 file, id string, fasta file, ref_id string) = {
     // Run BWA-MEM to align reads to reference, return sorted bam
 
     // Create an index of the fasta if it hasn't been created already
-    bwt := Index(fasta, ref_id)
+    index := Index(fasta, ref_id)
 
-    sam := Mem(r1, r2, id, fasta, bwt, ref_id)
+    sam := Mem(r1, r2, id, index, ref_id)
     bam_unsorted := samtools.SamToBam(sam, false)
 
     // Return sorted bam file
