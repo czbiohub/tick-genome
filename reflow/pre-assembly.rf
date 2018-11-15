@@ -94,6 +94,7 @@ val reference_aligned_trimmed = [
 val reads_phix_trimmed = utils.MakeNamedStatusReads(
         phix_trimmed.r1, phix_trimmed.r2, id, status)
 
+
 // Do FastQC AGAIN after trimming to make sure
 val fastqc_post_trimming = [
     fastqc.FastQC(reads, name) | (name, reads) <- reads_phix_trimmed]
