@@ -17,7 +17,7 @@ func Index(fasta file, id string) = {
     outdir := exec(image := bwa, cpu := 1) (outdir dir) {"
         cd {{outdir}}
         ln -s {{outdir}}/{{id}}.fasta .
-        bwa index {{id}}.fasta
+        bwa index {{outdir}}/{{id}}.fasta
 	"}
     d := trace(d)
 
