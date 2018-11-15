@@ -84,11 +84,11 @@ val phix_trimmed = bbduk.PhiXTrimming(polyg_removed.r1, polyg_removed.r2,
 
 status := "_post-trimming"
 // Aligned trimmed to reference
-val reference_aligned_trimmed = [
-    bwa.Align(phix_trimmed.r1, 
-        phix_trimmed.r2, id + status, 
-        fasta, ref_id) | 
-        (ref_id, fasta) <- reference_map]
+// val reference_aligned_trimmed = [
+//     bwa.Align(phix_trimmed.r1, 
+//         phix_trimmed.r2, id + status, 
+//         fasta, ref_id) | 
+//         (ref_id, fasta) <- reference_map]
 
 // Create map of read number + status for each read
 val reads_phix_trimmed = utils.MakeNamedStatusReads(
@@ -135,11 +135,11 @@ val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_numbe
 
 
 // Align digitially normalized to reference
-val reference_aligned_normalized = [
-    bwa.Align(normalized.r1_normalized, 
-        normalized.r2_normalized, id + status, 
-        fasta, ref_id) | 
-        (ref_id, fasta) <- reference_map]
+// val reference_aligned_normalized = [
+//     bwa.Align(normalized.r1_normalized, 
+//         normalized.r2_normalized, id + status, 
+//         fasta, ref_id) | 
+//         (ref_id, fasta) <- reference_map]
 
 output_dirs := [adapter_removed.reports, 
                 polyg_removed.reports,
@@ -149,9 +149,9 @@ output_dirs := [adapter_removed.reports,
         fastqc_post_trimming + 
         fastqc_post_normalization + 
         kmergenie_trimmed + 
-        kmergenie_normalized +
-        reference_aligned_trimmed +
-        reference_aligned_normalized
+        kmergenie_normalized //+
+        // reference_aligned_trimmed +
+        // reference_aligned_normalized
 
 
 
