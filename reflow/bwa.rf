@@ -9,14 +9,14 @@ val dirs = make("$/dirs")
 
 val samtools = make("./samtools.rf")
 
-func Index(fasta file, id string) = {
+func Index(fasta_gz file, id string) = {
 	// Create a bwt index of the fasta
 
-    d := dirs.Make([id + ".fasta": fasta])
+    d := dirs.Make([id + ".fasta.gz": fasta_gz])
 
     outdir := exec(image := bwa, cpu := 1) (outdir dir) {"
         cd {{d}}
-        bwa index {{id}}.fasta
+        bwa index {{id}}.fasta.gz
         ls -lha {{d}}
         mv {{d}} {{outdir}}
 	"}
