@@ -18,13 +18,13 @@ func Index(fasta file, id string) = {
         cd {{d}}
         bwa index {{id}}.fasta
 	"}
-    d := trace(d)
+    d := trace(outdir)
     d
 }
 
 
 func Mem(r1, r2 file, id string, 
-    index dir, index_name string) = {
+        index dir, index_name string) = {
     // Run BWA-MEM to align reads to reference
     d := dirs.Make(["R1.fastq.gz": r1, "R2.fastq.gz": r2])
 
