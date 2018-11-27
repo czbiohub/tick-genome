@@ -82,13 +82,19 @@ val polyg_removed = fastp.TrimPolyG(adapter_removed.r1, adapter_removed.r2,
 val phix_trimmed = bbduk.PhiXTrimming(polyg_removed.r1, polyg_removed.r2, 
     id, minlength)
 
+
+
 status := "_post-trimming"
+// Use kmergenie to estimate best kmer size
+val kmergenie_trimmed = kmergenie.Run(
+    phix_trimmed.r1, phix_trimmed.r2, id + status)
+
 // Aligned trimmed to reference
-val reference_aligned_trimmed = [
-    bwa.Align(phix_trimmed.r1, 
-        phix_trimmed.r2, id + status, 
-        fasta, ref_id) | 
-        (ref_id, fasta) <- reference_map]
+// val reference_aligned_trimmed = [
+//     bwa.Align(phix_trimmed.r1, 
+//         phix_trimmed.r2, id + status, 
+//         fasta, ref_id) | 
+//         (ref_id, fasta) <- reference_map]
 
 // Create map of read number + status for each read
 val reads_phix_trimmed = utils.MakeNamedStatusReads(
@@ -100,6 +106,7 @@ val fastqc_post_trimming = [
     fastqc.FastQC(reads, name) | (name, reads) <- reads_phix_trimmed]
 
 // Get kmer histogram before trimming
+
 val khmer_hist_pre_normalization = [
     (name + "_khmer.histogram", khmer.Hist(reads, ksize)) | (name, reads) <- reads_phix_trimmed]
 
@@ -128,30 +135,28 @@ val fastqc_post_normalization = [
 val khmer_histograms = khmer_hist_pre_normalization + khmer_hist_post_normalization
 val khmer_dir = dirs.Make(map(khmer_histograms))
 
-
 // Use kmergenie to estimate best kmer size
-val kmergenie_trimmed = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_phix_trimmed]
-val kmergenie_normalized = [kmergenie.Run(reads, id + read_number) | (read_number, reads) <- reads_normalized]
-
+val kmergenie_normalized = kmergenie.Run(
+    phix_trimmed.r1, phix_trimmed.r2, id + status)
 
 // Align digitially normalized to reference
-val reference_aligned_normalized = [
-    bwa.Align(normalized.r1_normalized, 
-        normalized.r2_normalized, id + status, 
-        fasta, ref_id) | 
-        (ref_id, fasta) <- reference_map]
+// val reference_aligned_normalized = [
+//     bwa.Align(normalized.r1_normalized, 
+//         normalized.r2_normalized, id + status, 
+//         fasta, ref_id) | 
+//         (ref_id, fasta) <- reference_map]
 
 output_dirs := [adapter_removed.reports, 
                 polyg_removed.reports,
     phix_trimmed.reports, 
+    kmergenie_trimmed, 
+    kmergenie_normalized,
     normalized_dir, khmer_dir] + 
     pre_trimming_fastqc +
         fastqc_post_trimming + 
-        fastqc_post_normalization + 
-        kmergenie_trimmed + 
-        kmergenie_normalized +
-        reference_aligned_trimmed +
-        reference_aligned_normalized
+        fastqc_post_normalization //+ 
+        // reference_aligned_trimmed +
+        // reference_aligned_normalized
 
 
 

@@ -9,7 +9,8 @@ param (
 val kmergenie = "quay.io/biocontainers/kmergenie:1.7016--py27r341ha92aebf_3"
 
 val dirs = make("$/dirs")
-
+val fastp = make("./fastp.rf")
+val utils = make("./utils.rf")
 
 
 // bash-4.2# kmergenie --diploid $R1 $R2                                                     
@@ -31,19 +32,22 @@ val dirs = make("$/dirs")
 
 
 // Kmer histogram
-func Run(reads file, id string) = {
+func Run(r1, r2 file, id string) = {
+        // Interleave read pairs into a single file
+    val interleaved = fastp.Interleave(r1, r2)
+    val interleaved_gz = utils.ParallelGzip(interleaved, threads)
+
     // First three lines are renaming nonsense because "kat hist" needs
 	// the filename to end in fastq.gz to detect the type
 
     // Ensure input file has fastq.gz ending
-    d := dirs.Make([id+".fastq.gz": reads])
+    d := dirs.Make([id+".fastq.gz": interleaved_gz])
 
     exec(image := kmergenie, cpu := threads, mem := 16*GiB) (outdir dir) {"
         cd {{outdir}}
         kmergenie {{d}}/{{id}}.fastq.gz \
 	        -t {{threads}} \
 	        	--debug \
-	        	-o {{id}}_kmergenie_histogram \
-	        	--diploid
+	        	-o {{id}}_kmergenie_histogram
     "}
 }
