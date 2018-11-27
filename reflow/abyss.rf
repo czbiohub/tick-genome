@@ -7,6 +7,136 @@ threads := 32
 val abyss = "czbiohub/abyss2"
 
 // manpage for abyss-pe: http://manpages.ubuntu.com/manpages/cosmic/en/man1/abyss-pe.1.html
+// --- excerpt ---
+//     Assemble  the  reads  of  the  input files into contigs. The reads may be in FASTA, FASTQ,
+//     qseq, export, SRA, SAM or BAM format and may be compressed with gz, bz2 or xz and  may  be
+//     tarred.
+
+//     abyss-pe is a Makefile script. Any options of make may also be used with abyss-pe.
+
+// Parameters of abyss-pe
+//     name, JOB_NAME
+//            The   name   of   this   assembly.  The  resulting  scaffolds  will  be  stored  in
+//            ${name}-scaffolds.fa.
+
+//     in     input files. Use this variable when assembling data from a single library.
+
+//     lib    a quoted list of whitespace-separated paired-end library names.  Use  this  varible
+//            when  assembling data from multiple paired-end libraries.  For each library name in
+//            lib, the user must define a variable on the command line with the same name,  which
+//            indicates  the  read  files  for  that  library.  See EXAMPLES below for a concrete
+//            example of usage.
+
+//     pe     list of paired-end libraries that will  be  used  only  for  merging  unitigs  into
+//            contigs and will not contribute toward the consensus sequence.
+
+//     mp     list of mate-pair libraries that will be used for scaffolding.  Mate-pair libraries
+//            do not contribute toward the consensus sequence.
+
+//     se     files containing single-end reads
+
+//     a      maximum number of branches of a bubble [2]
+
+//     b      maximum length of a bubble (bp) [10000]
+
+//     c      minimum mean k-mer coverage of a unitig [sqrt(median)]
+
+//     d      allowable error of a distance estimate (bp) [6]
+
+//     e      minimum erosion k-mer coverage [sqrt(median)]
+
+//     E      minimum erosion k-mer coverage per strand [1]
+
+//     j      number of threads [2]
+
+//     k      size of k-mer (bp)
+
+//     l      minimum alignment length of a read (bp) [k]
+
+//     m      minimum overlap of two unitigs (bp) [30]
+
+//     n      minimum number of pairs required for building contigs [10]
+
+//     N      minimum number of pairs required for building scaffolds [n]
+
+//     p      minimum sequence identity of a bubble [0.9]
+
+//     q      minimum base quality [3]
+//            Trim bases from the ends of reads whose quality is less q.
+
+//     s      minimum unitig size required for building contigs (bp) [200]
+//            The seed length should be at least twice the  value  of  k.  If  more  sequence  is
+//            assembled than the expected genome size, try increasing s.
+
+//     S      minimum contig size required for building scaffolds (bp) [s]
+
+//     t      minimum tip size (bp) [2k]
+
+//     v      v=-v to enable verbose logging
+
+//     np, NSLOTS
+//            the number of processes of an MPI assembly
+
+//     mpirun the path to mpirun
+
+//     aligner
+//            the program to use to align the reads to the contigs [map]
+//            map, kaligner, bwa, bwasw, bowtie or bowtie2
+
+//     cs     convert colour-space contigs to nucleotide contigs following assembly
+
+// Options of make
+//     -n, --dry-run
+//            Print the commands that would be executed, but do not execute them.
+
+// Make targets for abyss-pe
+//     default
+//            Equivalent to `scaffolds scaffolds-dot stats'.
+
+//     unitigs
+//            Assemble unitigs.
+
+//     unitigs-dot
+//            Output the unitig overlap graph.
+
+//     pe-sam Map paired-end reads to the unitigs and output a SAM file.
+
+//     pe-bam Map paired-end reads to the unitigs and output a BAM file.
+
+//     pe-index
+//            Generate an index of the unitigs used by abyss-map.
+
+//     contigs
+//            Assemble contigs.
+
+//     contigs-dot
+//            Output the contig overlap graph.
+
+//     mp-sam Map mate-pair reads to the contigs and output a SAM file.
+
+//     mp-bam Map mate-pair reads to the contigs and output a BAM file.
+
+//     mp-index
+//            Generate an index of the contigs used by abyss-map.
+
+//     scaffolds
+//            Assemble scaffolds.
+
+//     scaffolds-dot
+//            Output the scaffold overlap graph.
+
+//     stats  Display assembly contiguity statistics.
+
+//     clean  Remove intermediate files.
+
+//     version
+//            Display the version of abyss-pe.
+
+//     versions
+//            Display the versions of all programs used by abyss-pe.
+
+//     help   Display a helpful message.
+
 func AssemblePairedEnd(read1, read2 file, id string, ksize int) = {
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
