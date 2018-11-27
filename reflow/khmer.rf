@@ -4,7 +4,7 @@ param (
       threads = 8
 
       // gigabytes of memory
-      memory = 128
+      memory = 256
       )
       
 
@@ -34,13 +34,13 @@ func NormalizeByMedian(fastq file, ksize, cutoff int) = {
 
     d := dirs.Make(["reads.fastq": fastq])
 
-    exec(image := khmer, mem := 144*GiB) (normalized, countgraph file) {"
+    exec(image := khmer, mem := 260*GiB) (normalized, countgraph file) {"
         normalize-by-median.py \
         	--paired \
         	--gzip \
             --cutoff {{cutoff}} \
             --ksize {{ksize}} \
-            --max-memory-usage {{memory}}G \
+            --max-memory-usage {{256}}G \
             --savegraph {{countgraph}} \
             --output {{normalized}} \
              {{d}}/reads.fastq"}
