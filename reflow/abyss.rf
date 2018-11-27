@@ -2,7 +2,7 @@
 
 val dirs = make("$/dirs")
 
-threads := 32
+threads := 54
 
 val abyss = "czbiohub/abyss2"
 
