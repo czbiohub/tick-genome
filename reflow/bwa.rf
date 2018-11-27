@@ -26,7 +26,7 @@ func Index(fasta file, id string) = {
     // to force outdir evaluation, remove above line and uncomment below.
 
     // val (index, _) = outdir ~> dirs.Pick(d, "*.bwt")
-    outdir
+    d
 }
 
 
