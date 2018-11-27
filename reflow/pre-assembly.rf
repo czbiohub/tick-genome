@@ -149,7 +149,7 @@ output_dirs := [adapter_removed.reports,
         fastqc_post_trimming + 
         fastqc_post_normalization + 
         kmergenie_trimmed + 
-        kmergenie_normalized +
+        kmergenie_normalized
         // reference_aligned_trimmed +
         // reference_aligned_normalized
 
