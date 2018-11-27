@@ -9,11 +9,24 @@ val dirs = make("$/dirs")
 
 val samtools = make("./samtools.rf")
 
+
+// bash-4.2#  bwa index
+
+// Usage:   bwa index [-a bwtsw|is] [-c] <in.fasta>
+
+// Options: -a STR    BWT construction algorithm: bwtsw or is [auto]
+//          -p STR    prefix of the index [same as fasta name]
+//          -6        index files named as <in.fasta>.64.* instead of <in.fasta>.* 
+
+// Warning: `-a bwtsw' does not work for short genomes, while `-a is' and
+//          `-a div' do not work not for long genomes. Please choose `-a'
+//          according to the length of the genome.
 func Index(fasta_gz file, id string) = {
 	// Create a bwt index of the fasta
 
     d := dirs.Make([id + ".fasta.gz": fasta_gz])
 
+    // BWA accepts gzipped files as input
     outdir := exec(image := bwa, cpu := 1) (outdir dir) {"
         cd {{d}}
         bwa index {{id}}.fasta.gz
@@ -33,6 +46,42 @@ func Index(fasta_gz file, id string) = {
 }
 
 
+
+// bash-4.2# bwa mem -h
+// mem: invalid option -- 'h'
+
+// Usage: bwa mem [options] <idxbase> <in1.fq> [in2.fq]
+
+// Algorithm options:
+
+//        -t INT     number of threads [1]
+//        -k INT     minimum seed length [19]
+//        -w INT     band width for banded alignment [100]
+//        -d INT     off-diagonal X-dropoff [100]
+//        -r FLOAT   look for internal seeds inside a seed longer than {-k} * FLOAT [1.5]
+//        -c INT     skip seeds with more than INT occurrences [10000]
+//        -S         skip mate rescue
+//        -P         skip pairing; mate rescue performed unless -S also in use
+//        -A INT     score for a sequence match [1]
+//        -B INT     penalty for a mismatch [4]
+//        -O INT     gap open penalty [6]
+//        -E INT     gap extension penalty; a gap of size k cost {-O} + {-E}*k [1]
+//        -L INT     penalty for clipping [5]
+//        -U INT     penalty for an unpaired read pair [17]
+
+// Input/output options:
+
+//        -p         first query file consists of interleaved paired-end sequences
+//        -R STR     read group header line such as '@RG\tID:foo\tSM:bar' [null]
+
+//        -v INT     verbose level: 1=error, 2=warning, 3=message, 4+=debugging [3]
+//        -T INT     minimum score to output [30]
+//        -a         output all alignments for SE or unpaired PE
+//        -C         append FASTA/FASTQ comment to SAM output
+//        -H         hard clipping
+//        -M         mark shorter split hits as secondary (for Picard/GATK compatibility)
+
+// Note: Please read the man page for detailed description of the command line and options.
 func Mem(r1, r2 file, id string, 
         index dir, index_name string) = {
     // Run BWA-MEM to align reads to reference
