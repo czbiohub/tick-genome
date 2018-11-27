@@ -18,14 +18,17 @@ val memory_large_sort = 24
 // Actual amount of memory on machine
 val memory_large = 32
 
-func SamToBam(sam_or_bam file, is_sam bool) = {
-	val sam_flag = if is_sam { "-S" } else { "" }
+// --- "Building block" basic samtools functions --- ///
 
-    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (bam file) {"
-		samtools view --threads {{threads}} {{sam_flag}} -b {{sam_or_bam}} > {{bam}}
-	"}
-}
-
+func BamToFastq(bam file) =
+    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (output dir) {"
+    	cd {{output}}
+        samtools fastq --threads {{threads}} \
+            -s singleton.fastq.gz \
+            -0 R0.fastq.gz \
+            -1 R1.fastq.gz \
+            -2 R2.fastq.gz {{bam}}
+"}
 
 func ExtractProperlyMappedReads(bam file) = 
     exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (aligned_bam file) {"
@@ -51,6 +54,18 @@ func ExtractUnmappedR1andR2(bam file) =
 		samtools view --threads {{threads}}  -u -f 12 -F 256 {{bam}} > {{output_bam}}
 "}
 
+func Flagstat(bam file) =
+    exec(image := samtools, cpu := threads, mem := memory_small*GiB) (output file) {"
+		samtools flagstat --threads {{threads}} {{bam}} > {{output}}
+"}
+
+func Index(sorted file) =
+    exec(image := samtools, mem := GiB) (index file) {"
+        samtools index -b {{sorted}} {{index}}
+    "}
+
+
+
 func Merge(bams [file]) = 
     exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (output_bam file) {"
 		samtools merge --threads {{threads}} {{output_bam}} {{bams}}
@@ -59,7 +74,7 @@ func Merge(bams [file]) =
 
 func SortByCoordinates(bam file) = 
     exec(image := samtools, cpu := threads, mem := memory_large*GiB) (output_bam file) {"
-		samtools sort --threads -m {{memory_large_sort}}G {{threads}} {{bam}} > {{output_bam}}
+		samtools sort --threads {{threads}} -m {{memory_large_sort}}G {{bam}} > {{output_bam}}
 "}
 
 
@@ -68,22 +83,15 @@ func SortByName(bam file) =
 		samtools sort -n -m {{memory_large_sort}}G --threads {{threads}} {{bam}} > {{output_bam}}
 "}
 
+func SamToBam(sam_or_bam file, is_sam bool) = {
+	val sam_flag = if is_sam { "-S" } else { "" }
 
-func BamToFastq(bam file) =
-    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (output dir) {"
-    	cd {{output}}
-        samtools fastq --threads {{threads}} \
-            -s singleton.fastq.gz \
-            -0 R0.fastq.gz \
-            -1 R1.fastq.gz \
-            -2 R2.fastq.gz {{bam}}
-"}
+    exec(image := samtools, cpu := threads, mem := memory_medium*GiB) (bam file) {"
+		samtools view --threads {{threads}} {{sam_flag}} -b {{sam_or_bam}} > {{bam}}
+	"}
+}
 
-
-func Flagstat(bam file) =
-    exec(image := samtools, cpu := threads, mem := memory_small*GiB) (output file) {"
-		samtools flagstat --threads {{threads}} {{bam}} > {{output}}
-"}
+// --- Extended samtools functions, combining multiple at a time --- //
 
 
 func InitialQC(sam_or_bam file, is_sam bool) = {

@@ -1,0 +1,5 @@
+/mnt/data/tick/isoseq/tick0.orphans.fasta,/mnt/data/tick/isoseq/tick1.orphans.fasta,/mnt/data/tick/isoseq/tick2.orphans.fasta,/mnt/data/tick/isoseq/tick4.orphans.fasta
+1.0,0.042,0.02,0.054
+0.042,1.0,0.09,0.03
+0.02,0.09,1.0,0.022
+0.054,0.03,0.022,1.0

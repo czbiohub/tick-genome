@@ -1,0 +1,157 @@
+param (
+    // Pipe-separated, ordered list of read 1 fastq.gz files, same order as ids and read2s
+    read1s string
+
+    // Pipe-separated, ordered list of read 2 fastq.gz files, same order as ids and read1s
+    read2s string
+
+    // Pipe-separated, ordered list of sample ids
+    ids string
+
+    // Full s3 folder location to put preqc json files
+    output string
+
+    // Number of threads to use for multithreaded programs
+    threads = 16
+
+    // Maximum contig length to extend
+    max_contig_length = 1000000
+)
+
+
+sga := "quay.io/biocontainers/sga:0.10.15--hd4ff3c4_3"
+
+val dirs = make("$/dirs")
+val utils = make("./utils.rf")
+val fastp = make("./fastp.rf")
+
+// Instantiate Go system module "strings"
+val strings = make("$/strings")
+
+preprocessed_suffix := "_sga_preprocessed.fastq"
+
+
+// bash-4.2# sga preprocess -h
+// preprocess: option requires an argument -- 'h'
+// preprocess: missing arguments
+
+// Usage: sga preprocess [OPTION] READS1 READS2 ...
+// Prepare READS1, READS2, ... data files for assembly
+// If pe-mode is turned on (pe-mode=1) then if a read is discarded its pair will be discarded as well.
+
+//       --help                           display this help and exit
+//       -v, --verbose                    display verbose output
+//           --seed                       set random seed
+
+// Input/Output options:
+//       -o, --out=FILE                   write the reads to FILE (default: stdout)
+//       -p, --pe-mode=INT                0 - do not treat reads as paired (default)
+//                                        1 - reads are paired with the first read in READS1 and the second
+//                                        read in READS2. The paired reads will be interleaved in the output file
+//                                        2 - reads are paired and the records are interleaved within a single file.
+//           --pe-orphans=FILE            if one half of a read pair fails filtering, write the passed half to FILE
+
+// Conversions/Filtering:
+//           --phred64                    convert quality values from phred-64 to phred-33.
+//           --discard-quality            do not output quality scores
+//       -q, --quality-trim=INT           perform Heng Li's BWA quality trim algorithm. 
+//                                        Reads are trimmed according to the formula:
+//                                        argmax_x{\sum_{i=x+1}^l(INT-q_i)} if q_l<INT
+//                                        where l is the original read length.
+//       -f, --quality-filter=INT         discard the read if it contains more than INT low-quality bases.
+//                                        Bases with phred score <= 3 are considered low quality. Default: no filtering.
+//                                        The filtering is applied after trimming so bases removed are not counted.
+//                                        Do not use this option if you are planning to use the BCR algorithm for indexing.
+//       -m, --min-length=INT             discard sequences that are shorter than INT
+//                                        this is most useful when used in conjunction with --quality-trim. Default: 40
+//       -h, --hard-clip=INT              clip all reads to be length INT. In most cases it is better to use
+//                                        the soft clip (quality-trim) option.
+//       --permute-ambiguous              Randomly change ambiguous base calls to one of possible bases.
+//                                        If this option is not specified, the entire read will be discarded.
+//       -s, --sample=FLOAT               Randomly sample reads or pairs with acceptance probability FLOAT.
+//       --dust                           Perform dust-style filtering of low complexity reads.
+//       --dust-threshold=FLOAT           filter out reads that have a dust score higher than FLOAT (default: 4.0).
+//       --suffix=SUFFIX                  append SUFFIX to each read ID
+
+// Adapter/Primer checks:
+//           --no-primer-check            disable the default check for primer sequences
+//       -r, --remove-adapter-fwd=STRING
+//       -c, --remove-adapter-rev=STRING  Remove the adapter STRING from input reads.
+
+// Report bugs to js18@sanger.ac.uk
+func Preprocess(read1, read2 file, id string) = {
+
+    // First three lines are renaming nonsense because "kat hist" needs
+        // the filename to end in fastq.gz to detect the type
+    d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
+
+    outdir := exec(image := sga, cpu := 1, mem := 32*GiB) (outdir dir) {"
+                sga preprocess --pe-mode 1 \
+                        --permute-ambiguous \
+                        --no-primer-check \
+                        {{d}}/{{id}}_R1.fastq.gz \
+                        {{d}}/{{id}}_R2.fastq.gz \
+                        > {{outdir}}/{{id}}{{preprocessed_suffix}}
+    "}
+    val (preprocessed, _) = dirs.Pick(outdir, "*" + preprocessed_suffix)
+    preprocessed
+}
+
+
+func Index(preproccessed file, id string) = {
+	// Outputs a folder with:
+	// - {{id}}_sga_preprocessed.bwt
+	// - {{id}}_sga_preprocessed.sai
+
+    // First three lines are renaming nonsense because "kat hist" needs
+	// the filename to end in fastq.gz to detect the type
+    d := dirs.Make([id + preprocessed_suffix: preproccessed])
+
+    exec(image := sga, cpu := threads, mem := 32*GiB) (outdir dir) {"
+        cd {{outdir}}
+		sga index -a ropebwt --no-reverse -t {{threads}} {{d}}/{{id}}{{preprocessed_suffix}}
+    "}
+}
+
+func PreQC(preproccessed file, index dir, id string) = {
+	// Outputs a json file
+
+	// Make sure preprocessed file has same name as it was when it was indexed
+    d := dirs.Make([id+"_sga_preproccessed.fastq": preproccessed])
+
+    exec(image := sga, cpu := threads, mem := 32*GiB) (output file) {"
+    	cd {{index}}
+		sga preqc -t {{threads}} --max-contig-length {{max_contig_length}} \
+			{{d}}/{{id}}{{preprocessed_suffix}} > {{output}}
+
+    "}
+}
+
+func PreQCReport(preqcs [file], ids [string]) = {
+
+    d := dirs.Make(map([(id + ".preqc.json", preqc) | (preqc, id) <- zip(preqcs, ids)]))
+
+    exec(image := sga, cpu := 1, mem := 2*GiB) (output file) {"
+    	sga-preqc-report.py {{d}}/*.preqc.json
+    "}
+}
+
+
+func RunPreQC(read1s, read2s [file], ids [string]) = {
+    preprocessed := [Preprocess(r1, r2, id) | (r1, (r2, id)) <- zip(read1s, zip(read2s, ids))]
+	indexed := [Index(f, id) | (f, id) <- zip(preprocessed, ids)]
+	preqcs := [PreQC(f, index, id) | (f, (index, id)) <- zip(preprocessed, zip(indexed, ids))]
+
+	// Rename files by id
+    dirs.Make(map([(id + ".preqc.json", preqc) | (preqc, id) <- zip(preqcs, ids)]))
+}
+
+
+r1s := utils.SplitByPipe(read1s)
+r2s := utils.SplitByPipe(read2s)
+ids_split := strings.Split(ids, "|")
+
+outdir := RunPreQC(r1s, r2s, ids_split)
+
+@requires(cpu := 1)
+val Main = dirs.Copy(outdir, output)

@@ -1,12 +1,14 @@
+test:
+	reflow doc pre-assembly.rf
+
+
 multiqc: multiqc_sync multiqc_reflow
 
 multiqc_sync:
-	# Copy FastQC and other reports
-	aws s3 sync --exclude "*.fastq.gz" s3://tick-genome/dna/2018-06-28/pre-assembly_quality_control/reports/ s3://tick-genome/multiqc/data-for-multiqc/  
-	# Copy adapter trimming reports
-	aws s3 sync --exclude "*.fastq.gz" s3://tick-genome/dna/2018-06-28/adapter_trimmed/ s3://tick-genome/multiqc/data-for-multiqc/
-	# Copy test_pre_assembly
-	aws s3 sync --exclude "*.fastq.gz" --exclude "*bam*" s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v2/  s3://tick-genome/multiqc/data-for-multiqc/
+	# Clear the folder
+	aws s3 rm s3://tick-genome/multiqc/data-for-multiqc/
+
+	# Copy the new outputs into the folder
 	aws s3 sync --exclude "*.fastq.gz" --exclude "*bam*" s3://tick-genome/dna/2018-06-28/pre-assembly_v3/ s3://tick-genome/multiqc/data-for-multiqc/
 		# Run multiqc
 
@@ -45,6 +47,17 @@ test_pre_assembly:
 		-id=tick_1_S1_first1Mreads \
 		-output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6/ \
 		-adapter_list=../pre_assembly_qc/nextera_pe_adapters.tsv
+
+preqc:
+	$(eval READ1='s3://tick-genome/dna/2018-06-28/pre-assembly_v3/Undetermined_S0_R1_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R1_post-trimming.fastq.gz')
+	$(eval READ2='s3://tick-genome/dna/2018-06-28/pre-assembly_v3/Undetermined_S0_R2_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R2_post-trimming.fastq.gz')
+	$(eval IDS='Undetermined_S0|tick_1_S1|tick_2_S2')
+	echo READ1 ${READ1}
+	reflow run preqc.rf \
+		-read1s=${READ1} \
+		-read2s=${READ2} \
+		-ids=${IDS} \
+		 -output=s3://tick-genome/dna/2018-06-28/test_preqc_v1/
 
 test_multiqc_pre_assembly:
 	reflow -cache=off run multiqc.rf -input=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6/ -output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6_multiqc/

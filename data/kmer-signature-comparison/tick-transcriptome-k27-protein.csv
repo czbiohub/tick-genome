@@ -1,0 +1,5 @@
+/mnt/data/tick/isoseq/tick0/tick0.transcriptome.fasta,/mnt/data/tick/isoseq/tick1/tick1.transcriptome.fasta,/mnt/data/tick/isoseq/tick2/tick2.transcriptome.fasta,/mnt/data/tick/isoseq/tick4/tick4.transcriptome.fasta
+1.0,0.012,0.002,0.018
+0.012,1.0,0.068,0.008
+0.002,0.068,1.0,0.002
+0.018,0.008,0.002,1.0

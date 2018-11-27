@@ -1,7 +1,15 @@
+
+param (
+      // number of processors
+      threads = 8
+
+      // gigabytes of memory
+      memory = 256
+      )
+      
+
 khmer := "quay.io/biocontainers/khmer:3.0.0a1--py36hfc679d8_0"
 
-threads := 16
-memory := 64
 
 val dirs = make("$/dirs")
 val utils = make("./utils.rf")
@@ -11,7 +19,7 @@ val fastp = make("./fastp.rf")
 func Hist(fastq file, ksize int) = 
 	// Compute k-mer abundance histogram. How many kmers appear once, twice, 100x?
 
-    exec(image := khmer, cpu := threads, mem := memory*GiB) (histogram file) {"
+    exec(image := khmer, cpu := threads, mem := 144*GiB) (histogram file) {"
 		abundance-dist-single.py \
 			--ksize {{ksize}} \
 			--max-memory-usage {{memory}}G \
@@ -26,13 +34,13 @@ func NormalizeByMedian(fastq file, ksize, cutoff int) = {
 
     d := dirs.Make(["reads.fastq": fastq])
 
-    exec(image := khmer, mem := memory*GiB) (normalized, countgraph file) {"
+    exec(image := khmer, mem := 260*GiB) (normalized, countgraph file) {"
         normalize-by-median.py \
         	--paired \
         	--gzip \
             --cutoff {{cutoff}} \
             --ksize {{ksize}} \
-            --max-memory-usage {{memory}}G \
+            --max-memory-usage {{256}}G \
             --savegraph {{countgraph}} \
             --output {{normalized}} \
              {{d}}/reads.fastq"}
@@ -44,7 +52,7 @@ func NormalizeByMedianUnpaired(fastq, singletons file, ksize, cutoff int) = {
 
     d := dirs.Make(["reads.fastq": fastq, "singletons.fastq": singletons])
 
-    exec(image := khmer, mem := memory*GiB) (normalized, countgraph file) {"
+    exec(image := khmer, mem := 144*GiB) (normalized, countgraph file) {"
         normalize-by-median.py \
         	--paired \
         	--gzip \
@@ -60,7 +68,7 @@ func NormalizeByMedianUnpaired(fastq, singletons file, ksize, cutoff int) = {
 
 func FilterAbundance(fastq, countgraph file, cutoff int) = 
 	// Trim sequences at a minimum k-mer abundance. Run this after NormalizeByMedian
-    exec(image := khmer, cpu := threads, mem := memory*GiB) (filtered file) {"
+    exec(image := khmer, cpu := threads) (filtered file) {"
         filter-abund.py \
         	--gzip \
             --cutoff {{cutoff}} \

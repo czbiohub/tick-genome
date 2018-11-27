@@ -37,3 +37,15 @@ func ParallelGzip(filename file, threads int) =
     exec(image := tick_genome, cpu := threads) (gzipped file) {"
     	pigz --processes {{threads}} -c {{filename}} > {{gzipped}}
 "}
+
+// Take dirs.Pick() items and turn them into a directory
+func MakeReportDir(items [(file, string)]) = {
+	// dirs.Pick outputs (file, string) for the file and filename,
+	// but we need (string, file) with the filename and file for dirs.Make
+	swapped := [(name, f) | (f, name) <- items]
+	dirs.Make(map(swapped))
+}
+
+// Add a status to the name of the reads
+func MakeNamedStatusReads(r1, r2 file, id, status string) = 
+	[id + "_R1" + status: r1, id + "_R2" + status: r2]

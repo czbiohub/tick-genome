@@ -1,11 +1,14 @@
 param (
-	threads = 16
+	threads = 8
 )
 
 khmer := "quay.io/biocontainers/fastp:0.19.4--hd28b015_0"
 
 
 val dirs = make("$/dirs")
+
+val utils = make("./utils.rf")
+
 
 func Interleave(r1, r2 file) = {
 	// Produce interleaved files from R1/R2 paired fastq.gz files
@@ -24,17 +27,17 @@ func Interleave(r1, r2 file) = {
 	"}
 }
 
+
 func TrimPolyG(r1, r2 file, id string, minlength int) = {
 	// Remove adapters, 4nt windows of Q20 or lower reads, and poly-G (for NextSeq)
 
     d := dirs.Make(["R1.fastq.gz": r1, "R2.fastq.gz": r2])
 
-    exec(image := khmer, cpu := threads) (outdir dir) {"
+    outdir := exec(image := khmer, cpu := threads) (outdir dir) {"
     	cd {{outdir}}
         fastp \
         	--length_required {{minlength}} \
 	        --disable_adapter_trimming \
-        	--disable_quality_filtering \
         	--thread {{threads}} \
         	--in1 {{d}}/R1.fastq.gz \
         	--in2 {{d}}/R2.fastq.gz \
@@ -43,5 +46,15 @@ func TrimPolyG(r1, r2 file, id string, minlength int) = {
             --json {{id}}_fastp.json \
             --html {{id}}_fastp.html 
 	"}
+
+    val (r1, _) = dirs.Pick(outdir, "*R1*.fastq.gz")
+    val (r2, _) = dirs.Pick(outdir, "*R2*.fastq.gz")
+    val json = dirs.Pick(outdir, "*.json")
+    val html = dirs.Pick(outdir, "*.html")
+
+    val reports = utils.MakeReportDir([json, html])
+
+    // Return a "bundle" with easy-to-grab items
+    {r1, r2, reports}
 }
 
