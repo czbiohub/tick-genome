@@ -144,6 +144,7 @@ func AssemblePairedEnd(read1, read2 file, id string, ksize int) = {
     exec(image := abyss, cpu := threads, mem := 230*GiB) (outdir dir) {"
     	cd {{outdir}}
         abyss-pe np={{threads}} j={{threads}} name={{id}} k={{ksize}} \
+        	mpirun='/usr/local/bin/mpirun --allow-run-as-root' \
         	in='{{d}}/{{id}}_R1.fastq.gz {{d}}/{{id}}_R2.fastq.gz'
 
     "} 
