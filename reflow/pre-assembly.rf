@@ -50,6 +50,7 @@ val bbduk = make("./bbduk.rf")
 val kat = make("./kat.rf")
 val khmer = make("./khmer.rf")
 val kmergenie = make("./kmergenie.rf")
+val merge_paired = make("./merge_paired.rf")
 val utils = make("./utils.rf")
 val fastp = make("./fastp.rf")
 val bwa = make("./bwa.rf")
@@ -81,6 +82,10 @@ val polyg_removed = fastp.TrimPolyG(adapter_removed.r1, adapter_removed.r2,
 // -- Remove PhiX Sequences --- //
 val phix_trimmed = bbduk.PhiXTrimming(polyg_removed.r1, polyg_removed.r2, 
     id, minlength)
+
+// -- Merge paired-end reads that have overlapping sequence -- //
+val merged = merge_paired.Run(phix_trimmed.r1, phix_trimmed.r2, id)
+
 
 status := "_post-trimming"
 // Aligned trimmed to reference
@@ -144,6 +149,7 @@ val reference_aligned_normalized = [
 output_dirs := [adapter_removed.reports, 
                 polyg_removed.reports,
     phix_trimmed.reports, 
+    merged.reports,
     normalized_dir, khmer_dir] + 
     pre_trimming_fastqc +
         fastqc_post_trimming + 

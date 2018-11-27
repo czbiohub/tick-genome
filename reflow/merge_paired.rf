@@ -9,7 +9,7 @@ param (
 val flash = "quay.io/biocontainers/flash:1.2.11--ha92aebf_2"
 
 val dirs = make("$/dirs")
-
+val utils = make("./utils.rf")
 
 // bash-4.2# flash -h
 // Usage: flash [OPTIONS] MATES_1.FASTQ MATES_2.FASTQ
@@ -265,14 +265,11 @@ val dirs = make("$/dirs")
 
 // Run `flash --help | less' to prevent this text from scrolling by.
 func Run(read1, read2 file, id string) = {
-    // First three lines are renaming nonsense because "kat hist" needs
-	// the filename to end in fastq.gz to detect the type
-
     // Ensure input file has fastq.gz ending
     d := dirs.Make([id+"_R1.fastq.gz": read1,
     	id+"_R2.fastq.gz": read2])
 
-    outdir := exec(image := kmergenie, cpu := threads, mem := 16*GiB) (outdir dir) {"
+    outdir := exec(image := flash, cpu := threads, mem := 16*GiB) (outdir dir) {"
         cd {{outdir}}
         flash {{read1}} {{read1}} \
             -minOverlap {{min_overlap}} \
@@ -282,15 +279,17 @@ func Run(read1, read2 file, id string) = {
             -z \
             -o {{id}}_merged
     "}
-    outdir = trace(outdir)
+    outdir := trace(outdir)
 
-    merged := dirs.Pick("*extendedFrags.fastq.gz")
-    r1 := dirs.Pick("*notCombined_1.fastq.gz")
-    r2 := dirs.Pick("*notCombined_2.fastq.gz")
-    numeric_histogram := dirs.Pick("*.hist")
-    visual_histogram := dirs.Pick("*.histogram")
+    val (merged, _) = dirs.Pick(outdir, "*extendedFrags.fastq.gz")
+    val (r1, _) = dirs.Pick(outdir, "*notCombined_1.fastq.gz")
+    val (r2, _) = dirs.Pick(outdir, "*notCombined_2.fastq.gz")
+    numeric_histogram := dirs.Pick(outdir, "*.hist")
+    visual_histogram := dirs.Pick(outdir, "*.histogram")
 
-    {merged, r1, r2, numeric_histogram, visual_histogram}
+    val reports = utils.MakeReportDir([numeric_histogram, visual_histogram])
+
+    {merged, r1, r2, reports}
 }
 
 
