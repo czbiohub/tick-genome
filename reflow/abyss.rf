@@ -140,16 +140,17 @@ val abyss = "czbiohub/abyss2:v1.0.1"
 func AssemblePairedEnd(read1, read2 file, id string, ksize int) = {
     d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
 
+	// # AWS virtual CPUs are dual-core so they have two slots.
+	// # But OpenMPI thinks they only have one slot each, so
+	// # We added a hostfile that says each node has two slots
     d := trace(d)
+    hostfile := "/usr/local/etc/openmpi-hostfile-aws"
+
     exec(image := abyss, cpu := threads, mem := 230*GiB) (outdir dir) {"
     	cd {{outdir}}
         abyss-pe np={{threads}} j={{threads}} name={{id}} k={{ksize}} \
-        	# AWS virtual CPUs are dual-core so they have two slots. \
-        	# But OpenMPI thinks they only have one slot each, so \
-        	# We added a hostfile that says each node has two slots \
-        	mpirun='/usr/local/bin/mpirun --allow-run-as-root --hostfile /usr/local/etc/openmpi-hostfile-aws' \
+        	mpirun='/usr/local/bin/mpirun --allow-run-as-root --hostfile {{hostfile}}' \
         	in='{{d}}/{{id}}_R1.fastq.gz {{d}}/{{id}}_R2.fastq.gz'
-
     "} 
 }
 
