@@ -102,6 +102,7 @@ val kmergenie_trimmed = kmergenie.Run(
 // Create map of read number + status for each read
 val reads_phix_trimmed = utils.MakeNamedStatusReads(
         phix_trimmed.r1, phix_trimmed.r2, id, status)
+val kmergenie_trimmed = kmergenie.Run(phix_trimmed.r1, phix_trimmed.r2, id + status)
 
 
 // Do FastQC AGAIN after trimming to make sure
@@ -139,9 +140,8 @@ val khmer_histograms = khmer_hist_pre_normalization + khmer_hist_post_normalizat
 val khmer_dir = dirs.Make(map(khmer_histograms))
 
 // Use kmergenie to estimate best kmer size
-
-val kmergenie_trimmed = [kmergenie.Run(reads, name) | (name, reads) <- reads_phix_trimmed]
-val kmergenie_normalized = [kmergenie.Run(reads, name) | (name, reads) <- reads_normalized]
+val kmergenie_normalized = kmergenie.Run(normalized.r1_normalized, 
+    normalized.r2_normalized, id + status)
 
 
 // Align digitially normalized to reference
