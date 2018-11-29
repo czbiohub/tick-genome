@@ -35,7 +35,7 @@ param (
     minlength = 135
 
     // kmer size to use for khmer trimming and histograms
-    ksize = 32
+    ksize = 31
 
 )
 
