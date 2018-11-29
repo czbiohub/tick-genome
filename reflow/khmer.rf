@@ -22,6 +22,7 @@ func Hist(fastq file, ksize int) =
     exec(image := khmer, cpu := threads, mem := 144*GiB) (histogram file) {"
 		abundance-dist-single.py \
 			--ksize {{ksize}} \
+      --force \
 			--max-memory-usage {{memory}}G \
 			--threads {{threads}} \
 			{{fastq}} \
