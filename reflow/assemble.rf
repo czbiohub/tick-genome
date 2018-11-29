@@ -18,9 +18,10 @@ param (
 )
 
 // System modules
-val dirs = make("$/dirs")
+dirs := make("$/dirs")
 
-val abyss = make("./abyss.rf")
+abyss := make("./abyss.rf")
+
 
 r1 := file(read1)
 r2 := file(read2)
