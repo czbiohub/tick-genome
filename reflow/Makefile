@@ -68,7 +68,7 @@ tick1_assembly:
         assemble.rf \
         -read1=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz \
         -read2=s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz \
-        -output=s3://tick-genome/dna/2018-06-28/assembly_k75/ \
+        -output=s3://tick-genome/dna/2018-06-28/assembly_k81/ \
         -id=tick_1_S1 \
         -ksize=81
 
