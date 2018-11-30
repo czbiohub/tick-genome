@@ -4,7 +4,7 @@ val dirs = make("$/dirs")
 
 threads := 60
 
-val abyss = "czbiohub/abyss2:v1.0.1"
+val abyss = "czbiohub/abyss2:v1.0.2"
 
 // manpage for abyss-pe: http://manpages.ubuntu.com/manpages/cosmic/en/man1/abyss-pe.1.html
 // --- excerpt ---
