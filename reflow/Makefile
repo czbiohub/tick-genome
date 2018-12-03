@@ -61,3 +61,9 @@ preqc:
 
 test_multiqc_pre_assembly:
 	reflow -cache=off run multiqc.rf -input=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6/ -output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6_multiqc/
+
+test_quast:
+	reflow run quast.rf \
+		-fastas 's3://tick-genome/dna/2018-10-10-dovetail/ixodes_scapularis_06May2018_kaVVW.fasta.gz|s3://tick-genome/dna/2018-10-11_ise6_asm2.2/GCA_002892825.2_ISE6_asm2.2_deduplicated_genomic.fna.gz' \
+		-ids 'dovetail_2018-05-06|jcvi_ise6' \
+		-output 's3://tick-genome/dna/2018-12-03_quast/'
