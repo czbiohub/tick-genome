@@ -1,0 +1,46 @@
+param (
+    // Pipe-separated list of gzipped genome/contig fasta files
+    fastas string
+
+    // Pipe-separated list of identifiers for genomes
+    ids string
+
+    // Output directory
+    output string
+
+	threads = 16
+
+    // File extension to use for renaming
+    extension = ".fasta.gz"
+)
+
+quast := "quay.io/biocontainers/quast:5.0.2--py35pl526ha92aebf_0"
+
+
+val dirs = make("$/dirs")
+val strings = make("$/strings")
+
+val utils = make("./utils.rf")
+
+
+func EvaluateLargeGenomes(genomes [file], ids [string]) = {
+    renamed := [(id + extension, genome) | (id, genome) <- zip(ids, genomes)]
+    d := dirs.Make(map(renamed))
+
+    exec(image := quast, cpu := threads) (output dir) {"
+        quast-lg.py --output-dir {{output}} \
+            {{d}}/*.fasta
+	"}
+}
+
+
+
+@requires(cpu := threads)
+val Main = {
+    fasta_gz_files := utils.SplitByPipe(fastas)
+
+    ids := strings.Split(ids, "|")
+
+    evaluated := EvaluateLargeGenomes(fasta_gz_files, ids)
+    dirs.Copy(evaluated, output)
+}
