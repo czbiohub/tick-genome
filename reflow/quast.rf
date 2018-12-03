@@ -29,6 +29,7 @@ func EvaluateLargeGenomes(genomes [file], ids [string]) = {
 
     exec(image := quast, cpu := threads) (output dir) {"
         quast-lg.py --output-dir {{output}} \
+            --threads {{threads}} \
             {{d}}/*{{extension}}
 	"}
 }
