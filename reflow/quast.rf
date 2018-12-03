@@ -14,7 +14,7 @@ param (
     extension = ".fasta.gz"
 )
 
-quast := "quay.io/biocontainers/quast:5.0.2--py35pl526ha92aebf_0"
+quast := "quay.io/biocontainers/quast:5.0.2--py27pl526ha92aebf_0"
 
 
 val dirs = make("$/dirs")
