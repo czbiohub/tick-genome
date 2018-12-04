@@ -39,7 +39,7 @@ func EvaluateLargeGenomes(genomes [file], ids [string],
     d := dirs.Make(map(renamed))
 
     reference_dir := dirs.Make([reference_id + extension: reference_genome, 
-        reference_id +"gff3": reference_gff])
+        reference_id +".gff3": reference_gff])
 
     exec(image := quast, cpu := threads) (output dir) {"
         quast-lg.py --output-dir {{output}} \
