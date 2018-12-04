@@ -10,6 +10,15 @@ param (
 
 	threads = 16
 
+    // Optional reference genome
+    reference = "s3://tick-genome/dna/2018-12-03_IscaW1/Ixodes-scapularis-Wikel_CONTIGS_IscaW1.fa.gz"
+
+    // name for reference genome
+    reference_id = "IscaW1"
+
+    // GFF file containing gene annotations for reference genome
+    reference_genes = "s3://tick-genome/dna/2018-12-03_IscaW1/Ixodes-scapularis-Wikel_BASEFEATURES_IscaW1.6.gff3.gz"
+
     // File extension to use for renaming
     extension = ".fasta.gz"
 )
@@ -23,12 +32,19 @@ val strings = make("$/strings")
 val utils = make("./utils.rf")
 
 
-func EvaluateLargeGenomes(genomes [file], ids [string]) = {
+func EvaluateLargeGenomes(genomes [file], ids [string], 
+        reference_id string,
+        reference_genome, reference_gff file) = {
     renamed := [(id + extension, genome) | (id, genome) <- zip(ids, genomes)]
     d := dirs.Make(map(renamed))
 
+    reference_dir := dirs.Make([reference_id + extension: reference_genome, 
+        reference_id +"gff3": reference_gff])
+
     exec(image := quast, cpu := threads) (output dir) {"
         quast-lg.py --output-dir {{output}} \
+            -r {{reference_dir}}/{{reference_id}}{{extension}} \
+            --features {{reference_dir}}/{{reference_id}}.gff3 \
             --threads {{threads}} \
             {{d}}/*{{extension}}
 	"}
@@ -40,8 +56,13 @@ func EvaluateLargeGenomes(genomes [file], ids [string]) = {
 val Main = {
     fasta_gz_files := utils.SplitByPipe(fastas)
 
+    reference_genome := file(reference)
+    reference_features := file(reference_genes)
+    reference_gff := utils.ParallelUnzip(reference_features, 8)
+
     ids := strings.Split(ids, "|")
 
-    evaluated := EvaluateLargeGenomes(fasta_gz_files, ids)
+    evaluated := EvaluateLargeGenomes(fasta_gz_files, ids, reference_id, 
+        reference_genome, reference_gff)
     dirs.Copy(evaluated, output)
 }
