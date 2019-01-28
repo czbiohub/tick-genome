@@ -35,22 +35,9 @@ func Index(fasta_gz file, id string) = {
 	"}
     // NOTE: outdir is not being used anywhere, so it wont get evaluated
     outdir := trace(outdir)
-    d := trace(d)
     
     outdir
 }
-
-// g1kv37 is the 1000genomes version of hg19.
-val g1kv37 = file("s3://1000genomes/technical/reference/human_g1k_v37.fasta.gz")
-
-// g1kv37Indexed is the BWA-indexed version of g1kv37.
-val g1kv37Indexed = exec(image := "biocontainers/bwa", mem := GiB, cpu := 1) (out dir) {"
-    # Ignore failures here. The file from 1000genomes has a trailer
-    # that isn't recognized by gunzip. (This is not recommended practice!)
-    gunzip -c {{g1kv37}} > {{out}}/g1k_v37.fa || true
-    cd {{out}}
-    bwa index -a bwtsw g1k_v37.fa
-"}
 
 
 
