@@ -38,6 +38,12 @@ func ParallelGzip(filename file, threads int) =
     	pigz --processes {{threads}} -c {{filename}} > {{gzipped}}
 "}
 
+func ParallelUnzip(filename file, threads int) =
+    exec(image := tick_genome, cpu := threads) (unzipped file) {"
+    	pigz --processes {{threads}} -dc {{filename}} > {{unzipped}}
+"}
+
+
 // Take dirs.Pick() items and turn them into a directory
 func MakeReportDir(items [(file, string)]) = {
 	// dirs.Pick outputs (file, string) for the file and filename,
