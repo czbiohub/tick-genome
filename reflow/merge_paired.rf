@@ -275,9 +275,8 @@ func Run(read1, read2 file, id string) = {
             --min-overlap {{min_overlap}} \
             --max-overlap {{max_overlap}} \
             --threads {{threads}} \
-            # Compress to gzipped \
             --compress \
-            --output-prefix {{id}}_merged
+            --output-prefix {{id}}_merged_pairs_via_flash
     "}
     outdir := trace(outdir)
 
