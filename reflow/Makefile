@@ -55,7 +55,9 @@ test_pre_assembly:
 		-read2=s3://tick-genome/dna/2018-06-28/tick_1_S1_R2_001_first1Mreads.fastq.gz \
 		-id=tick_1_S1_first1Mreads \
 		-output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6/ \
-		-adapter_list=../pre_assembly_qc/nextera_pe_adapters.tsv
+		-adapter_list=../pre_assembly_qc/nextera_pe_adapters.tsv \
+		-references 's3://tick-genome/dna/2018-10-10-dovetail/ixodes_scapularis_06May2018_kaVVW.fasta.gz|s3://tick-genome/dna/2018-10-11_ise6_asm2.2/GCA_002892825.2_ISE6_asm2.2_deduplicated_genomic.fna.gz' \
+		-references_ids 'dovetail_2018-05-06|jcvi_ise6'
 
 preqc:
 	$(eval READ1='s3://tick-genome/dna/2018-06-28/pre-assembly_v3/Undetermined_S0_R1_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz|s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R1_post-trimming.fastq.gz')
