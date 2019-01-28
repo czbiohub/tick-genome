@@ -16,20 +16,13 @@ func Index(fasta file, id string) = {
 
     outdir := exec(image := bwa, cpu := 1) (outdir dir) {"
         cd {{outdir}}
-        ln -s {{outdir}}/{{id}}.fasta .
-        bwa index {{outdir}}/{{id}}.fasta
+        ln -s {{d}}/{{id}}.fasta .
+        bwa index {{id}}.fasta
 	"}
-    d := trace(d)
 
-     // NOTE: outdir is not being used anywhere, so it wont get evaluated
-    outdir := trace(outdir)
-
+    x := trace(outdir)
+    y := trace(d)
     val (index, _) = dirs.Pick(d, "*.bwt")
-
-    // to force outdir evaluation, remove above line and uncomment below.
-
-    val (index, _) = outdir ~> dirs.Pick(d, "*.bwt")
-
     index
 }
 
