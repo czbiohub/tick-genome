@@ -67,15 +67,17 @@ func NormalizeByMedianUnpaired(fastq, singletons file, ksize, cutoff int) = {
 }
 
 
-func FilterAbundance(fastq, countgraph file, cutoff int) = 
+func FilterAbundance(fastq, countgraph file, cutoff int) = {
+    disk := 2*(len(countgraph) + len(fastq))
 	// Trim sequences at a minimum k-mer abundance. Run this after NormalizeByMedian
-    exec(image := khmer, cpu := threads) (filtered file) {"
+    exec(image := khmer, cpu := threads, disk := disk) (filtered file) {"
         filter-abund.py \
         	--gzip \
             --cutoff {{cutoff}} \
             --threads {{threads}} \
             --output {{filtered}} \
              {{countgraph}} {{fastq}}"}
+}
 
 
 func ExtractPaired(fastq file) = 
