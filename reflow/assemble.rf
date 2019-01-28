@@ -8,7 +8,7 @@ param (
     read2 string
 
     // name of the sample
-    id string
+    name string
 
     // S3 folder to put all the fastqs and reports
     output string
@@ -27,6 +27,6 @@ r1 := file(read1)
 r2 := file(read2)
 
 val abyss_output = abyss.AssemblePairedEnd(
-    r1, r2, id, ksize)
+    r1, r2, name, ksize)
 
 val Main = dirs.Copy(abyss_output, output)

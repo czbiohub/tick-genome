@@ -61,7 +61,7 @@ val abyss = "czbiohub/abyss2:v1.0.1"
 
 //     N      minimum number of pairs required for building scaffolds [n]
 
-//     p      minimum sequence identity of a bubble [0.9]
+//     p      minimum sequence nameentity of a bubble [0.9]
 
 //     q      minimum base quality [3]
 //            Trim bases from the ends of reads whose quality is less q.
@@ -85,7 +85,7 @@ val abyss = "czbiohub/abyss2:v1.0.1"
 //            the program to use to align the reads to the contigs [map]
 //            map, kaligner, bwa, bwasw, bowtie or bowtie2
 
-//     cs     convert colour-space contigs to nucleotide contigs following assembly
+//     cs     convert colour-space contigs to nucleotnamee contigs following assembly
 
 // Options of make
 //     -n, --dry-run
@@ -139,8 +139,8 @@ val abyss = "czbiohub/abyss2:v1.0.1"
 
 //     help   Display a helpful message.
 
-func AssemblePairedEnd(read1, read2 file, id string, ksize int) = {
-    d := dirs.Make([id+"_R1.fastq.gz": read1, id+"_R2.fastq.gz": read2])
+func AssemblePairedEnd(read1, read2 file, name string, ksize int) = {
+    d := dirs.Make([name+"_R1.fastq.gz": read1, name+"_R2.fastq.gz": read2])
 
 	// # AWS virtual CPUs are dual-core so they have two slots.
 	// # But OpenMPI thinks they only have one slot each, so
@@ -150,9 +150,9 @@ func AssemblePairedEnd(read1, read2 file, id string, ksize int) = {
 
     exec(image := abyss, cpu := virtual_cpus, mem := 230*GiB) (outdir dir) {"
     	cd {{outdir}}
-        abyss-pe np={{threads}} j={{threads}} name={{id}} k={{ksize}} \
+        abyss-pe np={{threads}} j={{threads}} name={{name}} k={{ksize}} \
         	mpirun='/usr/local/bin/mpirun --allow-run-as-root --oversubscribe' \
-        	in='{{d}}/{{id}}_R1.fastq.gz {{d}}/{{id}}_R2.fastq.gz'
+        	in='{{d}}/{{name}}_R1.fastq.gz {{d}}/{{name}}_R2.fastq.gz'
     "} 
 }
 
