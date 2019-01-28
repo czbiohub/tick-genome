@@ -272,8 +272,8 @@ func Run(read1, read2 file, id string) = {
     outdir := exec(image := flash, cpu := threads, mem := 16*GiB) (outdir dir) {"
         cd {{outdir}}
         flash {{read1}} {{read1}} \
-            -minOverlap {{min_overlap}} \
-            -maxOverlap {{max_overlap}} \
+            --min-overlap {{min_overlap}} \
+            --max-overlap {{max_overlap}} \
             -threads {{threads}} \
             # Compress to gzipped \
             -z \
