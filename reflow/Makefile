@@ -50,7 +50,7 @@ test_bbduk_adapterremoval:
 
 
 test_pre_assembly:
-	reflow run pre-assembly.rf \
+	reflow run -trace pre-assembly.rf \
 		-read1=s3://tick-genome/dna/2018-06-28/tick_1_S1_R1_001_first1Mreads.fastq.gz \
 		-read2=s3://tick-genome/dna/2018-06-28/tick_1_S1_R2_001_first1Mreads.fastq.gz \
 		-id=tick_1_S1_first1Mreads \
