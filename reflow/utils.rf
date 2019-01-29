@@ -35,7 +35,7 @@ func SplitByPipe(pipe_separated string) = {
 
 func ParallelUngzip(gzipped file, threads int) =
     exec(image := tick_genome, cpu := threads) (unzipped file) {"
-    	pigz --processes {{threads}} {{gzipped}} > {{unzipped}}
+    	pigz --processes {{threads}} -dc {{gzipped}} > {{unzipped}}
 "}
 
 
