@@ -109,7 +109,11 @@ SOAP_ASSEMBLY=0
 END
 ' > {{name}}_masurca_config.txt
 
+        # Generate an assemble.sh script from a config file
         masurca {{name}}_masurca_config.txt
+
+        # Run the auto-generated assemble.sh script
+        ./assemble.sh
     "} 
 }
 
