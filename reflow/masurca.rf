@@ -2,15 +2,23 @@
 
 val dirs = make("$/dirs")
 
+val utils = make("./utils.rf")
 
 threads := 32
 virtual_cpus := 2*threads
+
+
 
 val masurca = "quay.io/biocontainers/masurca:3.3.0--pl526h4422958_0"
 
 
 func AssemblePairedEndIlluminaOnly(read1, read2 file, name string) = {
-    d := dirs.Make([name+"_R1.fastq.gz": read1, name+"_R2.fastq.gz": read2])
+
+    // Decompress the files because Masurca is annoying
+    r1 := utils.ParallelUngzip(read1, 4)
+    r2 := utils.ParallelUngzip(read2, 4)
+
+    d := dirs.Make([name+"_R1.fastq": r1, name+"_R2.fastq": r2])
 
     d := trace(d)
 
