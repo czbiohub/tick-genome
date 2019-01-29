@@ -24,7 +24,7 @@ func AssembleIllumina(r1, r2 file, id string, corrected bool) = {
         ""
     }
 
-    d := make([id + "_R1.fastq.gz": r1, id + "_R2.fastq.gz": r2])
+    d := dirs.Make([id + "_R1.fastq.gz": r1, id + "_R2.fastq.gz": r2])
 
     exec(image := spades, cpu := threads, mem := 450*GiB) (outdir dir) {"
         cd {{outdir}}
