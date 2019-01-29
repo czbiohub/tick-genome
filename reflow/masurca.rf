@@ -14,7 +14,7 @@ func AssemblePairedEndIlluminaOnly(read1, read2 file, name string) = {
 
     d := trace(d)
 
-    exec(image := masurca, cpu := virtual_cpus, mem := 512*GiB, disk := 5*TiB) (outdir dir) {"
+    exec(image := masurca, cpu := virtual_cpus, mem := 512*GiB) (outdir dir) {"
         cd {{outdir}}
 
         echo '# DATA is specified as type {PE,JUMP,OTHER,PACBIO} and 5 fields:
