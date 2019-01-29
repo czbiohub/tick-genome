@@ -6,7 +6,10 @@ param (
     read2 string
 
     // name of the sample
-    id string
+    name string
+
+    // are the reads already error-corrected?
+    corrected bool
 
     // S3 folder to put the assembly
     output string
@@ -14,16 +17,14 @@ param (
 
 
 val dirs = make("$/dirs")
-
-
-val adapter_removal = make("./adapter_removal.rf")
-val fastqc = make("./fastqc.rf")
-val bbduk = make("./bbduk.rf")
-val idseq = make("./idseq.rf")
-val kat = make("./kat.rf")
+val spades = make("./spades.rf")
 
 
 val r1 = file(read1)
 val r2 = file(read2)
 
 
+val spades_output = spades.AssembleIllumina(
+    r1, r2, name, corrected)
+
+val Main = dirs.Copy(spades_output, output)

@@ -76,3 +76,25 @@ test_quast:
 		-fastas 's3://tick-genome/dna/2018-10-10-dovetail/ixodes_scapularis_06May2018_kaVVW.fasta.gz|s3://tick-genome/dna/2018-10-11_ise6_asm2.2/GCA_002892825.2_ISE6_asm2.2_deduplicated_genomic.fna.gz' \
 		-ids 'dovetail_2018-05-06|jcvi_ise6' \
 		-output 's3://tick-genome/dna/2018-12-03_quast/'
+
+
+test_spades_uncorrected:
+	reflow run assemble_illumina.rf \
+		-read1=s3://tick-genome/dna/2018-06-28/tick_1_S1_R1_001_first1Mreads.fastq.gz \
+		-read2=s3://tick-genome/dna/2018-06-28/tick_1_S1_R2_001_first1Mreads.fastq.gz \
+		-name=tick_1_S1_first1Mreads \
+		-output=s3://tick-genome/dna/2018-06-28/assemble_spades_test_v1/ \
+		-corrected=False
+
+subset_corrected_reads:
+	aws s3 cp s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1tick_1_S1_R1_post-trimming.fastq.gz - | zcat | head -n 4000000 | gzip -c | aws s3 cp - s3://tick-genome/dna/2018-06-28/tick_1_S1_R1_post-trimming_first1Mreads.fastq.gz
+	aws s3 cp s3://tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1tick_1_S1_R2_post-trimming.fastq.gz - | zcat | head -n 4000000 | gzip -c | aws s3 cp - s3://tick-genome/dna/2018-06-28/tick_1_S1_R2_post-trimming_first1Mreads.fastq.gz
+
+
+test_spades_corrected:
+	reflow run assemble_illumina.rf \
+		-read1=s3://tick-genome/dna/2018-06-28/tick_1_S1_R1_post-trimming_first1Mreads.fastq.gz \
+		-read2=s3://tick-genome/dna/2018-06-28/tick_1_S1_R2_post-trimming_first1Mreads.fastq.gz \
+		-name=tick_1_S1_first1Mreads \
+		-output=s3://tick-genome/dna/2018-06-28/assemble_spades_test_v1/ \
+		-corrected=False
