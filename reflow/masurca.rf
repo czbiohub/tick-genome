@@ -38,7 +38,7 @@ func AssemblePairedEndIlluminaOnly(read1, read2 file, name string) = {
 
 DATA
 
-PE= pe 180 20  {{d}}/{{name}}_R1.fastq.gz  {{d}}/{{name}}_R2.fastq.gz
+PE= pe 180 20  {{d}}/{{name}}_R1.fastq  {{d}}/{{name}}_R2.fastq
 
 # JUMP= sh 3600 200  /FULL_PATH/short_1.fastq  /FULL_PATH/short_2.fastq
 
