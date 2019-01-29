@@ -61,3 +61,11 @@ preqc:
 
 test_multiqc_pre_assembly:
 	reflow -cache=off run multiqc.rf -input=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6/ -output=s3://tick-genome/dna/2018-06-28/pre-assembly_qc_filter_test_v6_multiqc/
+
+
+test_masurca:
+	reflow run -trace assemble_illumina.rf \
+		-read1=s3://tick-genome/dna/2018-06-28/tick_1_S1_R1_001_first1Mreads.fastq.gz \
+		-read2=s3://tick-genome/dna/2018-06-28/tick_1_S1_R2_001_first1Mreads.fastq.gz \
+		-name=tick_1_S1_first1Mreads \
+		-output=s3://tick-genome/dna/2018-06-28/assemble_masurca/

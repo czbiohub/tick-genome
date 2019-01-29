@@ -9,7 +9,7 @@ virtual_cpus := 2*threads
 val masurca = "quay.io/biocontainers/masurca:3.3.0--pl526h4422958_0"
 
 
-func AssemblePairedEndIlluminaOnly(read1, read2 file, name string, ksize int) = {
+func AssemblePairedEndIlluminaOnly(read1, read2 file, name string) = {
     d := dirs.Make([name+"_R1.fastq.gz": read1, name+"_R2.fastq.gz": read2])
 
     d := trace(d)
