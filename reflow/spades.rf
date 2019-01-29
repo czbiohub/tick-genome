@@ -24,8 +24,13 @@ func AssembleIllumina(r1, r2 file, id string, corrected bool) = {
         ""
     }
 
+    d := make([id + "_R1.fastq.gz": r1, id + "_R2.fastq.gz": r2])
+
     exec(image := spades, cpu := threads, mem := 450*GiB) (outdir dir) {"
         cd {{outdir}}
-        spades.py -k 21,33,55,77 --careful {{flags}} -1 {{r1}} -2 {{r2}} -o {{id}}_spades
+        spades.py -k 21,33,55,77 --careful {{flags}} \
+            -1 {{d}}/{{id}}_R1.fastq.gz \
+            -2 {{d}}/{{id}}_R2.fastq.gz \
+            -o {{id}}_spades
     "}
 }
