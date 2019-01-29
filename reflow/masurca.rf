@@ -100,7 +100,7 @@ NUM_THREADS = {{threads}}
 
 #this is mandatory jellyfish hash size -- a safe value is estimated_genome_size*estimated_coverage
 
-JF_SIZE = 168000000000
+JF_SIZE = 200000000
 
 #set this to 1 to use SOAPdenovo contigging/scaffolding module.  Assembly will be worse but will run faster. Useful for very large (>5Gbp) genomes from Illumina-only data
 
