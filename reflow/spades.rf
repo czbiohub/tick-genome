@@ -1,0 +1,31 @@
+
+param (
+    threads = 32
+)
+
+
+// SPAdes – St. Petersburg genome assembler – is an assembly toolkit 
+// containing various assembly pipelines. This manual will help you to install and run SPAdes. 
+// SPAdes version 3.11.1 was released under GPLv2 on October 1, 2017 and can be downloaded from http://cab.spbu.ru/software/spades/.
+// http://spades.bioinf.spbau.ru/release3.11.1/manual.html
+val spades = "quay.io/biocontainers/spades:3.13.0--0"
+
+val dirs = make("$/dirs")
+val fastp = make("./fastp.rf")
+val utils = make("./utils.rf")
+
+
+func AssembleIllumina(r1, r2 file, id string, corrected bool) = {
+
+    // If using corrected reads, don't use SPAdes internal correction algorithms
+    flags := if (corrected) {
+        "--only-assembler"
+    } else {
+        ""
+    }
+
+    exec(image := spades, cpu := threads, mem := 450*GiB) (outdir dir) {"
+        cd {{outdir}}
+        spades.py -k 21,33,55,77 --careful {{flags}} -1 {{r1}} -2 {{r2}} -o {{id}}_spades
+    "}
+}
