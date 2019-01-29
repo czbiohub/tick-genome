@@ -14,7 +14,7 @@ func AssemblePairedEndIlluminaOnly(read1, read2 file, name string) = {
 
     d := trace(d)
 
-    exec(image := masurca, cpu := virtual_cpus, mem := 512*GiB) (outdir dir) {"
+    exec(image := masurca, cpu := virtual_cpus, mem := 50*GiB) (outdir dir) {"
         cd {{outdir}}
 
         echo '# DATA is specified as type {PE,JUMP,OTHER,PACBIO} and 5 fields:
@@ -32,13 +32,13 @@ DATA
 
 PE= pe 180 20  {{d}}/{{name}}_R1.fastq.gz  {{d}}/{{name}}_R2.fastq.gz
 
-JUMP=# sh 3600 200  /FULL_PATH/short_1.fastq  /FULL_PATH/short_2.fastq
+# JUMP= sh 3600 200  /FULL_PATH/short_1.fastq  /FULL_PATH/short_2.fastq
 
 #pacbio reads must be in a single fasta file! make sure you provide absolute path
 
-PACBIO=#/FULL_PATH/pacbio.fa
+# PACBIO=/FULL_PATH/pacbio.fa
 
-OTHER=#/FULL_PATH/file.frg
+# OTHER=/FULL_PATH/file.frg
 
 END
 
