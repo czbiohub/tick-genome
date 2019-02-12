@@ -3,7 +3,7 @@
 val dirs = make("$/dirs")
 
 
-threads := 32
+threads := 30
 virtual_cpus := 2*threads
 
 val abyss = "czbiohub/abyss2:v1.0.1"
@@ -148,7 +148,7 @@ func AssemblePairedEnd(read1, read2 file, name string, ksize int) = {
     d := trace(d)
     hostfile := "/usr/local/etc/openmpi-hostfile-aws"
 
-    exec(image := abyss, cpu := virtual_cpus, mem := 500*GiB) (outdir dir) {"
+    exec(image := abyss, cpu := virtual_cpus, mem := 450*GiB) (outdir dir) {"
     	cd {{outdir}}
         abyss-pe np={{threads}} j={{threads}} name={{name}} k={{ksize}} \
         	mpirun='/usr/local/bin/mpirun --allow-run-as-root --oversubscribe' \
