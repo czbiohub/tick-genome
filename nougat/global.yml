@@ -8,16 +8,16 @@ Tools:
   bin: /home/olga/anaconda/envs/kmergenie/bin/kmergenie
   options: [""]
  fastqc:
-  bin: /sw/apps/bioinfo/fastqc/0.11.2/milou/fastqc
+  bin: /home/olga/miniconda3/envs/picard/bin/fastqc
   options: [--threads,  "16" ,  --outdir,  fastqc, --extract]
  trimmomatic:
-  bin: /proj/a2010002/nobackup/sw/mf/bioinfo-tools/misc/trimmomatic/0.30/trimmomatic-0.30.jar
+  bin: /home/olga/anaconda/envs/trimmomatic/bin/trimmomatic
   options: [""]
  bwa:
   bin: /home/olga/miniconda3/envs/bwa/bin/bwa
   options: ""
  picard:
-  bin: /home/olga/miniconda3/envs/picard/bin/
+  bin: /home/olga/miniconda3/envs/picard/bin/picard
   options: ""
  samtools:
   bin: /home/olga/miniconda3/envs/samtools/bin/samtools
@@ -41,16 +41,16 @@ Tools:
   bin: /home/olga/anaconda/envs/soapdenovo2/bin/SOAPdenovo-63mer
   options: [""]
  spades:
-  bin: /sw/apps/bioinfo/spades/3.6.0/milou/bin/spades.py
+  bin: /home/olga/anaconda/envs/spades/bin/
   options: ["--careful", "-t 8"]
  trinity:
-  bin: /sw/apps/bioinfo/trinity/2014-07-17/milou/
+  bin: 
   options: []
  FRC:
-  bin: /proj/a2010002/nobackup/sw/mf/bioinfo-tools/misc/FRC_align/bin/FRC
+  bin: /home/olga/miniconda3/envs/FRC_align/bin/FRC
   options: ""
  qaTools:
-  bin: /proj/a2010002/nobackup/sw/mf/bioinfo-tools/misc/qaTools/qaCompute
+  bin: 
   options: ""
  BUSCO:
   bin: /sw/apps/bioinfo/BUSCO/1.22/milou/BUSCO
