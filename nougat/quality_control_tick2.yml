@@ -20,10 +20,9 @@ kmer: 81
 reference: /home/olga/code/tick-genome/nougat/GCA_002892825.2_ISE6_asm2.2_deduplicated_genomic.fna
 libraries:
  tick_2:
-  pair1: /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R1_post-trimming.fastq.gz
-  pair2: /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R2_post-trimming.fastq.gz
+  pair1: /home/olga/scratch/tick-genome/rawdata/tick_2_S2_R1_001.fastq.gz
+  pair2: /home/olga/scratch/tick-genome/rawdata/tick_2_S2_R2_001.fastq.gz
   orientation: innie
   insert: 12938
   # CV%: 101.26 = stdev/mean --> stdev = 12938*(101.26/100) = 13101.0188
   std: 13101
-reference: /home/olga/scratch/tick-genome/dna/2018-10-10-dovetail/ixodes_scapularis_06May2018_kaVVW.fasta
