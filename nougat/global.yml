@@ -8,19 +8,19 @@ Tools:
   bin: /home/olga/anaconda/envs/kmergenie/bin/kmergenie
   options: [""]
  fastqc:
-  bin: /home/olga/miniconda3/envs/picard/bin/fastqc
+  bin: /home/olga/anaconda/envs/picard/bin/fastqc
   options: [--threads,  "16" ,  --outdir,  fastqc, --extract]
  trimmomatic:
   bin: /home/olga/anaconda/envs/trimmomatic/bin/trimmomatic
   options: [""]
  bwa:
-  bin: /home/olga/miniconda3/envs/bwa/bin/bwa
+  bin: /home/olga/anaconda/envs/bwa/bin/bwa
   options: ""
  picard:
-  bin: /home/olga/miniconda3/envs/picard/bin/picard
+  bin: /home/olga/anaconda/envs/picard/bin/picard
   options: ""
  samtools:
-  bin: /home/olga/miniconda3/envs/samtools/bin/samtools
+  bin: /home/olga/anaconda/envs/samtools/bin/samtools
   options: ""
  abyss:
   bin: /home/olga/anaconda/envs/abyss/bin/
@@ -35,7 +35,7 @@ Tools:
   bin: /sw/apps/bioinfo/cabog/8.1/Linux-amd64/bin/
   options: [""]
  masurca:
-  bin: /home/olga/miniconda3/envs/MaSuRCA/bin/
+  bin: /home/olga/anaconda/envs/MaSuRCA/bin/
   options: [""]
  soapdenovo:
   bin: /home/olga/anaconda/envs/soapdenovo2/bin/SOAPdenovo-63mer
@@ -47,7 +47,7 @@ Tools:
   bin: 
   options: []
  FRC:
-  bin: /home/olga/miniconda3/envs/FRC_align/bin/FRC
+  bin: /home/olga/anaconda/envs/FRC_align/bin/FRC
   options: ""
  qaTools:
   bin: 
