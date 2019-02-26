@@ -1,0 +1,29 @@
+pipeline:
+ # This field specifies which pipeline needs to be run. Only implemented pipelines can be run.
+ QCcontrol
+# Which tools need to be used, and in which order.
+tools:
+ [kmergenie, align]
+# Prefix to append to all output files
+output: tick2_qualitycontrol_v1
+# Minimum contig length to be considered. This parameter is used in several steps in order to 
+# discard short contigs (default 1000)
+minCtgLength: 1000
+# Expected genome size. Used by some assemblers, if unsure, give a rough estimate.
+genomeSize: 2400000000
+# Number of threads to be used in parallel steps.
+threads: 32
+# In case a tool needs a predefined kmer size (Rule-of-thumb, try 61 first)
+kmer: 81
+# This field is mandatory when an alignment needs to be executed, e.g, the tools in the evaluation  
+# pipeline use the .bam alignments to work. 
+reference: /home/olga/code/tick-genome/nougat/GCA_002892825.2_ISE6_asm2.2_deduplicated_genomic.fna
+libraries:
+ tick_2:
+  pair1: /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R1_post-trimming.fastq.gz
+  pair2: /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R2_post-trimming.fastq.gz
+  orientation: innie
+  insert: 12938
+  # CV%: 101.26 = stdev/mean --> stdev = 12938*(101.26/100) = 13101.0188
+  std: 13101
+reference: /home/olga/scratch/tick-genome/dna/2018-10-10-dovetail/ixodes_scapularis_06May2018_kaVVW.fasta
