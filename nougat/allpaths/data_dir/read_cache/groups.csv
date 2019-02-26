@@ -1,0 +1,3 @@
+group_name, group_id, library_name, read_count, min_read_len, mean_read_len, max_read_len, mean_r1_qual, mean_r2_qual,         import_date,                                                                                         file_name
+       PE1,     0001,     lib12938,      13694,          136,         143.0,          143,         31.1,         29.0, 2018-10-11 10:39:47, /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R?_post-trimming.fastq.gz
+       PE2,     0002,     lib16881,       2006,          143,         143.0,          143,         27.5,         26.9, 2018-10-11 10:39:48, /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R?_post-trimming.fastq.gz

@@ -1,0 +1,430 @@
+
+Version 2.04: released on July 13th, 2012
+Compile Feb 14 2018	20:38:54
+
+********************
+Pregraph
+********************
+
+Parameters: pregraph -s /home/olga/code/tick-genome/nougat/soapdenovo/configuration.txt -K 61 -p 32 -o soapAssembly 
+
+In /home/olga/code/tick-genome/nougat/soapdenovo/configuration.txt, 2 lib(s), maximum read length 150, maximum name length 256.
+
+32 thread(s) initialized.
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R1_post-trimming.fastq.gz
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R2_post-trimming.fastq.gz
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz
+Time spent on hashing reads: 0s, 15700 read(s) processed.
+LIB(s) information:
+ [LIB] 0, avg_ins 12938, reverse 0.
+ [LIB] 1, avg_ins 16881, reverse 0.
+723176 node(s) allocated, 1302996 kmer(s) in reads, 1302996 kmer(s) processed.
+done hashing nodes
+699477 linear node(s) marked.
+Time spent on marking linear nodes: 0s.
+Time spent on pre-graph construction: 0s.
+
+Start to remove frequency-one-kmer tips shorter than 122.
+Total 11817 tip(s) removed.
+32 thread(s) initialized.
+3415 linear node(s) marked.
+Start to remove tips with minority links.
+1031 tip(s) removed in cycle 1.
+3 tip(s) removed in cycle 2.
+0 tip(s) removed in cycle 3.
+Total 1034 tip(s) removed.
+32 thread(s) initialized.
+0 linear node(s) marked.
+Time spent on removing tips: 1s.
+
+6698 (3349) edge(s) and 533 extra node(s) constructed.
+Time spent on constructing edges: 0s.
+
+In file: /home/olga/code/tick-genome/nougat/soapdenovo/configuration.txt, max seq len 150, max name len 256.
+32 thread(s) initialized.
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R1_post-trimming.fastq.gz
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R2_post-trimming.fastq.gz
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz
+15700 read(s) processed.
+Time spent on:
+ importing reads: 0s,
+ chopping reads to kmers: 0s,
+ searching kmers: 0s,
+ aligning reads to edges: 0s,
+ searching (K+1)mers: 0s,
+ adding pre-arcs: 0s,
+ recording read paths: 0s.
+0 marker(s) output.
+Reads alignment done, 5946 read(s) deleted, 6088 pre-arc(s) added.
+LIB(s) information:
+ [LIB] 0, avg_ins 12938, reverse 0.
+ [LIB] 1, avg_ins 16881, reverse 0.
+Time spent on aligning reads: 0s.
+
+2365 vertex(es) output.
+Overall time spent on constructing pre-graph: 0m.
+
+
+********************
+Contig
+********************
+
+Parameters: contig -g soapAssembly -M 1 -s /home/olga/code/tick-genome/nougat/soapdenovo/configuration.txt -p 32 
+
+There are 2365 kmer(s) in vertex file.
+There are 6698 edge(s) in edge file.
+Kmers sorted.
+6698 edge(s) input.
+8504 pre-arcs loaded.
+1714 none-palindrome edge(s) swapped, 0 palindrome edge(s) processed.
+6698 edge(s) sorted.
+Arcs sorted.
+Start to pinch bubbles, cutoff 0.100000, MAX NODE NUM 3, MAX DIFF NUM 2.
+322 start points, 3027 dheap nodes.
+822 pair(s) found, 2 pair of path(s) compared, 2 pair(s) merged.
+Sequence comparison failed:
+ Path crossing deleted edge                         0
+ Length difference of two paths greater than two    0
+ Mismatch score greater than cutoff (2)             0
+ Mismatch score ratio greater than cutoff (0.1)     0
+ Path length shorter than (Kmer-1)                  0
+DFibHeap: 247 node(s) allocated.
+71 edge(s) concatenated in cycle 1.
+0 edge(s) concatenated in cycle 2.
+Time spent on pinching bubbles: 0s.
+Start to destroy weak inner edges.
+664 weak inner edge(s) destroyed in cycle 1.
+17 weak inner edge(s) destroyed in cycle 2.
+0 weak inner edge(s) destroyed in cycle 3.
+1329 dead arc(s) removed.
+318 inner edge(s) with coverage lower than or equal to 1 destroyed.
+645 dead arc(s) removed.
+1117 edge(s) concatenated in cycle 1.
+84 edge(s) concatenated in cycle 2.
+0 edge(s) concatenated in cycle 3.
+Before compacting, 6698 edge(s) existed.
+After compacting, 2150 edge(s) left.
+
+Strict: 0, cutoff length: 122.
+534 tips cut in cycle 1.
+24 tips cut in cycle 2.
+12 tips cut in cycle 3.
+12 tips cut in cycle 4.
+7 tips cut in cycle 5.
+7 tips cut in cycle 6.
+9 tips cut in cycle 7.
+11 tips cut in cycle 8.
+8 tips cut in cycle 9.
+6 tips cut in cycle 10.
+11 tips cut in cycle 11.
+11 tips cut in cycle 12.
+5 tips cut in cycle 13.
+5 tips cut in cycle 14.
+3 tips cut in cycle 15.
+5 tips cut in cycle 16.
+3 tips cut in cycle 17.
+5 tips cut in cycle 18.
+4 tips cut in cycle 19.
+4 tips cut in cycle 20.
+7 tips cut in cycle 21.
+8 tips cut in cycle 22.
+7 tips cut in cycle 23.
+4 tips cut in cycle 24.
+11 tips cut in cycle 25.
+5 tips cut in cycle 26.
+8 tips cut in cycle 27.
+6 tips cut in cycle 28.
+3 tips cut in cycle 29.
+3 tips cut in cycle 30.
+4 tips cut in cycle 31.
+3 tips cut in cycle 32.
+4 tips cut in cycle 33.
+3 tips cut in cycle 34.
+2 tips cut in cycle 35.
+4 tips cut in cycle 36.
+1 tips cut in cycle 37.
+2 tips cut in cycle 38.
+2 tips cut in cycle 39.
+2 tips cut in cycle 40.
+1 tips cut in cycle 41.
+3 tips cut in cycle 42.
+4 tips cut in cycle 43.
+3 tips cut in cycle 44.
+2 tips cut in cycle 45.
+2 tips cut in cycle 46.
+2 tips cut in cycle 47.
+4 tips cut in cycle 48.
+1 tips cut in cycle 49.
+2 tips cut in cycle 50.
+4 tips cut in cycle 51.
+1 tips cut in cycle 52.
+2 tips cut in cycle 53.
+3 tips cut in cycle 54.
+2 tips cut in cycle 55.
+1 tips cut in cycle 56.
+2 tips cut in cycle 57.
+1 tips cut in cycle 58.
+2 tips cut in cycle 59.
+3 tips cut in cycle 60.
+1 tips cut in cycle 61.
+2 tips cut in cycle 62.
+5 tips cut in cycle 63.
+2 tips cut in cycle 64.
+0 tips cut in cycle 65.
+160 dead arc(s) removed.
+141 edge(s) concatenated in cycle 1.
+11 edge(s) concatenated in cycle 2.
+0 edge(s) concatenated in cycle 3.
+Before compacting, 2150 edge(s) existed.
+After compacting, 186 edge(s) left.
+
+There are 63 contig(s) longer than 100, sum up 8630 bp, with average length 136.
+The longest length is 338 bp, contig N50 is 123 bp,contig N90 is 118 bp.
+93 contig(s) longer than 62 output.
+
+Time spent on constructing contig: 0m.
+
+
+********************
+Map
+********************
+
+Parameters: map -s /home/olga/code/tick-genome/nougat/soapdenovo/configuration.txt -g soapAssembly -p 32 -K 61 
+
+Kmer size: 61.
+Contig length cutoff: 63.
+
+93 contig(s), maximum sequence length 338, minimum sequence length 62, maximum name length 10.
+Time spent on parsing contigs file: 0s.
+32 thread(s) initialized.
+Time spent on hashing contigs: 0s.
+5171 node(s) allocated, 5283 kmer(s) in contigs, 5283 kmer(s) processed.
+Time spent on graph construction: 0s.
+
+Time spent on aligning long reads: 0s.
+
+In file: /home/olga/code/tick-genome/nougat/soapdenovo/configuration.txt, max seq len 150, max name len 256
+32 thread(s) initialized.
+186 edge(s) in the graph.
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R1_post-trimming.fastq.gz
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R2_post-trimming.fastq.gz
+Current insert size is 12938, map_len is 35.
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R1_post-trimming.fastq.gz
+Import reads from file:
+ /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R2_post-trimming.fastq.gz
+Current insert size is 16881, map_len is 35.
+
+Total reads         15700
+Reads in gaps       4220
+Ratio               26.9%
+Reads on contigs    4815
+Ratio               30.7%
+2 pe insert size, the largest boundary is 15700.
+
+LIB(s) information:
+ [LIB] 0, avg_ins 12938, reverse 0.
+ [LIB] 1, avg_ins 16881, reverse 0.
+Time spent on aligning reads: 1s.
+
+Overall time spent on alignment: 0m.
+
+
+********************
+Scaff
+********************
+
+Parameters: scaff -g soapAssembly -p 32 -L 500 
+
+
+gzip: stdout: Broken pipe
+Files for scaffold construction are OK.
+
+There are 2 grad(s), 15700 read(s), max read len 150.
+Kmer size: 61
+There are 186 edge(s) in edge file.
+Mask contigs with coverage lower than 3.1 or higher than 62.0, and strict length 0.
+Average contig coverage is 31, 16 contig(s) masked.
+Mask contigs shorter than 500, 170 contig(s) masked.
+240 arc(s) loaded, average weight is 0.
+93 contig(s) loaded.
+Done loading updated edges.
+Time spent on loading updated edges: 0s.
+
+*****************************************************
+Start to load paired-end reads information.
+
+For insert size: 12938
+ Total PE links                      1312
+ Normal PE links on same contig      27
+ Incorrect oriented PE links         0
+ PE links of too small insert size   0
+ PE links of too large insert size   0
+ Correct PE links                    1285
+ Accumulated connections             384
+Use contigs longer than 12938 to estimate insert size: 
+ PE links               0
+Too few PE links.
+192 new connections.
+
+For insert size: 16881
+ Total PE links                      22
+ Normal PE links on same contig      0
+ Incorrect oriented PE links         0
+ PE links of too small insert size   0
+ PE links of too large insert size   0
+ Correct PE links                    22
+ Accumulated connections             40
+Use contigs longer than 16881 to estimate insert size: 
+ PE links               0
+Too few PE links.
+20 new connections.
+
+All paired-end reads information loaded.
+Time spent on loading paired-end reads information: 0s.
+
+*****************************************************
+Start to construct scaffolds.
+
+***************************
+For insert size: 12938
+ Total PE links                191
+ PE links to masked contigs    191
+ On same scaffold PE links     0
+Cutoff of PE links to make a reliable connection: 5
+Report from checkScaf: 0 scaffold segments broken.
+0 circles removed.
+Start to remove transitive connection.
+Total contigs                         186
+Masked contigs                        186
+Remained contigs                      0
+None-outgoing-connection contigs      0
+Single-outgoing-connection contigs    0
+Multi-outgoing-connection contigs     0
+Cycle 1
+ Two-outgoing-connection contigs     0
+ Potential transitive connections    0
+ Transitive connections              0
+Start to linearize sub-graph.
+ Picked sub-graphs          0
+ Connection-conflict        0
+ Significant overlapping    0
+ Eligible                   0
+ Bubble structures          0
+Mask repeats:
+ Puzzles           0
+ Masked contigs    0
+Start to remove transitive connection.
+Total contigs                         186
+Masked contigs                        186
+Remained contigs                      0
+None-outgoing-connection contigs      0
+Single-outgoing-connection contigs    0
+Multi-outgoing-connection contigs     0
+Cycle 1
+ Two-outgoing-connection contigs     0
+ Potential transitive connections    0
+ Transitive connections              0
+Start to linearize sub-graph.
+ Picked sub-graphs          0
+ Connection-conflict        0
+ Significant overlapping    0
+ Eligible                   0
+ Bubble structures          0
+Start to mask puzzles.
+ Masked contigs      0
+ Remained puzzles    0
+Freezing done.
+
+
+No scaffold was constructed.
+
+
+***************************
+For insert size: 16881
+ Total PE links                20
+ PE links to masked contigs    20
+ On same scaffold PE links     0
+Cutoff of PE links to make a reliable connection: 5
+Report from checkScaf: 0 scaffold segments broken.
+Add large insert size PE links: 0 orientation-conflict links, 0 contigs acrossed by normal links.
+0 circles removed.
+Start to remove transitive connection.
+Total contigs                         186
+Masked contigs                        186
+Remained contigs                      0
+None-outgoing-connection contigs      0
+Single-outgoing-connection contigs    0
+Multi-outgoing-connection contigs     0
+Cycle 1
+ Two-outgoing-connection contigs     0
+ Potential transitive connections    0
+ Transitive connections              0
+Start to linearize sub-graph.
+ Picked sub-graphs          0
+ Connection-conflict        0
+ Significant overlapping    0
+ Eligible                   0
+ Bubble structures          0
+Mask repeats:
+ Puzzles           0
+ Masked contigs    0
+Start to remove transitive connection.
+Total contigs                         186
+Masked contigs                        186
+Remained contigs                      0
+None-outgoing-connection contigs      0
+Single-outgoing-connection contigs    0
+Multi-outgoing-connection contigs     0
+Cycle 1
+ Two-outgoing-connection contigs     0
+ Potential transitive connections    0
+ Transitive connections              0
+Start to linearize sub-graph.
+ Picked sub-graphs          0
+ Connection-conflict        0
+ Significant overlapping    0
+ Eligible                   0
+ Bubble structures          0
+Non-strict linearization.
+Start to linearize sub-graph.
+ Picked sub-graphs          0
+ Connection-conflict        0
+ Significant overlapping    0
+ Eligible                   0
+ Bubble structures          0
+Start to mask puzzles.
+ Masked contigs      0
+ Remained puzzles    0
+Freezing done.
+
+Recover contigs.
+ Total recovered contigs    0
+ Single-route cases         0
+ Multi-route cases          0
+
+All links loaded.
+Time spent on constructing scaffolds: 0s.
+
+The final rank
+
+
+No scaffold was constructed.
+
+
+Done with 0 scaffolds, 0 gaps finished, 0 gaps overall.
+
+Overall time spent on constructing scaffolds: 0m.
+Time for the whole pipeline: 0m.

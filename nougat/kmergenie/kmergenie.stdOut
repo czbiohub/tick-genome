@@ -1,0 +1,19 @@
+running histogram estimation
+File /home/olga/code/tick-genome/nougat/kmergenie/tick_qualitycontrol_v1kmerinput.txt starts with character "/", hence is interpreted as a list of file names
+Reading 4 read files
+Linear estimation: ~0 M distinct 71-mers are in the reads
+K-mer sampling: 1/1
+going to estimate histograms for values of k: 121 111 101 91 81 71 61 51 41 31 21 
+fitting model to histograms to estimate best k
+estimation of the best k so far: 121
+refining estimation around [115; 121], with a step of 2
+running histogram estimation
+File /home/olga/code/tick-genome/nougat/kmergenie/tick_qualitycontrol_v1kmerinput.txt starts with character "/", hence is interpreted as a list of file names
+Reading 4 read files
+Linear estimation: ~0 M distinct 71-mers are in the reads
+K-mer sampling: 1/1
+going to estimate histograms for values of k: 121 119 117 115 
+fitting model to histograms to estimate best k
+table of predicted num. of genomic k-mers: histograms.dat
+recommended coverage cut-off for best k: 2
+best k: 121

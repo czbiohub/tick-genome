@@ -1,0 +1,53 @@
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:48 2018 run on ndnd, pid=66362 [Nov  9 2015 17:48:33 R52488 ]
+QualbStats                                                                     \
+           HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cach \
+           e/PE2                                                               \
+           OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_ \
+           cache/qualb_stats//PE2 RC=False
+--------------------------------------------------------------------------------
+
+
+Redirecting standard output to the following files:
+/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/qualb_stats//PE2.out
+
+Streaming data:
+.....10%.....20%.....30%.....40%.....50%.....60%.....70%.....80%.....90%....100%
+
+
+ overall statistics:
+
+         2006  reads
+
+   statistics from full data set:
+
+       286858  total length
+          143  minimum length
+          143  maximum length
+        143.0  mean length
+          143  N50 length
+
+ overall quality statistics:
+
+         27.2  mean Q
+         16.2  effective Q
+           11  Q1 Q (1st quartile)
+           37  Q2 Q (median)
+           37  Q3 Q (3rd quartile)
+         11.0  min Q
+         37.0  max Q
+
+ pair quality statistics:
+
+  27.5   26.9  mean Q
+  16.4   16.1  effective Q
+    11     11  Q1 Q (1st quartile)
+    37     37  Q2 Q (median)
+    37     37  Q3 Q (3rd quartile)
+  11.0   11.0  min Q
+  37.0   37.0  max Q
+
+Thu Oct 11 10:39:48 2018: writing stats to /home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/qualb_stats//PE2.stats
+Thu Oct 11 10:39:48 2018: writing cycle quals frequencies to /home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/qualb_stats//PE2.cq_freqs
+

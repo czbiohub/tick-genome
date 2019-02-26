@@ -1,0 +1,223 @@
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:49 2018 run on ndnd, pid=66438 [Nov  9 2015 17:48:33 R52488 ]
+RunAllPathsLG PRE=/home/olga/code/tick-genome/nougat/allpaths                  \
+              REFERENCE_NAME=. DATA_SUBDIR=data_dir RUN=allpaths SUBDIR=run    \
+              HAPLOIDIFY=True
+--------------------------------------------------------------------------------
+
+
+Hostname                  : ndnd
+Available processors      : 128
+Total physical memory     : 2015 GB
+
+run dir is 
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths
+
+Unable to find optional long jumping reads (>20kb) for scaffolding.
+Unable to find optional long reads for patching.
+targetsToMake = 168
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/ValidateAllPathsInputs.report
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/assembly_stats.report
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/final.assembly.efasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/final.assembly.fasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/final.contigs.efasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/final.contigs.fasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/final.contigs.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/final.rings
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/final.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/hyper
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/hyper.prelim
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/hyper.recovered
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/hyper_plus
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/initial_scaffolds.contigs.fasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/initial_scaffolds.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/library_coverage.report
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.contigs.efasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.contigs.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.contigs.fasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.contigs.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.readlocs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.contigs.fasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.contigs.vecfasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.contigs.efasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.contigs.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.local.contigs.efasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.local.contigs.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.local.kpatch.contigs.efasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.local.kpatch.rings
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.local.kpatch.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.local.rings
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.local.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.readlocs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.rings
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.fixed.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.indel.edits
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.readlocs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.rings
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.applied.tag.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.contigs.efasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.contigs.fasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.patched.edits
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.remodel.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.clean.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.contigs.fasta
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/linear_scaffolds0.superb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/localized.hbvs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/nhood.hypers
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/post_patch/PostPatcher.linear_scaffolds0.clean.remodel.applied.tag.JRALIGNS_PSORT
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/post_patch/PostPatcher.linear_scaffolds0.clean.remodel.applied.tag.JRPS_START
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/reads.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/reads.paths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/reads.paths_rc.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/reads.pathsdb.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/reads.unibases.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/reads.unipath_adjgraph.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/reads.unipaths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/recover/reads.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/recover/reads.paths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/recover/reads.paths_rc.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/recover/reads.pathsdb.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/scaffold_reads.qltoutlet
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/scaffold_reads.qltoutlet.index
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/scaffold_reads_filtered.qltoutlet
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/scaffold_reads_filtered.qltoutlet.index
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/seeds.ids
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ASSEMBLIES/run/unipath_link_graph.cloud.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.paths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.paths_rc.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.pathsdb.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.unibases.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.unilocs.96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.unilocs.96.indexr
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.unipath_adjgraph.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.unipaths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.unipaths.predicted_count.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/all_reads.unipathsdb.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended.paths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended.paths_rc.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended.pathsdb.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended.unibases.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended.unibases.k96.lookup
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended.unipath_adjgraph.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended.unipaths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended.unipathsdb.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended40.shaved.patched.unibases.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended40.shaved.unibases.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended40.unibases.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended40.unipath_adjgraph.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended40.unipaths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/extended40.unipathsdb.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.gap_closed.unibases.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.gap_closed.unipath_adjgraph.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.gap_closed.unipaths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.gap_closed.unipathsdb.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.paths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.paths_rc.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.pathsdb.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads.unibases.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads_ext.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads_ext.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads_ext.paths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads_filt.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads_filt.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/filled_reads_filt.paths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.k28.pc.ev
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.k28.pc.info
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.k28.pc.paths
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.k28.pc.seq
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.k28.ug.dict
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.k28.ug.edges
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.k28.ug.info
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.k28.ug.seq
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr_cpd.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr_cpd.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_corr_cpd.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_edit.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_edit.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_edit.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_filt.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_filt.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_filt.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_filt_cpd.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_filt_cpd.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_filt_cpd.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_orig.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_orig.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/frag_reads_orig.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_ec.distribs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_ec.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_ec.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_ec.paths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_filt.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_filt.outies
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_filt.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_filt.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_filt_cpd.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_filt_cpd.outies
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_filt_cpd.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_filt_cpd.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_orig.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_orig.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/jump_reads_orig.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/ploidy
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/scaffold_reads.distribs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/scaffold_reads.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/scaffold_reads.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/unibases_as_reads.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/unibases_as_reads.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/unibases_as_reads.paths.k96
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/unipath_patch/UnipathPatcher.JSEGS
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/allpaths/unipath_patch/UnipathPatcher.SEGS
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/frag_reads_orig.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/frag_reads_orig.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/frag_reads_orig.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/jump_reads_orig.fastb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/jump_reads_orig.pairs
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/jump_reads_orig.qualb
+/home/olga/code/tick-genome/nougat/allpaths/./data_dir/ploidy
+
+
+Thu Oct 11 10:39:49 2018: Starting ALLPATHS-LG Pipeline.
+
+Thu Oct 11 10:39:49 2018 : Preparing makefile.
+
+forceTargets = 0
+
+ Creating $(DATA)/makeinfo
+ Creating $(RUN)/makeinfo
+ Creating $(SUB)/makeinfo
+ Creating $(SUB)/post_patch/makeinfo
+ Creating $(SUB)/recover/makeinfo
+ Creating $(RUN)/unipath_patch/makeinfo
+
+
+ Error: file /home/olga/code/tick-genome/nougat/allpaths/./data_dir/jump_reads_orig.fastb is supposed to already exist, but doesn't.
+ForceAssert(IsRegularFile( *it )) at system/MiscUtil.cc:996 failed in function
+int MakeMgr::RunMake(int)
+
+
+Thu Oct 11 10:39:49 2018.  Abort.  Stopping.
+
+Generating a backtrace...
+
+Dump of stack:
+
+0. char* string::_S_construct<char*>(...), in ??:?
+1. char* string::_S_construct<char*>(...), in ??:?
+2. char* string::_S_construct<char*>(...), in ??:?
+3. char* string::_S_construct<char*>(...), in ??:?
+4. char* string::_S_construct<char*>(...), in ??:?
+5. char* string::_S_construct<char*>(...), in ??:?
+6. basic_stringbuf<char, char_traits<char>, allocator<char> >::~basic_stringbuf(...), in ??:?
+

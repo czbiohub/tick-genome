@@ -1,0 +1,10 @@
+--------------------------------------------------------------------------------
+Oct 11 10:39:46 2018 run on localhost (pid=66277), last modified Nov  9 09:55:53 2015
+/home/olga/anaconda/envs/allpaths/bin/PrepareAllPathsInputs.pl                 \
+    DATA_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir PLOIDY=2     \
+    PICARD_TOOLS_DIR=/sw/apps/bioinfo/picard/1.92/milou/ FORCE_PHRED=True      \
+    PHRED_64=False                                                             \
+    IN_GROUPS_CSV=/home/olga/code/tick-genome/nougat/allpaths/in_groups.csv    \
+    IN_LIBS_CSV=/home/olga/code/tick-genome/nougat/allpaths/in_libs.csv 
+--------------------------------------------------------------------------------
+

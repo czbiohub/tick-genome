@@ -1,0 +1,318 @@
+--------------------------------------------------------------------------------
+Oct 11 10:39:46 2018 run on localhost (pid=66277), last modified Nov  9 09:55:53 2015
+/home/olga/anaconda/envs/allpaths/bin/PrepareAllPathsInputs.pl                 \
+    DATA_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir PLOIDY=2     \
+    PICARD_TOOLS_DIR=/sw/apps/bioinfo/picard/1.92/milou/ FORCE_PHRED=True      \
+    PHRED_64=False                                                             \
+    IN_GROUPS_CSV=/home/olga/code/tick-genome/nougat/allpaths/in_groups.csv    \
+    IN_LIBS_CSV=/home/olga/code/tick-genome/nougat/allpaths/in_libs.csv 
+--------------------------------------------------------------------------------
+
+---- 2018-10-11 10:39:46 (PAPI): Running on '/home/olga/code/tick-genome/nougat'.
+--------------------------------------------------------------------------------
+Oct 11 10:39:46 2018 run on localhost (pid=66282), last modified Nov  9 09:55:53 2015
+/home/olga/miniconda3/envs/allpaths/bin/CacheLibs.pl                           \
+    CACHE_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache  \
+    ACTION=Add                                                                 \
+    IN_LIBS_CSV=/home/olga/code/tick-genome/nougat/allpaths/in_libs.csv        \
+    OVERWRITE=0 DRY_RUN=0 VERBOSE=1 
+--------------------------------------------------------------------------------
+
+---- 2 input libraries loaded from '/home/olga/code/tick-genome/nougat/allpaths/in_libs.csv':
+*************************************************************************************************************************************************************
+library_name, project_name, organism_name,     type, paired, frag_size, frag_stddev, insert_size, insert_stddev, read_orientation, genomic_start, genomic_end
+    lib12938,       genome,        genome, fragment,      1,     12938,       13101,            ,              ,           inward,             0,           0
+    lib16881,       genome,        genome, fragment,      1,     16881,       14178,            ,              ,           inward,             0,           0
+*************************************************************************************************************************************************************
+---- 2018-10-11 10:39:46 (CL): Merging input libraries with cache libraries.
+==========================================================================================================
+ library, organism, project,     type, insert_size,      frag_size, pairing, genomic_range, status, action
+lib12938,   genome,  genome, fragment,            , 12938 +- 13101,  inward, [   0 :   0 ],    NEW,    ADD
+lib16881,   genome,  genome, fragment,            , 16881 +- 14178,  inward, [   0 :   0 ],    NEW,    ADD
+==========================================================================================================
+---- 2018-10-11 10:39:46 (CL): 2 new libraries added to library database.
+---- 2018-10-11 10:39:46 (CL): 2 libraries updated in library database.
+--------------------------------------------------------------------------------
+Oct 11 10:39:46 2018 run on localhost (pid=66286), last modified Nov  9 09:55:53 2015
+/home/olga/miniconda3/envs/allpaths/bin/CacheGroups.pl                         \
+    ACTION=Add PICARD_TOOLS_DIR=/sw/apps/bioinfo/picard/1.92/milou/            \
+    CACHE_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache  \
+    IN_GROUPS_CSV=/home/olga/code/tick-genome/nougat/allpaths/in_groups.csv    \
+    INCLUDE_NON_PF_READS=1 PHRED_64=0 FORCE_PHRED=1 OVERWRITE=0                \
+    SAVE_INTERMEDIATES=0 TMP_DIR= HOSTS= JAVA_MEM_GB=8 DRY_RUN=0 VERBOSE=1 
+--------------------------------------------------------------------------------
+
+---- 2 input groups loaded.
+---- 2 input groups loaded from '/home/olga/code/tick-genome/nougat/allpaths/in_groups.csv':
+***************************************************************************************************************************
+group_name, library_name,                                                                                         file_name
+       PE1,     lib12938, /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R?_post-trimming.fastq.gz
+       PE2,     lib16881, /home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R?_post-trimming.fastq.gz
+***************************************************************************************************************************
+---- 0 cached groups loaded.
+---- 2 cached libraries loaded.
+---- Converting: group 'PE1' will be added to the database.
+---- Converting: group 'PE2' will be added to the database.
+--------------------------------------------------------------------------------
+---- 2018-10-11 10:39:46 (CG): Importing group 'PE1'.
+--------------------------------------------------------------------------------
+Oct 11 10:39:46 2018 run on localhost (pid=66289), last modified Nov  9 09:55:53 2015
+/home/olga/miniconda3/envs/allpaths/bin/ConvertToFastbQualb.pl                 \
+    PICARD_TOOLS_DIR=/sw/apps/bioinfo/picard/1.92/milou/                       \
+    TMP_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/picard_tmp \
+    DATA_FILE=/home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_2_S2_R?_post-trimming.fastq.gz \
+    PAIRED=1                                                                   \
+    OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/PE1 \
+    REVERSE_READS=False TRIM_START=0 TRIM_END=0 INCLUDE_NON_PF_READS=1         \
+    PHRED_64=0 FORCE_PHRED=1 REVERT_SAM=0 OVERWRITE=0 SAVE_COMPRESSED_FASTQ=0  \
+    SAVE_INTERMEDIATES=0 JAVA_MEM_GB=8 DRY_RUN=0 VERBOSE=1 
+--------------------------------------------------------------------------------
+
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:46 2018 run on ndnd, pid=66292 [Nov  9 2015 17:48:33 R52488 ]
+FastqToFastbQualb                                                              \
+                  FASTQ=/home/olga/scratch/tick-genome/dna/2018-06-28/pre-asse \
+                  mbly_v3/tick_2_S2_R1_post-trimming.fastq.gz                  \
+                  OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE1.tmp/0 PHRED_64=False FORCE_PHRED=True       \
+                  NH=False
+--------------------------------------------------------------------------------
+
+Thu Oct 11 10:39:46 2018 (FTFQ):           6847  reads in fastq file.
+Thu Oct 11 10:39:46 2018 (FTFQ):           6847  reads in fastb/qualb files.
+Thu Oct 11 10:39:46 2018 (FTFQ):     0.00114905  % base errors due to ambiguities (all 'N' would yield 75%).
+Thu Oct 11 10:39:46 2018 (FTFQ):      PHRED +33  quality score encoding. Score set to Q0 if fastq score is negative.
+Thu Oct 11 10:39:46 2018 (FTFQ):              0  lowest quality score.
+Thu Oct 11 10:39:46 2018 (FTFQ):             37  highest quality score.
+Thu Oct 11 10:39:46 2018 (FTFQ): Done.
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:46 2018 run on ndnd, pid=66297 [Nov  9 2015 17:48:33 R52488 ]
+FastqToFastbQualb                                                              \
+                  FASTQ=/home/olga/scratch/tick-genome/dna/2018-06-28/pre-asse \
+                  mbly_v3/tick_2_S2_R2_post-trimming.fastq.gz                  \
+                  OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE1.tmp/1 PHRED_64=False FORCE_PHRED=True       \
+                  NH=False
+--------------------------------------------------------------------------------
+
+Thu Oct 11 10:39:47 2018 (FTFQ):           6847  reads in fastq file.
+Thu Oct 11 10:39:47 2018 (FTFQ):           6847  reads in fastb/qualb files.
+Thu Oct 11 10:39:47 2018 (FTFQ):    0.000766034  % base errors due to ambiguities (all 'N' would yield 75%).
+Thu Oct 11 10:39:47 2018 (FTFQ):      PHRED +33  quality score encoding. Score set to Q0 if fastq score is negative.
+Thu Oct 11 10:39:47 2018 (FTFQ):              0  lowest quality score.
+Thu Oct 11 10:39:47 2018 (FTFQ):             37  highest quality score.
+Thu Oct 11 10:39:47 2018 (FTFQ): Done.
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:47 2018 run on ndnd, pid=66301 [Nov  9 2015 17:48:33 R52488 ]
+MergePairedFastbs                                                              \
+                  HEAD1_IN=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE1.tmp/0                                       \
+                  HEAD2_IN=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE1.tmp/1                                       \
+                  HEAD_OUT=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE1.tmp/all NH=False
+--------------------------------------------------------------------------------
+
+Thu Oct 11 10:39:47 2018 (MPF): Merging.
+Thu Oct 11 10:39:47 2018 (MPF): Merged 6847 read pairs.
+Thu Oct 11 10:39:47 2018 (MPF): Done.
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:47 2018 run on ndnd, pid=66303 [Nov  9 2015 17:48:33 R52488 ]
+FastbQualbTrimReverse                                                          \
+                      IN_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data \
+                      _dir/read_cache/PE1.tmp/all                              \
+                      OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/dat \
+                      a_dir/read_cache/PE1 TRIM_START=0 TRIM_END=0             \
+                      REVERSE=False NH=False
+--------------------------------------------------------------------------------
+
+Thu Oct 11 10:39:47 2018 (FQTR): Trimming bases to '/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/PE1.fastb'.
+Thu Oct 11 10:39:47 2018 (FQTR): Trimming quals to '/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/PE1.qualb'.
+Thu Oct 11 10:39:47 2018 (FQTR): Done.
+---- 2018-10-11 10:39:47 (CG): Importing group 'PE2'.
+--------------------------------------------------------------------------------
+Oct 11 10:39:47 2018 run on localhost (pid=66316), last modified Nov  9 09:55:53 2015
+/home/olga/miniconda3/envs/allpaths/bin/ConvertToFastbQualb.pl                 \
+    PICARD_TOOLS_DIR=/sw/apps/bioinfo/picard/1.92/milou/                       \
+    TMP_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/picard_tmp \
+    DATA_FILE=/home/olga/scratch/tick-genome/dna/2018-06-28/pre-assembly_v3/tick_1_S1_R?_post-trimming.fastq.gz \
+    PAIRED=1                                                                   \
+    OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/PE2 \
+    REVERSE_READS=False TRIM_START=0 TRIM_END=0 INCLUDE_NON_PF_READS=1         \
+    PHRED_64=0 FORCE_PHRED=1 REVERT_SAM=0 OVERWRITE=0 SAVE_COMPRESSED_FASTQ=0  \
+    SAVE_INTERMEDIATES=0 JAVA_MEM_GB=8 DRY_RUN=0 VERBOSE=1 
+--------------------------------------------------------------------------------
+
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:47 2018 run on ndnd, pid=66321 [Nov  9 2015 17:48:33 R52488 ]
+FastqToFastbQualb                                                              \
+                  FASTQ=/home/olga/scratch/tick-genome/dna/2018-06-28/pre-asse \
+                  mbly_v3/tick_1_S1_R1_post-trimming.fastq.gz                  \
+                  OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE2.tmp/0 PHRED_64=False FORCE_PHRED=True       \
+                  NH=False
+--------------------------------------------------------------------------------
+
+Thu Oct 11 10:39:47 2018 (FTFQ):           1003  reads in fastq file.
+Thu Oct 11 10:39:47 2018 (FTFQ):           1003  reads in fastb/qualb files.
+Thu Oct 11 10:39:47 2018 (FTFQ):              0  % base errors due to ambiguities (all 'N' would yield 75%).
+Thu Oct 11 10:39:47 2018 (FTFQ):      PHRED +33  quality score encoding. Score set to Q0 if fastq score is negative.
+Thu Oct 11 10:39:47 2018 (FTFQ):             11  lowest quality score.
+Thu Oct 11 10:39:47 2018 (FTFQ):             37  highest quality score.
+Thu Oct 11 10:39:47 2018 (FTFQ): Done.
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:47 2018 run on ndnd, pid=66345 [Nov  9 2015 17:48:33 R52488 ]
+FastqToFastbQualb                                                              \
+                  FASTQ=/home/olga/scratch/tick-genome/dna/2018-06-28/pre-asse \
+                  mbly_v3/tick_1_S1_R2_post-trimming.fastq.gz                  \
+                  OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE2.tmp/1 PHRED_64=False FORCE_PHRED=True       \
+                  NH=False
+--------------------------------------------------------------------------------
+
+Thu Oct 11 10:39:47 2018 (FTFQ):           1003  reads in fastq file.
+Thu Oct 11 10:39:47 2018 (FTFQ):           1003  reads in fastb/qualb files.
+Thu Oct 11 10:39:47 2018 (FTFQ):              0  % base errors due to ambiguities (all 'N' would yield 75%).
+Thu Oct 11 10:39:47 2018 (FTFQ):      PHRED +33  quality score encoding. Score set to Q0 if fastq score is negative.
+Thu Oct 11 10:39:47 2018 (FTFQ):             11  lowest quality score.
+Thu Oct 11 10:39:47 2018 (FTFQ):             37  highest quality score.
+Thu Oct 11 10:39:47 2018 (FTFQ): Done.
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:47 2018 run on ndnd, pid=66352 [Nov  9 2015 17:48:33 R52488 ]
+MergePairedFastbs                                                              \
+                  HEAD1_IN=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE2.tmp/0                                       \
+                  HEAD2_IN=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE2.tmp/1                                       \
+                  HEAD_OUT=/home/olga/code/tick-genome/nougat/allpaths/data_di \
+                  r/read_cache/PE2.tmp/all NH=False
+--------------------------------------------------------------------------------
+
+Thu Oct 11 10:39:47 2018 (MPF): Merging.
+Thu Oct 11 10:39:47 2018 (MPF): Merged 1003 read pairs.
+Thu Oct 11 10:39:47 2018 (MPF): Done.
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:48 2018 run on ndnd, pid=66356 [Nov  9 2015 17:48:33 R52488 ]
+FastbQualbTrimReverse                                                          \
+                      IN_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data \
+                      _dir/read_cache/PE2.tmp/all                              \
+                      OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/dat \
+                      a_dir/read_cache/PE2 TRIM_START=0 TRIM_END=0             \
+                      REVERSE=False NH=False
+--------------------------------------------------------------------------------
+
+Thu Oct 11 10:39:48 2018 (FQTR): Trimming bases to '/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/PE2.fastb'.
+Thu Oct 11 10:39:48 2018 (FQTR): Trimming quals to '/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache/PE2.qualb'.
+Thu Oct 11 10:39:48 2018 (FQTR): Done.
+---- 2018-10-11 10:39:48 (CG): Final size of groups database:  2
+=============================================================================================================================================
+group,  library, organism, project,     type, insert_size,      frag_size,   pairing, genomic_range, status, revert_sam, action,        notes
+  PE1, lib12938,   genome,  genome, fragment,            , 12938 +- 13101, in (!rev), [   0 :   0 ],    NEW,         no,    ADD, [db updated]
+  PE2, lib16881,   genome,  genome, fragment,            , 16881 +- 14178, in (!rev), [   0 :   0 ],    NEW,         no,    ADD, [db updated]
+=============================================================================================================================================
+--------------------------------------------------------------------------------
+Oct 11 10:39:48 2018 run on localhost (pid=66415), last modified Nov  9 09:55:53 2015
+/home/olga/miniconda3/envs/allpaths/bin/CacheToAllPathsInputs.pl               \
+    CACHE_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache  \
+    PLOIDY=2                                                                   \
+    IN_GROUPS_CSV=/home/olga/code/tick-genome/nougat/allpaths/in_groups.csv    \
+    DATA_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir              \
+    GENOME_SIZE= FRAG_COVERAGE= FRAG_FRAC= JUMP_COVERAGE= JUMP_FRAC=           \
+    LONG_JUMP_COVERAGE= LONG_JUMP_FRAC= LONG_JUMP_MIN_SIZE=20000               \
+    LONG_READ_COVERAGE= LONG_READ_FRAC= LONG_READ_MIN_LEN=500 DRY_RUN=0        \
+    VERBOSE=1 
+--------------------------------------------------------------------------------
+
+---- 2018-10-11 10:39:48 (CTAPI): 2 groups loaded from the cache.
+---- 2018-10-11 10:39:48 (CTAPI): 2 libraries loaded from the cache.
+--------------------------------------------------------------------------------
+Oct 11 10:39:48 2018 run on localhost (pid=66419), last modified Nov  9 09:55:53 2015
+/home/olga/miniconda3/envs/allpaths/bin/CacheToReads.pl                        \
+    CACHE_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir/read_cache  \
+    GROUPS="{PE1,PE2}" FRACTIONS="{1,1}"                                       \
+    OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_dir/frag_reads_orig \
+    DRY_RUN=0 VERBOSE=1 
+--------------------------------------------------------------------------------
+
+Performing re-exec to adjust stack size.
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:48 2018 run on ndnd, pid=66423 [Nov  9 2015 17:48:33 R52488 ]
+CacheReadsMerge                                                                \
+                CACHE_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir \
+                /read_cache GROUP_HEADS="{PE1,PE2}"                            \
+                GROUP_LIB_NAMES="{lib12938,lib16881}"                          \
+                GROUP_LIB_PAIRED="{1,1}" GROUP_LIB_SIZES="{12938,16881}"       \
+                GROUP_LIB_STDDEVS="{13101,14178}"                              \
+                GROUP_READ_SIZES="{143.0,143.0}" GROUP_FRACS="{1,1}"           \
+                OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_dir/ \
+                frag_reads_orig NH=False
+--------------------------------------------------------------------------------
+
+Thu Oct 11 10:39:48 2018 (CRM): Starting merge of fastb/qualb files from all groups...
+Thu Oct 11 10:39:48 2018 (CRM): Merging read set into '/home/olga/code/tick-genome/nougat/allpaths/data_dir/frag_reads_orig.{fastb,qualb}'.
+Thu Oct 11 10:39:48 2018 (CRM):        15700  reads in.
+Thu Oct 11 10:39:48 2018 (CRM):        15700  reads out.
+Thu Oct 11 10:39:48 2018 (CRM):        100.0  % of reads included.
+Thu Oct 11 10:39:48 2018 (CRM): Creating PairsManager.
+Thu Oct 11 10:39:48 2018 (CRM): Library statistics:
+
+lib_name  lib_ID    sep    dev  n_reads
+--------  ------    ---    ---  -------
+lib12938       0  12652  13101  13694
+lib16881       1  16595  14178  2006
+
+
+Thu Oct 11 10:39:48 2018 (CRM): : Done!
+
+==========================================================================================================================================================
+group,  library,     type,      prefix_out, reads_in, fraction, reads_out, coverage, phys_cov, pairing,   library_size, overlap, min_mean_max_len, mean_Qs
+  PE1, lib12938, fragment, frag_reads_orig,    13694,  100.0 %,     13694,        -,        -,  inward, 12938 +- 13101,    17 %, [ 136  143  143], (31 29)
+  PE2, lib16881, fragment, frag_reads_orig,     2006,  100.0 %,      2006,        -,        -,  inward, 16881 +- 14178,    12 %, [ 143  143  143], (28 27)
+==========================================================================================================================================================
+=============================================================================================================================
+     prefix_out, n_groups, n_libraries, reads_in, fraction, reads_out, coverage, phys_cov, overlap, min_mean_max_len, mean_Qs
+frag_reads_orig,        2,           2,    15700,  100.0 %,     15700,        -,        -,    16 %, [ 136  143  143], (31 29)
+=============================================================================================================================
+
+==================== WARNINGS ====================
+
+!!!! No 'jump' cached read groups found.
+     YOU CAN'T RUN AND ASSEMBLY WITHOUT JUMPING READS!
+     Remember, jumping libraries must have 'insert_size' and 'insert_stddev' defined in the 'in_libs.csv'.
+
+
+!!!! No 'long_jump' cached read groups found.
+     Long jumping reads (typically 40 kb, < 1x coverage) are useful only for scaffolding of vertebrate size genomes, and are not required for an assembly.
+
+
+!!!! No 'long' cached read groups found.
+     Long reads (typically, unpaired, 1 kb, 50x coverage) are useful only for gap patching of relatively small genomes, and are not required for an assembly.
+
+==================================================
+
+---- 2018-10-11 10:39:48 (CTAPI): Creating '/home/olga/code/tick-genome/nougat/allpaths/data_dir/ploidy' with PLOIDY = 2.
+**** Can't find '/home/olga/code/tick-genome/nougat/allpaths/data_dir/jump_reads_orig.fastb'.  You can't run an assembly without this file.
+**** Can't find '/home/olga/code/tick-genome/nougat/allpaths/data_dir/jump_reads_orig.qualb'.  You can't run an assembly without this file.
+**** Can't find '/home/olga/code/tick-genome/nougat/allpaths/data_dir/jump_reads_orig.pairs'.  You can't run an assembly without this file.
+**** 2018-10-11 10:39:48 (CTAPI): Found 3 errors.
+---- 2018-10-11 10:39:48 (CTAPI): Done.
+
+---- 2018-10-11 10:39:48 (PAPI): Done.
+

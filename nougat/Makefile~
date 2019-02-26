@@ -1,0 +1,2 @@
+all:
+	deNovo_pipeline.py --global-config global.yml --sample-config samples.yml

@@ -1,0 +1,2 @@
+library_name, library_id, project_name, organism_name,     type, paired, frag_size, frag_stddev, insert_size, insert_stddev, read_orientation, genomic_start, genomic_end,         import_date
+    lib12938,       0001,       genome,        genome, fragment,      1,     12938,       13101,            ,              ,           inward,             0,           0, 2018-10-11 10:39:46

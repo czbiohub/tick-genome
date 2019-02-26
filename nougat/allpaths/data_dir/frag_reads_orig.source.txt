@@ -1,0 +1,19 @@
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:48 2018 run on ndnd, pid=66423 [Nov  9 2015 17:48:33 R52488 ]
+CacheReadsMerge                                                                \
+                CACHE_DIR=/home/olga/code/tick-genome/nougat/allpaths/data_dir \
+                /read_cache GROUP_HEADS="{PE1,PE2}"                            \
+                GROUP_LIB_NAMES="{lib12938,lib16881}"                          \
+                GROUP_LIB_PAIRED="{1,1}" GROUP_LIB_SIZES="{12938,16881}"       \
+                GROUP_LIB_STDDEVS="{13101,14178}"                              \
+                GROUP_READ_SIZES="{143.0,143.0}" GROUP_FRACS="{1,1}"           \
+                OUT_HEAD=/home/olga/code/tick-genome/nougat/allpaths/data_dir/ \
+                frag_reads_orig NH=False
+--------------------------------------------------------------------------------
+
+lib_name  lib_ID    sep    dev  n_reads
+--------  ------    ---    ---  -------
+lib12938       0  12652  13101  13694
+lib16881       1  16595  14178  2006
+

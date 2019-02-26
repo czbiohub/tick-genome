@@ -1,0 +1,8 @@
+
+--------------------------------------------------------------------------------
+Thu Oct 11 10:39:49 2018 run on ndnd, pid=66438 [Nov  9 2015 17:48:33 R52488 ]
+RunAllPathsLG PRE=/home/olga/code/tick-genome/nougat/allpaths                  \
+              REFERENCE_NAME=. DATA_SUBDIR=data_dir RUN=allpaths SUBDIR=run    \
+              HAPLOIDIFY=True
+--------------------------------------------------------------------------------
+
