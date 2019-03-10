@@ -17,7 +17,7 @@ Tools:
   bin: /home/olga/anaconda/envs/bwa/bin/bwa
   options: ""
  picard:
-  bin: /home/olga/anaconda/envs/picard/bin/picard
+  bin: /home/olga/anaconda/envs/picard/bin/
   options: ""
  samtools:
   bin: /home/olga/anaconda/envs/samtools/bin/samtools
