@@ -29,7 +29,7 @@ Tools:
   bin: /home/olga/anaconda/envs/abyss/bin/abyss-mergepairs
   options: ["-m 20", "-1 230", "-2 230"]
  allpaths:
-  bin: /home/olga/anaconda/envs/allpaths/bin/  
+  bin: /home/olga/anaconda/envs/allpaths/bin/
   options: ["PLOIDY=2"]
  cabog:
   bin: /sw/apps/bioinfo/cabog/8.1/Linux-amd64/bin/
@@ -44,13 +44,13 @@ Tools:
   bin: /home/olga/anaconda/envs/spades/bin/
   options: ["--careful", "-t 8"]
  trinity:
-  bin: 
+  bin:
   options: []
  FRC:
   bin: /home/olga/anaconda/envs/FRC_align/bin/FRC
   options: ""
  qaTools:
-  bin: 
+  bin:
   options: ""
  BUSCO:
   bin: /sw/apps/bioinfo/BUSCO/1.22/milou/BUSCO
