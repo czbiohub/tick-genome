@@ -3,9 +3,9 @@ pipeline:
  QCcontrol
 # Which tools need to be used, and in which order.
 tools:
- [kmergenie, align, abyss]
+ [kmergenie, align, FastQC, Trimmomatic, abyss]
 # Prefix to append to all output files
-output: tick2_post-trimming_qualitycontrol_v1
+output: tick1_rawdata_qualitycontrol_v1
 # Minimum contig length to be considered. This parameter is used in several steps in order to
 # discard short contigs (default 1000)
 minCtgLength: 1000
@@ -19,10 +19,10 @@ kmer: 81
 # pipeline use the .bam alignments to work.
 reference: /home/olga/code/tick-genome/nougat/GCA_002892825.2_ISE6_asm2.2_deduplicated_genomic.fna
 libraries:
- tick_2:
-  pair1: /home/olga/scratch/tick-genome/rawdata/tick_2_S2_R1_001.fastq.gz
-  pair2: /home/olga/scratch/tick-genome/rawdata/tick_2_S2_R2_001.fastq.gz
+ tick_1:
+  pair1: /home/olga/scratch/tick-genome/rawdata/tick_1_S1_R1_001.fastq.gz
+  pair2: /home/olga/scratch/tick-genome/rawdata/tick_1_S1_R2_001.fastq.gz
   orientation: innie
-  insert: 12938
-  # CV%: 101.26 = stdev/mean --> stdev = 12938*(101.26/100) = 13101.0188
-  std: 13101
+  insert: 16881
+  # CV%: 83.99 = stdev/mean --> stdev = 16881*(83.99/100) = 14178.3519
+  std: 14178

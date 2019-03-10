@@ -3,9 +3,9 @@ pipeline:
  QCcontrol
 # Which tools need to be used, and in which order.
 tools:
- [kmergenie, align, abyss]
+ [kmergenie, align, FastQC, Trimmomatic, abyss]
 # Prefix to append to all output files
-output: tick2_post-trimming_qualitycontrol_v1
+output: tick2_rawdata_qualitycontrol_v1
 # Minimum contig length to be considered. This parameter is used in several steps in order to
 # discard short contigs (default 1000)
 minCtgLength: 1000
