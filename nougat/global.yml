@@ -1,7 +1,7 @@
 Pipelines:
  QCcontrol: ["fastqc", "abyss", "trimmomatic", "kmergenie", "align"]
  assemble: ["abyss", "allpaths", "cabog",  "masurca", "soapdenovo", "spades", "trinity"]
- evaluaqte: ["align", "qaTools", "FRC", "BUSCO"]
+ evaluate: ["align", "qaTools", "FRC", "BUSCO"]
  align: []
 Tools:
  kmergenie:
@@ -17,7 +17,7 @@ Tools:
   bin: /home/olga/anaconda/envs/bwa/bin/bwa
   options: ""
  picard:
-  bin: /home/olga/anaconda/envs/picard/bin/
+  bin: /home/olga/anaconda/envs/picard/bin/picard
   options: ""
  samtools:
   bin: /home/olga/anaconda/envs/samtools/bin/samtools
