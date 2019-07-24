@@ -8,7 +8,8 @@ ISE6 cell line treated with either PBS, Bacillus cereus (Bc) peptidoglycan, or B
 
 ## Genome assembly
 
-[MultiQC Summary](multiqc_report.html)
+- [Short read MultiQC Summary](multiqc_report.html)
+- [QUAST results](http://tick-genome.s3-website-us-west-2.amazonaws.com/)
 
 ## Pre-Assembly FastQC reports
 
