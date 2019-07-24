@@ -8,6 +8,13 @@ ISE6 cell line treated with either PBS, Bacillus cereus (Bc) peptidoglycan, or B
 
 [MultiQC Summary](ise6_treated_pbs_bc_bs/multiqc_report.html)
 
+### Tick Midgut + PBS / Bc / Bs
+
+Tick midgut treated with either PBS, Bacillus cereus (Bc) peptidoglycan, or Bacillus subtilis (Bs) peptidoglycan
+
+[MultiQC Summary](midgut_treated_pbs_bc_bs/multiqc_report.html)
+
+
 ## Genome assembly
 
 - [Short read MultiQC Summary](multiqc_report.html)
