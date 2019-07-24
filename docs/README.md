@@ -1,5 +1,13 @@
 # Tick Genome Assembly and Annotation
 
+## ISE6 + PBS / Bc / Bs
+
+ISE6 cell line treated with either PBS, Bacillus cereus (Bc) peptidoglycan, or Bacillus subtilis (Bs) peptidoglycan
+
+[MultiQC Summary](ise6_treated_pbs_bc_bs/multiqc_report.html)
+
+## Genome assembly
+
 [MultiQC Summary](multiqc_report.html)
 
 ## Pre-Assembly FastQC reports
